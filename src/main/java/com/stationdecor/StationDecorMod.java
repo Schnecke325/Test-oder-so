@@ -14,9 +14,6 @@ import net.neoforged.fml.config.ModConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Haupteinstiegspunkt der Mod. Registriert alle Deferred Register und die Config.
- */
 @Mod(StationDecorMod.MOD_ID)
 public class StationDecorMod {
 
