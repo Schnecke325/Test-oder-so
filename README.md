@@ -4,15 +4,22 @@ NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke.
 
 ## Enthaltene Blöcke
 
-### 1. `station_decor:obj_display` – Anzeigeterminal (OBJ-Block)
+### 1. `station_decor:obj_display` – Fahrkartenautomat (OBJ-Block)
 
 - Wird als frei rotierbares **OBJ-Modell** gerendert (über einen
   `BlockEntityRenderer`, nicht über ein normales Blockmodell – dadurch sind
   auch Zwischenwinkel wie 45° oder 22,5° möglich, nicht nur 90°-Schritte).
+- Nutzt das gelieferte Modell `DB_Fahrkartenautomat.obj` (13 Cubes, 2 Blöcke
+  breit × 3 Blöcke hoch × ~1 Block tief). Die Kollisionsbox deckt bewusst nur
+  den Platzierungsblock ab – der optisch überstehende Teil ist begehbar
+  (Mehrblock-Kollision wäre ein deutlich größeres Feature).
 - Die Rotation wird beim Platzieren automatisch aus der Blickrichtung des
   Spielers berechnet und auf den nächsten konfigurierten Schritt gerundet.
-- Rechtsklick öffnet ein Container-GUI (aktuell ein generisches 3×3-Raster
-  plus Spielerinventar als Platzhalter/Grundgerüst – siehe unten).
+- Rechtsklick öffnet die **Fahrkartenautomat-GUI**: aktuell 6 Platzhalter-
+  Zielknöpfe (zeigen nur eine "noch nicht verfügbar"-Meldung) sowie ein
+  einzelner **Münzslot**. Dieser Slot ist der vorgesehene Anknüpfungspunkt für
+  eine spätere **Create: Numismatics**-Zahlungsintegration (Fahrkarte gegen
+  Münzen kaufen) – aktuell nimmt er noch jedes Item an, ohne Wirkung.
 
 ### 2. `station_decor:seat` – Sitzblock
 
@@ -82,19 +89,23 @@ auf 4/8/16 – "8" ergibt z.B. 45°-Schritte, weil `360° / 8 = 45°`).
 Damit das Grundgerüst sofort baut und im Spiel testbar ist, wurden
 Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
 
-- **3D-Modelle:** `src/main/resources/assets/station_decor/models/obj/*.obj`
-  (+ `.mtl`) sind einfache Platzhaltergeometrien (Terminal-Sockel mit
-  "Bildschirm", Sitzfläche mit Rückenlehne), keine fertigen Möbelstücke.
-  Einfach durch eigene `.obj`/`.mtl`-Dateien mit gleichem Dateinamen
-  ersetzen; die Zuordnung läuft über
-  `models/block/obj_display_render.json` bzw. `seat_render.json`.
-- **Texturen:** `textures/block/obj_display.png` und `seat.png` sind simple
-  16×16-Platzhaltertexturen.
-- **GUI-Inhalt:** Das Terminal-GUI ist aktuell ein generisches 3×3-Raster +
-  Spielerinventar (Klasse `menu/ObjDisplayMenu.java`, Screen nutzt die
-  vanilla Werfer-Textur als Hintergrund). Sag einfach, was konkret im GUI
-  passieren soll (Infoanzeige, Filter, Rezepte, etc.), dann bauen wir es
-  entsprechend aus.
+- **3D-Modelle:** `seat.obj`/`.mtl` und `floor_marking.obj`/`.mtl` sind
+  einfache Platzhaltergeometrien, keine fertigen Möbelstücke. Der
+  Fahrkartenautomat (`DB_Fahrkartenautomat.obj`/`.mtl`) ist dagegen bereits
+  das gelieferte, echte Modell. Ersetzen läuft über
+  `models/block/<name>_render.json` (Pfad zum `.obj`, Textur-Zuordnung).
+- **Textur des Fahrkartenautomaten fehlt noch:** Die `.mtl`-Datei referenzierte
+  ursprünglich `ticket_machine_db_new.png`, die nicht mit hochgeladen wurde.
+  Ich habe die `.mtl` auf `map_Kd #texture0` umgestellt (NeoForge-Textur-Token
+  statt fixem Dateinamen) und einen simplen 32×32-Platzhalter unter
+  `textures/block/ticket_machine.png` erzeugt. Die echte Textur einfach unter
+  gleichem Pfad/Namen ablegen, sobald verfügbar.
+- **Weitere Texturen:** `textures/block/seat.png` und `floor_marking.png`
+  sind simple 16×16-Platzhalter.
+- **GUI-Inhalt Fahrkartenautomat:** aktuell 6 Platzhalter-Zielknöpfe (keine
+  Funktion) + 1 Münzslot für eine spätere Create: Numismatics-Zahlung. Sag
+  Bescheid, wenn die eigentliche Fahrkartenlogik (Zielauswahl, Preis, Abzug
+  der Münzen, Ausgabe eines Ticket-Items) drankommen soll.
 - **Kollisionsbox:** Aus Einfachheitsgründen ist die Hitbox beider Blöcke
   rotationsunabhängig (ein fester, leicht verkleinerter Würfel). Eine exakt
   der 22,5°-Rotation folgende Box wäre nicht mehr achsenparallel und wurde
@@ -113,6 +124,16 @@ Voraussetzung: JDK 21.
 Falls der Build eine neuere NeoForge-Version verlangt: aktuelle Version unter
 <https://projects.neoforged.net/neoforged/neoforge> nachsehen und in
 `gradle.properties` (`neo_version`) eintragen.
+
+**Wichtig:** `./gradlew build`/`compileJava` prüft nur den Java-Code gegen die
+echte NeoForge-API (das wurde in dieser Session mehrfach erfolgreich
+verifiziert). Blockstates, Modell-JSONs, `.obj`/`.mtl`-Dateien und Texturen
+werden dabei **nicht** validiert – das passiert erst beim tatsächlichen
+Laden im Client (`runClient`). Insbesondere das Laden des echten
+`DB_Fahrkartenautomat.obj`-Modells und der Y-Achsen-Ausrichtungskorrektur in
+`ObjDisplayBlockEntityRenderer` wurden nur rechnerisch (Bounding-Box-Analyse),
+nicht visuell in einem laufenden Client geprüft, da diese Sandbox kein
+Display hat.
 
 ## Projektstruktur
 

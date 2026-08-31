@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "station_decor:block/obj_display"
+    "all": "station_decor:block/ticket_machine"
   }
 }

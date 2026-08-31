@@ -19,13 +19,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * BlockEntity des OBJ-Anzeigeblocks. Hält die freie Rotation (geerbt) sowie
- * ein kleines 3x3-Inventar, das über das per Rechtsklick geöffnete GUI
- * ({@link ObjDisplayMenu}) bedient werden kann.
+ * BlockEntity des Fahrkartenautomaten. Hält die freie Rotation (geerbt) sowie
+ * einen einzelnen "Münzslot", der über das per Rechtsklick geöffnete GUI
+ * ({@link ObjDisplayMenu}) bedient werden kann. Der Slot nimmt aktuell noch
+ * beliebige Items an - das ist der vorgesehene Anknüpfungspunkt für eine
+ * spätere Create: Numismatics-Integration (Bezahlen mit Münzen).
  */
 public class ObjDisplayBlockEntity extends AbstractRotatableBlockEntity implements MenuProvider, Container {
 
-    public static final int CONTAINER_SIZE = 9;
+    public static final int CONTAINER_SIZE = 1;
 
     private NonNullList<ItemStack> items = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
 

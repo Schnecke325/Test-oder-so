@@ -10,18 +10,19 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Container-Menü für den OBJ-Anzeigeblock: ein 3x3-Raster (wie ein Werfer)
- * plus das komplette Spielerinventar. Der Inhalt dieses GUIs ist bewusst
- * generisch gehalten und kann später leicht um blockspezifische Slots
- * (Filter, Ausgabe, etc.) erweitert werden.
+ * Container-Menü des Fahrkartenautomaten: ein einzelner "Münzslot" (Platz für
+ * eine spätere Create: Numismatics-Integration zum Bezahlen) plus das
+ * Spielerinventar. Die eigentlichen Ziel-/Fahrkarten-Knöpfe sind reine
+ * Client-UI (siehe {@link com.stationdecor.client.screen.ObjDisplayScreen})
+ * und brauchen daher keine Slots.
  */
 public class ObjDisplayMenu extends AbstractContainerMenu {
 
-    public static final int CONTAINER_SIZE = 9;
-    private static final int GRID_ORIGIN_X = 62;
-    private static final int GRID_ORIGIN_Y = 17;
-    private static final int PLAYER_INV_Y = 84;
-    private static final int HOTBAR_Y = 142;
+    public static final int CONTAINER_SIZE = 1;
+    public static final int COIN_SLOT_X = 90;
+    public static final int COIN_SLOT_Y = 84;
+    private static final int PLAYER_INV_Y = 112;
+    private static final int HOTBAR_Y = 170;
 
     private final Container container;
 
@@ -37,11 +38,7 @@ public class ObjDisplayMenu extends AbstractContainerMenu {
         this.container = container;
         container.startOpen(playerInventory.player);
 
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                this.addSlot(new Slot(container, col + row * 3, GRID_ORIGIN_X + col * 18, GRID_ORIGIN_Y + row * 18));
-            }
-        }
+        this.addSlot(new Slot(container, 0, COIN_SLOT_X, COIN_SLOT_Y));
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {

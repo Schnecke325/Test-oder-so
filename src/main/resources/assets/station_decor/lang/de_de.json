@@ -1,7 +1,9 @@
 {
   "itemGroup.station_decor": "Station Decor",
-  "block.station_decor.obj_display": "Anzeigeterminal",
+  "block.station_decor.obj_display": "Fahrkartenautomat",
   "block.station_decor.seat": "Sitzbank",
   "block.station_decor.floor_marking": "Bodenmarkierung",
+  "gui.station_decor.obj_display.destination": "Ziel %s",
+  "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"
 }

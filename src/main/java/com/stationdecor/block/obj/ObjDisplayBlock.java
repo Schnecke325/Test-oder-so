@@ -33,11 +33,15 @@ public class ObjDisplayBlock extends BaseEntityBlock {
     public static final MapCodec<ObjDisplayBlock> CODEC = simpleCodec(ObjDisplayBlock::new);
 
     /**
-     * Feste, rotationsunabhängige Kollisionsbox (kleiner Sockel). Eine exakt der
-     * gewählten Rotation folgende Box wäre bei 22,5°-Schritten nicht mehr
-     * achsenparallel und ist bewusst nicht implementiert.
+     * Feste, rotationsunabhängige Kollisionsbox, nahezu blockfüllend. Das
+     * gelieferte Fahrkartenautomat-Modell ist real 2 Blöcke breit / 3 Blöcke
+     * hoch (siehe {@code ObjDisplayBlockEntityRenderer}) - die Kollision
+     * deckt bewusst nur den Platzierungsblock ab, der optisch überstehende
+     * Teil ist rein visuell begehbar. Eine exakt der gewählten Rotation
+     * folgende Box wäre bei 22,5°-Schritten zudem nicht mehr achsenparallel
+     * und ist bewusst nicht implementiert.
      */
-    private static final VoxelShape SHAPE = box(2, 0, 2, 14, 14, 14);
+    private static final VoxelShape SHAPE = box(1, 0, 1, 15, 16, 15);
 
     public ObjDisplayBlock(BlockBehaviour.Properties properties) {
         super(properties);

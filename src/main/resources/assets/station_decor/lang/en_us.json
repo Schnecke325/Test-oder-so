@@ -1,7 +1,9 @@
 {
   "itemGroup.station_decor": "Station Decor",
-  "block.station_decor.obj_display": "Display Terminal",
+  "block.station_decor.obj_display": "Ticket Machine",
   "block.station_decor.seat": "Seat",
   "block.station_decor.floor_marking": "Floor Marking",
+  "gui.station_decor.obj_display.destination": "Dest. %s",
+  "gui.station_decor.obj_display.not_implemented": "Ticket purchase not available yet",
   "config.station_decor.title": "Station Decor Settings"
 }

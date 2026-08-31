@@ -33,12 +33,23 @@ public final class RotatedObjRenderHelper {
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees, float forwardOffset,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        render(modelLocation, rotationDegrees, 0f, 0f, forwardOffset, poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    /**
+     * Wie oben, aber mit einem vollen lokalen Versatz (x/y/z, in Blöcken), der nach der Rotation
+     * angewendet wird. Genutzt z.B. für Modelle, deren eigener Ursprung nicht am Blockboden liegt
+     * (z.B. der Fahrkartenautomat, dessen Modell-Y bei -1 statt 0 beginnt).
+     */
+    public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
+                               float offsetX, float offsetY, float offsetZ,
+                               PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
-        poseStack.translate(0, 0, forwardOffset);
+        poseStack.translate(offsetX, offsetY, offsetZ);
         poseStack.translate(-0.5, 0, -0.5);
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());
