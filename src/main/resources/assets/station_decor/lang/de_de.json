@@ -2,5 +2,6 @@
   "itemGroup.station_decor": "Station Decor",
   "block.station_decor.obj_display": "Anzeigeterminal",
   "block.station_decor.seat": "Sitzbank",
+  "block.station_decor.floor_marking": "Bodenmarkierung",
   "config.station_decor.title": "Station Decor Einstellungen"
 }

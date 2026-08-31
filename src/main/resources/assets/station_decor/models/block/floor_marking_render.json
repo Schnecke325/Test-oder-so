@@ -1,0 +1,9 @@
+{
+  "loader": "neoforge:obj",
+  "model": "station_decor:models/obj/floor_marking.obj",
+  "flip_v": true,
+  "textures": {
+    "texture0": "station_decor:block/floor_marking",
+    "particle": "station_decor:block/floor_marking"
+  }
+}

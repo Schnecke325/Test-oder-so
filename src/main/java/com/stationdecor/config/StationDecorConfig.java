@@ -13,6 +13,7 @@ public final class StationDecorConfig {
     public static final ModConfigSpec.IntValue OBJ_BLOCK_ROTATION_STEPS;
     public static final ModConfigSpec.IntValue SEAT_BLOCK_ROTATION_STEPS;
     public static final ModConfigSpec.BooleanValue SEAT_BLOCK_AUTO_ALIGN;
+    public static final ModConfigSpec.IntValue FLOOR_MARKING_ROTATION_STEPS;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -42,6 +43,14 @@ public final class StationDecorConfig {
                         "des Spielers zu verwenden."
                 )
                 .define("seatBlockAutoAlign", true);
+
+        FLOOR_MARKING_ROTATION_STEPS = builder
+                .comment(
+                        "Anzahl der Rotationsschritte für die Bodenmarkierung, gleichmäßig über 360° verteilt.",
+                        "Diese Schrittzahl bestimmt auch die Ausrichtung der Vorschau-Balken beim Platzieren",
+                        "(z.B. diagonal bei einem 45°-Schritt)."
+                )
+                .defineInRange("floorMarkingRotationSteps", 8, 2, 64);
 
         builder.pop();
 

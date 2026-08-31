@@ -21,6 +21,7 @@ public final class ModCreativeTabs {
                     .displayItems((params, output) -> {
                         output.accept(ModItems.OBJ_DISPLAY.get());
                         output.accept(ModItems.SEAT.get());
+                        output.accept(ModItems.FLOOR_MARKING.get());
                     })
                     .build());
 

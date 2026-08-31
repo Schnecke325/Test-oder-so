@@ -1,5 +1,7 @@
 package com.stationdecor.block.rotation;
 
+import net.minecraft.world.phys.Vec3;
+
 /**
  * Rechnet zwischen einer Blickrichtung (Yaw in Grad) und einem diskreten
  * Rotationsindex um, abhängig von einer konfigurierbaren Schrittzahl.
@@ -48,5 +50,16 @@ public final class RotationUtil {
         }
         int result = index % steps;
         return result < 0 ? result + steps : result;
+    }
+
+    /**
+     * Horizontaler "Vorwärts"-Vektor (Länge 1, Y=0) für einen Rotationswinkel in Grad,
+     * in der gleichen Konvention wie {@code Entity#getYRot()} (0° = Süden/+Z, 90° = Westen/-X).
+     * Wird genutzt, um bei Block 3 (Bodenmarkierung) die Nah/Mitte/Fern-Achse an die
+     * tatsächliche (eingerastete) Platzierungsrotation zu koppeln, statt an die rohe Blickrichtung.
+     */
+    public static Vec3 forwardVector(float degrees) {
+        double rad = Math.toRadians(degrees);
+        return new Vec3(-Math.sin(rad), 0.0, Math.cos(rad));
     }
 }

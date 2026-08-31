@@ -1,7 +1,6 @@
 # Station Decor
 
-NeoForge-Mod für Minecraft **1.21.1**. Enthält aktuell zwei der drei geplanten
-Blöcke; der dritte folgt, sobald er beschrieben wird.
+NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke.
 
 ## Enthaltene Blöcke
 
@@ -27,7 +26,23 @@ Blöcke; der dritte folgt, sobald er beschrieben wird.
   automatisch dessen Rotation, statt sich an der Blickrichtung des Spielers
   zu orientieren. Abschaltbar per Config.
 
-### 3. (folgt)
+### 3. `station_decor:floor_marking` – Bodenmarkierung
+
+- Ebenfalls frei rotierbar (eigene konfigurierbare Schrittzahl).
+- **Vorschau-Outline beim Zielen:** Hält man das Item in der Hand und zielt
+  auf einen Block, wird zusätzlich zur normalen Auswahlbox eine Outline
+  gezeichnet, die die anvisierte Fläche entlang der (eingerasteten)
+  Blickrichtung in 3 gleich große Zonen unterteilt. Bei z.B. einem
+  45°-Rotationsschritt liegen diese Trennlinien entsprechend diagonal, da sie
+  an derselben Rotation ausgerichtet sind, mit der der Block auch platziert wird.
+- **Nah/Mitte/Fern-Versatz:** Je nachdem, in welcher der 3 Zonen man klickt,
+  wird die Markierung beim Platzieren um 1/3 Block näher zum Spieler,
+  zentriert oder um 1/3 Block weiter weg gesetzt – entlang ihrer eigenen
+  (gedrehten) Vorwärtsachse. Das passiert in einem eigenen `BlockItem`
+  (`FloorMarkingBlockItem`), da nur dort der exakte Klickpunkt bekannt ist.
+- Technischer Hinweis: Das `RenderHighlightEvent.Block` von NeoForge ist in
+  1.21.1 nicht abbrechbar – die 2 Trennlinien werden daher zusätzlich zur
+  vanilla Auswahlbox gezeichnet, nicht anstelle davon.
 
 ## Konfiguration
 
@@ -39,6 +54,7 @@ Nach dem ersten Start liegt die Common-Config unter
 | `objBlockRotationSteps`   | `8`      | Rotationsschritte des Anzeigeterminals (4 = 90°, 8 = 45°, 16 = 22,5°, ...) |
 | `seatBlockRotationSteps`  | `8`      | Rotationsschritte des Sitzblocks                                          |
 | `seatBlockAutoAlign`      | `true`   | Automatisches Ausrichten an einem angrenzenden Sitzblock beim Platzieren  |
+| `floorMarkingRotationSteps` | `8`    | Rotationsschritte der Bodenmarkierung                                     |
 
 Die Schrittzahl ist frei zwischen 2 und 64 wählbar (keine feste Beschränkung
 auf 4/8/16 – "8" ergibt z.B. 45°-Schritte, weil `360° / 8 = 45°`).

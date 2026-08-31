@@ -1,6 +1,7 @@
 package com.stationdecor.client;
 
 import com.stationdecor.StationDecorMod;
+import com.stationdecor.client.render.FloorMarkingBlockEntityRenderer;
 import com.stationdecor.client.render.ObjDisplayBlockEntityRenderer;
 import com.stationdecor.client.render.SeatBlockEntityRenderer;
 import com.stationdecor.client.render.SeatEntityRenderer;
@@ -30,12 +31,14 @@ public final class ClientSetup {
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(ObjDisplayBlockEntityRenderer.MODEL);
         event.register(SeatBlockEntityRenderer.MODEL);
+        event.register(FloorMarkingBlockEntityRenderer.MODEL);
     }
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.OBJ_DISPLAY.get(), ObjDisplayBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SEAT.get(), SeatBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.FLOOR_MARKING.get(), FloorMarkingBlockEntityRenderer::new);
         event.registerEntityRenderer(ModEntities.SEAT.get(), SeatEntityRenderer::new);
     }
 

@@ -1,6 +1,7 @@
 package com.stationdecor.registry;
 
 import com.stationdecor.StationDecorMod;
+import com.stationdecor.block.marking.FloorMarkingBlock;
 import com.stationdecor.block.obj.ObjDisplayBlock;
 import com.stationdecor.block.seat.SeatBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -26,6 +27,14 @@ public final class ModBlocks {
                     .strength(2.0f)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
+
+    public static final DeferredBlock<FloorMarkingBlock> FLOOR_MARKING = BLOCKS.register("floor_marking",
+            () -> new FloorMarkingBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_YELLOW)
+                    .strength(0.5f)
+                    .sound(SoundType.STONE)
+                    .noOcclusion()
+                    .noCollission()));
 
     private ModBlocks() {
     }

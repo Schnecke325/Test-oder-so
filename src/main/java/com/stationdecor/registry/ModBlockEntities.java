@@ -1,6 +1,7 @@
 package com.stationdecor.registry;
 
 import com.stationdecor.StationDecorMod;
+import com.stationdecor.block.marking.FloorMarkingBlockEntity;
 import com.stationdecor.block.obj.ObjDisplayBlockEntity;
 import com.stationdecor.block.seat.SeatBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +21,10 @@ public final class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeatBlockEntity>> SEAT =
             BLOCK_ENTITIES.register("seat", () -> BlockEntityType.Builder.of(
                     SeatBlockEntity::new, ModBlocks.SEAT.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FloorMarkingBlockEntity>> FLOOR_MARKING =
+            BLOCK_ENTITIES.register("floor_marking", () -> BlockEntityType.Builder.of(
+                    FloorMarkingBlockEntity::new, ModBlocks.FLOOR_MARKING.get()).build(null));
 
     private ModBlockEntities() {
     }

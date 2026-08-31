@@ -1,6 +1,7 @@
 package com.stationdecor.registry;
 
 import com.stationdecor.StationDecorMod;
+import com.stationdecor.block.marking.FloorMarkingBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -16,6 +17,9 @@ public final class ModItems {
 
     public static final Supplier<BlockItem> SEAT = ITEMS.registerSimpleBlockItem(
             "seat", ModBlocks.SEAT, new Item.Properties());
+
+    public static final Supplier<FloorMarkingBlockItem> FLOOR_MARKING = ITEMS.register("floor_marking",
+            () -> new FloorMarkingBlockItem(ModBlocks.FLOOR_MARKING.get(), new Item.Properties()));
 
     private ModItems() {
     }

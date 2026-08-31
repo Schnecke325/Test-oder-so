@@ -23,11 +23,22 @@ public final class RotatedObjRenderHelper {
 
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees, PoseStack poseStack,
                                MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        render(modelLocation, rotationDegrees, 0f, poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    /**
+     * Wie {@link #render(ModelResourceLocation, float, PoseStack, MultiBufferSource, int, int)},
+     * verschiebt das Modell zusätzlich um {@code forwardOffset} Blöcke entlang seiner eigenen
+     * (bereits gedrehten) Vorwärtsachse - genutzt von Block 3 für den Nah/Mitte/Fern-Versatz.
+     */
+    public static void render(ModelResourceLocation modelLocation, float rotationDegrees, float forwardOffset,
+                               PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
+        poseStack.translate(0, 0, forwardOffset);
         poseStack.translate(-0.5, 0, -0.5);
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());
