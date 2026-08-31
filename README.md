@@ -96,10 +96,15 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
   `models/block/<name>_render.json` (Pfad zum `.obj`, Textur-Zuordnung).
 - **Textur des Fahrkartenautomaten fehlt noch:** Die `.mtl`-Datei referenzierte
   ursprünglich `ticket_machine_db_new.png`, die nicht mit hochgeladen wurde.
-  Ich habe die `.mtl` auf `map_Kd #texture0` umgestellt (NeoForge-Textur-Token
-  statt fixem Dateinamen) und einen simplen 32×32-Platzhalter unter
+  Ich habe einen simplen 32×32-Platzhalter unter
   `textures/block/ticket_machine.png` erzeugt. Die echte Textur einfach unter
   gleichem Pfad/Namen ablegen, sobald verfügbar.
+- **Fix nach erstem In-Game-Test:** Alle drei `.mtl`-Dateien referenzieren die
+  Textur jetzt direkt per Namespace (`map_Kd station_decor:block/<name>`)
+  statt über das `#texture0`-Token aus dem model-json. Das Token-Verfahren
+  ist laut einem bekannten NeoForge-Issue in dieser Version nicht zuverlässig
+  und führte dazu, dass das OBJ-Modell nicht buk und stattdessen der
+  magenta/schwarze "Missing Model"-Würfel gerendert wurde.
 - **Weitere Texturen:** `textures/block/seat.png` und `floor_marking.png`
   sind simple 16×16-Platzhalter.
 - **GUI-Inhalt Fahrkartenautomat:** aktuell 6 Platzhalter-Zielknöpfe (keine
