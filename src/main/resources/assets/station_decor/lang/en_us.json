@@ -1,0 +1,6 @@
+{
+  "itemGroup.station_decor": "Station Decor",
+  "block.station_decor.obj_display": "Display Terminal",
+  "block.station_decor.seat": "Seat",
+  "config.station_decor.title": "Station Decor Settings"
+}

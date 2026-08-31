@@ -1,0 +1,9 @@
+{
+  "loader": "neoforge:obj",
+  "model": "station_decor:models/obj/obj_display.obj",
+  "flip_v": true,
+  "textures": {
+    "texture0": "station_decor:block/obj_display",
+    "particle": "station_decor:block/obj_display"
+  }
+}
