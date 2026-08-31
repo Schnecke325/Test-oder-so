@@ -6,20 +6,18 @@ NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke.
 
 ### 1. `station_decor:obj_display` – Fahrkartenautomat (OBJ-Block)
 
-- Wird als frei rotierbares **OBJ-Modell** gerendert (über einen
-  `BlockEntityRenderer`, nicht über ein normales Blockmodell – dadurch sind
-  auch Zwischenwinkel wie 45° oder 22,5° möglich, nicht nur 90°-Schritte).
+- Wird über einen `BlockEntityRenderer` als **OBJ-Modell** gerendert (nicht
+  über ein normales Blockmodell).
 - Nutzt das gelieferte Modell `DB_Fahrkartenautomat.obj` (13 Cubes, 2 Blöcke
   breit × 3 Blöcke hoch × ~1 Block tief). Die Kollisionsbox deckt bewusst nur
   den Platzierungsblock ab – der optisch überstehende Teil ist begehbar
   (Mehrblock-Kollision wäre ein deutlich größeres Feature).
-- Die Rotation wird beim Platzieren automatisch aus der Blickrichtung des
-  Spielers berechnet und auf den nächsten konfigurierten Schritt gerundet.
-- Rechtsklick öffnet die **Fahrkartenautomat-GUI**: aktuell 6 Platzhalter-
-  Zielknöpfe (zeigen nur eine "noch nicht verfügbar"-Meldung) sowie ein
-  einzelner **Münzslot**. Dieser Slot ist der vorgesehene Anknüpfungspunkt für
-  eine spätere **Create: Numismatics**-Zahlungsintegration (Fahrkarte gegen
-  Münzen kaufen) – aktuell nimmt er noch jedes Item an, ohne Wirkung.
+- **Aktuell bewusst ohne Rotation** (feste Ausrichtung) und mit einem stark
+  vereinfachten GUI (nur ein grauer Kasten mit "Soon™", keine Knöpfe/Slots) –
+  das ist ein Zwischenschritt, um das Laden des OBJ-Modells isoliert zu
+  debuggen (siehe „Bekannte Einschränkungen"). Rotation und die richtige GUI
+  (Zielknöpfe, Münzslot für eine spätere **Create: Numismatics**-Zahlung)
+  kommen zurück, sobald das Modell zuverlässig rendert.
 
 ### 2. `station_decor:seat` – Sitzblock
 
@@ -99,18 +97,24 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
   Ich habe einen simplen 32×32-Platzhalter unter
   `textures/block/ticket_machine.png` erzeugt. Die echte Textur einfach unter
   gleichem Pfad/Namen ablegen, sobald verfügbar.
-- **Fix nach erstem In-Game-Test:** Alle drei `.mtl`-Dateien referenzieren die
-  Textur jetzt direkt per Namespace (`map_Kd station_decor:block/<name>`)
-  statt über das `#texture0`-Token aus dem model-json. Das Token-Verfahren
-  ist laut einem bekannten NeoForge-Issue in dieser Version nicht zuverlässig
-  und führte dazu, dass das OBJ-Modell nicht buk und stattdessen der
-  magenta/schwarze "Missing Model"-Würfel gerendert wurde.
+- **Fix-Versuch nach erstem In-Game-Test:** Alle drei `.mtl`-Dateien
+  referenzieren die Textur jetzt direkt per Namespace
+  (`map_Kd station_decor:block/<name>`) statt über das `#texture0`-Token aus
+  dem model-json (laut einem bekannten NeoForge-Issue in dieser Version
+  nicht zuverlässig). **Das allein hat den magenta/schwarzen "Missing
+  Model"-Würfel beim Fahrkartenautomaten noch nicht behoben.**
+- **Aktueller Debug-Zwischenstand:** Um die eigentliche Ursache zu isolieren,
+  wurde der Fahrkartenautomat auf das Minimum reduziert - keine Rotation
+  (feste 0°-Ausrichtung), kein Inventar, GUI nur noch ein grauer Kasten mit
+  "Soon™". Falls das Modell danach immer noch als Karo-Würfel erscheint,
+  liegt es nicht an Rotation/GUI, sondern am Laden des OBJ-Modells selbst -
+  in dem Fall bräuchte ich die Zeilen rund um `obj_display_render` bzw.
+  `DB_Fahrkartenautomat` aus `logs/latest.log` (bzw. `logs/debug.log`) nach
+  dem Start, um die tatsächliche Fehlermeldung zu sehen statt zu raten.
+  Rotation, Inventar-Slot und die echte GUI kommen zurück, sobald das
+  Modell zuverlässig rendert.
 - **Weitere Texturen:** `textures/block/seat.png` und `floor_marking.png`
   sind simple 16×16-Platzhalter.
-- **GUI-Inhalt Fahrkartenautomat:** aktuell 6 Platzhalter-Zielknöpfe (keine
-  Funktion) + 1 Münzslot für eine spätere Create: Numismatics-Zahlung. Sag
-  Bescheid, wenn die eigentliche Fahrkartenlogik (Zielauswahl, Preis, Abzug
-  der Münzen, Ausgabe eines Ticket-Items) drankommen soll.
 - **Kollisionsbox:** Aus Einfachheitsgründen ist die Hitbox beider Blöcke
   rotationsunabhängig (ein fester, leicht verkleinerter Würfel). Eine exakt
   der 22,5°-Rotation folgende Box wäre nicht mehr achsenparallel und wurde
