@@ -6,6 +6,7 @@ import com.stationdecor.block.seat.SeatBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -13,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class SeatBlockEntityRenderer implements BlockEntityRenderer<SeatBlockEntity> {
 
-    public static final ResourceLocation MODEL =
-            ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/seat_render");
+    public static final ModelResourceLocation MODEL = ModelResourceLocation.standalone(
+            ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/seat_render"));
 
     public SeatBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }

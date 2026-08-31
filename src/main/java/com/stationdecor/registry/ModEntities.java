@@ -3,7 +3,6 @@ package com.stationdecor.registry;
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.seat.SeatEntity;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -19,7 +18,7 @@ public final class ModEntities {
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(6)
                     .updateInterval(20)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, registryName)));
+                    .build(registryName.toString()));
 
     private ModEntities() {
     }

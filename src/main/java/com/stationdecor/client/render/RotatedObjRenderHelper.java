@@ -1,13 +1,13 @@
 package com.stationdecor.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.VertexConsumer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 
 /**
  * Zeichnet ein per {@code neoforge:obj}-Loader geladenes Standalone-Modell
@@ -21,7 +21,7 @@ public final class RotatedObjRenderHelper {
     private RotatedObjRenderHelper() {
     }
 
-    public static void render(ResourceLocation modelLocation, float rotationDegrees, PoseStack poseStack,
+    public static void render(ModelResourceLocation modelLocation, float rotationDegrees, PoseStack poseStack,
                                MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
