@@ -126,6 +126,33 @@ propagiert das selbst nicht weiter als Vorwarnung an das Signal davor
 (entspricht realer Signallogik - die Vorwarnung gilt nur für den unmittelbar
 nächsten Halt-Begriff).
 
+### 6. `station_decor:signal_binder` – Signalbinder
+
+Verlinkt das "Signal davor" für `ks_distant_signal` (Vr0/Vr1) und
+`ks_multi_section_signal` (Vorwarnung für Halt erwarten) **ohne** Create
+Display Link - als robuste Alternative, nachdem sich Display Link im Test
+als fehleranfällig/schwer korrekt einzurichten herausgestellt hat (siehe
+unten). Bedienung:
+
+1. Rechtsklick auf das **Ziel** (Ks-Vorsignal oder Ks-Mehrabschnittssignal).
+2. Rechtsklick auf das **Quellsignal** ("Signal davor" - Ks-Hauptsignal oder
+   Ks-Mehrabschnittssignal).
+
+Danach sind beide verlinkt (im Chat erscheint eine Bestätigung). Die
+verlinkte Position wird auf der Ziel-BlockEntity gespeichert
+(`KsDistantSignalBlockEntity`/`KsMultiSectionSignalBlockEntity#linkedSignalPos`)
+und alle 10 Ticks ausgelesen (`SignalLinkUtil#readHalt`): Zeigt das
+verlinkte Signal Halt → Vr0 bzw. "Halt erwarten"-Vorwarnung, sonst → Vr1
+bzw. keine Vorwarnung. Fehlt die Verlinkung oder ist das Ziel gerade nicht
+lesbar (Chunk entladen o.ä.), bleibt der zuletzt gesetzte Begriff erhalten.
+Komplett unabhängig von Create - reine Block-zu-Block-Logik.
+
+Der Create-Display-Link-Pfad (`DisplayTarget`/`DisplaySource`) bleibt
+zusätzlich bestehen und funktioniert parallel (z.B. für
+`upstreamHalt`/`setUpstreamHalt` am Mehrabschnittssignal) - der
+Signalbinder-Link wird aber bei jedem Scan-Durchlauf neu ausgelesen und
+überschreibt damit effektiv, was zuletzt gilt.
+
 ## Architektur-Änderung: Ks-Hauptsignal scannt jetzt selbst (statt nur Display Link)
 
 Ursprünglich verließ sich `ks_main_signal` beim Aktualisieren komplett auf

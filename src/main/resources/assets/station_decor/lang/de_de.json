@@ -8,6 +8,12 @@
   "block.station_decor.ks_multi_section_signal": "Ks-Mehrabschnittssignal",
   "station_decor.display_source.ks_main_signal_aspect": "Ks-Hauptsignal Begriff",
   "station_decor.display_source.ks_multi_section_signal_aspect": "Ks-Mehrabschnittssignal Begriff",
+  "item.station_decor.signal_binder": "Signalbinder",
+  "item.station_decor.signal_binder.target_selected": "Ziel gewählt - jetzt das Signal davor anklicken",
+  "item.station_decor.signal_binder.linked": "Verbunden!",
+  "item.station_decor.signal_binder.cancelled": "Abgebrochen",
+  "item.station_decor.signal_binder.invalid_target": "Kein gültiges Ziel (Ks-Vorsignal oder Ks-Mehrabschnittssignal anklicken)",
+  "item.station_decor.signal_binder.invalid_source": "Kein gültiges Signal (Ks-Hauptsignal oder Ks-Mehrabschnittssignal anklicken)",
   "gui.station_decor.obj_display.destination": "Ziel %s",
   "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"

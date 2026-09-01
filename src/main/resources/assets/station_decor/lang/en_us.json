@@ -8,6 +8,12 @@
   "block.station_decor.ks_multi_section_signal": "Ks Multi-Section Signal",
   "station_decor.display_source.ks_main_signal_aspect": "Ks Home Signal Aspect",
   "station_decor.display_source.ks_multi_section_signal_aspect": "Ks Multi-Section Signal Aspect",
+  "item.station_decor.signal_binder": "Signal Binder",
+  "item.station_decor.signal_binder.target_selected": "Target selected - now click the signal ahead",
+  "item.station_decor.signal_binder.linked": "Linked!",
+  "item.station_decor.signal_binder.cancelled": "Cancelled",
+  "item.station_decor.signal_binder.invalid_target": "Not a valid target (click a Ks Distant Signal or Ks Multi-Section Signal)",
+  "item.station_decor.signal_binder.invalid_source": "Not a valid signal (click a Ks Home Signal or Ks Multi-Section Signal)",
   "gui.station_decor.obj_display.destination": "Dest. %s",
   "gui.station_decor.obj_display.not_implemented": "Ticket purchase not available yet",
   "config.station_decor.title": "Station Decor Settings"

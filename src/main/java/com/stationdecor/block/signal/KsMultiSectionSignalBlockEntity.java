@@ -5,16 +5,22 @@ import com.stationdecor.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * BlockEntity des Mehrabschnittssignals. Scannt periodisch bis zu 10 Blöcke
  * unter sich nach einem Create-Gleissignal und kombiniert dessen Zustand mit
- * dem zuletzt per Display Link empfangenen "Signal davor"-Zustand zu einem
+ * dem Zustand des per Signalbinder verlinkten "Signal davor"
+ * ({@link #linkedSignalPos}, siehe {@link SignalLinkUtil}) zu einem
  * {@link CombinedSignalAspect}, der als BlockState-Property gesetzt wird.
+ * {@link #setUpstreamHalt(boolean)} bleibt zusätzlich für Create Display
+ * Link nutzbar, wird aber bei jedem Scan-Durchlauf vom Signalbinder-Link
+ * überschrieben, falls einer gesetzt ist.
  * <p>
  * Referenziert absichtlich NIE direkt eine {@code com.simibubi.create}-Klasse -
  * das übernimmt ausschließlich {@link CreateCompat}, aufgerufen hinter einem
@@ -27,6 +33,8 @@ public class KsMultiSectionSignalBlockEntity extends BlockEntity {
     private static final int MAX_SCAN_DISTANCE = 10;
 
     private boolean upstreamHalt = false;
+    @Nullable
+    private BlockPos linkedSignalPos;
     private int scanCooldown = 0;
 
     public KsMultiSectionSignalBlockEntity(BlockPos pos, BlockState state) {
@@ -49,12 +57,39 @@ public class KsMultiSectionSignalBlockEntity extends BlockEntity {
         return upstreamHalt;
     }
 
+    /** Wird vom Signalbinder beim zweiten Klick (auf das Quellsignal) aufgerufen. */
+    public void setLinkedSignalPos(@Nullable BlockPos pos) {
+        this.linkedSignalPos = pos;
+        setChanged();
+        if (level != null && !level.isClientSide) {
+            refreshLinkedUpstreamHalt();
+            recomputeAspect();
+        }
+    }
+
+    @Nullable
+    public BlockPos getLinkedSignalPos() {
+        return linkedSignalPos;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, KsMultiSectionSignalBlockEntity blockEntity) {
         if (blockEntity.scanCooldown-- > 0) {
             return;
         }
         blockEntity.scanCooldown = SCAN_INTERVAL_TICKS;
+        blockEntity.refreshLinkedUpstreamHalt();
         blockEntity.recomputeAspect();
+    }
+
+    private void refreshLinkedUpstreamHalt() {
+        if (linkedSignalPos == null || level == null) {
+            return;
+        }
+        Boolean halt = SignalLinkUtil.readHalt(level, linkedSignalPos);
+        if (halt != null && halt != upstreamHalt) {
+            upstreamHalt = halt;
+            setChanged();
+        }
     }
 
     private void recomputeAspect() {
@@ -90,11 +125,15 @@ public class KsMultiSectionSignalBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putBoolean("UpstreamHalt", upstreamHalt);
+        if (linkedSignalPos != null) {
+            tag.put("LinkedSignal", NbtUtils.writeBlockPos(linkedSignalPos));
+        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         upstreamHalt = tag.getBoolean("UpstreamHalt");
+        linkedSignalPos = tag.contains("LinkedSignal") ? NbtUtils.readBlockPos(tag, "LinkedSignal").orElse(null) : null;
     }
 }

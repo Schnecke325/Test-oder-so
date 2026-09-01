@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -22,12 +24,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import com.stationdecor.registry.ModBlockEntities;
+
 /**
  * Ks-Vorsignal. Analog zu {@link KsMainSignalBlock}, zeigt aber
- * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2. Hat (anders
- * als früher) jetzt eine rein technische BlockEntity ohne eigene Scan-Logik -
- * nur damit die Lampenfläche unabhängig vom Umgebungslicht gezeichnet werden
- * kann, siehe {@link KsDistantSignalBlockEntity}.
+ * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2. Die
+ * BlockEntity scannt periodisch das per Signalbinder verlinkte "Signal
+ * davor" (siehe {@link KsDistantSignalBlockEntity}) und zeichnet zusätzlich
+ * die Lampenfläche unabhängig vom Umgebungslicht.
  */
 public class KsDistantSignalBlock extends BaseEntityBlock {
 
@@ -71,6 +75,13 @@ public class KsDistantSignalBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new KsDistantSignalBlockEntity(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.KS_DISTANT_SIGNAL.get(),
+                KsDistantSignalBlockEntity::serverTick);
     }
 
     @Override
