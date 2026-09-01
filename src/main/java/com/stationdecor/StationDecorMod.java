@@ -1,6 +1,7 @@
 package com.stationdecor;
 
 import com.stationdecor.compat.create.CreateCompat;
+import com.stationdecor.compat.create.CreateDisplayRegistry;
 import com.stationdecor.config.StationDecorConfig;
 import com.stationdecor.registry.ModBlockEntities;
 import com.stationdecor.registry.ModBlocks;
@@ -32,6 +33,14 @@ public class StationDecorMod {
         ModCreativeTabs.TABS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, StationDecorConfig.SPEC);
+
+        // Muss bereits hier im Konstruktor passieren (nicht erst in FMLCommonSetupEvent),
+        // da NeoForge Registry-Einträge für Creates DisplaySource-/DisplayTarget-Registries
+        // über das reguläre RegisterEvent sammelt, das vor Common Setup feuert. Siehe
+        // CreateDisplayRegistry für den Grund, warum diese Registrierung überhaupt nötig ist.
+        if (ModList.get().isLoaded("create")) {
+            CreateDisplayRegistry.register(modEventBus);
+        }
 
         modEventBus.addListener(this::commonSetup);
     }

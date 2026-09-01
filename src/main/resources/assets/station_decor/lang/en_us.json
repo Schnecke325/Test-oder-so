@@ -6,6 +6,8 @@
   "block.station_decor.ks_main_signal": "Ks Home Signal",
   "block.station_decor.ks_distant_signal": "Ks Distant Signal",
   "block.station_decor.ks_multi_section_signal": "Ks Multi-Section Signal",
+  "station_decor.display_source.ks_main_signal_aspect": "Ks Home Signal Aspect",
+  "station_decor.display_source.ks_multi_section_signal_aspect": "Ks Multi-Section Signal Aspect",
   "gui.station_decor.obj_display.destination": "Dest. %s",
   "gui.station_decor.obj_display.not_implemented": "Ticket purchase not available yet",
   "config.station_decor.title": "Station Decor Settings"

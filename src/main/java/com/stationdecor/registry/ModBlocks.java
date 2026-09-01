@@ -44,24 +44,21 @@ public final class ModBlocks {
                     .mapColor(MapColor.METAL)
                     .strength(3.0f)
                     .sound(SoundType.METAL)
-                    .noOcclusion()
-                    .lightLevel(state -> 10)));
+                    .noOcclusion()));
 
     public static final DeferredBlock<KsDistantSignalBlock> KS_DISTANT_SIGNAL = BLOCKS.register("ks_distant_signal",
             () -> new KsDistantSignalBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(3.0f)
                     .sound(SoundType.METAL)
-                    .noOcclusion()
-                    .lightLevel(state -> 10)));
+                    .noOcclusion()));
 
     public static final DeferredBlock<KsMultiSectionSignalBlock> KS_MULTI_SECTION_SIGNAL = BLOCKS.register("ks_multi_section_signal",
             () -> new KsMultiSectionSignalBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(3.0f)
                     .sound(SoundType.METAL)
-                    .noOcclusion()
-                    .lightLevel(state -> 10)));
+                    .noOcclusion()));
 
     private ModBlocks() {
     }

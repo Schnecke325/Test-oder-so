@@ -152,8 +152,67 @@ Display-Link-Bindung beim nächsten Test noch nicht greift - bitte in dem Fall
 wieder ein frisches `logs/latest.log` teilen, das eine tatsächliche
 Bindung+Auslösung eines Display Links an `ks_distant_signal` abdeckt.
 
-Weiterhin aktiv: Alle drei Signalblöcke emittieren Licht
-(`lightLevel(state -> 10)`), damit sie im Dunkeln sichtbar leuchten.
+## Root Cause gefunden: Warum Display Link nie funktioniert hat
+
+Beim Untersuchen, warum das Vorsignal (rein Display-Link-gesteuert) nie
+aktualisiert, während Haupt-/Mehrabschnittssignal nur wegen ihres **eigenen**
+lokalen Gleissignal-Scans funktionieren (der komplett unabhängig vom Display
+Link läuft), habe ich Creates Quellcode (`mc1.21.1/dev`-Branch) direkt
+durchsucht. Ergebnis: Unsere `DisplaySource`-Implementierungen
+(`KsMainSignalDisplaySource`, `KsMultiSectionSignalDisplaySource`) wurden nur
+über `DisplaySource.BY_BLOCK.add(block, instanz)` einem Block zugeordnet -
+sie wurden aber **nie** als echter Eintrag in Creates eigener Registry
+(`CreateBuiltInRegistries.DISPLAY_SOURCE`, eine normale NeoForge-Registry)
+registriert. Ohne diese Registrierung liefert `getId()` auf unseren Quellen
+`null`, wodurch `getName()` - beim Öffnen des Display-Link-Bildschirms zum
+Aufbau der Quellen-Auswahlliste aufgerufen - mit einer
+NullPointerException fehlschlägt bzw. unsere Quelle dort erst gar nicht
+sauber auswählbar ist. Damit ließ sich "Ks-Hauptsignal Begriff" nie
+tatsächlich als aktive Quelle für einen Display Link auswählen - der Link
+hatte also schlicht nie eine gültige Datenquelle, unabhängig davon, wie
+richtig Ziel-Seite (`acceptLine`) implementiert war.
+
+**Fix:** Neue Klasse `CreateDisplayRegistry` registriert unsere
+`DisplaySource`-/`DisplayTarget`-Instanzen jetzt zusätzlich als echte
+Registry-Einträge (`DeferredRegister<DisplaySource>`/`DeferredRegister<DisplayTarget>`
+gegen `CreateRegistries.DISPLAY_SOURCE`/`DISPLAY_TARGET`), bereits im
+Mod-Konstruktor (muss vor `FMLCommonSetupEvent` passieren, da NeoForge
+Registry-Einträge über das reguläre `RegisterEvent` sammelt). `CreateCompat.register()`
+ordnet diese jetzt registrierten Instanzen weiterhin den Blöcken zu. Fehlende
+Übersetzungen für die Anzeigenamen (`station_decor.display_source.ks_main_signal_aspect`
+usw.) wurden ebenfalls ergänzt. Das sollte das Vorsignal-Problem beheben -
+bitte im Display-Link-Bildschirm am Hauptsignal/Mehrabschnittssignal jetzt
+gezielt "Ks-Hauptsignal Begriff" bzw. "Ks-Mehrabschnittssignal Begriff" als
+Quelle auswählen (falls dort noch ein anderer Eintrag wie "Redstonestärke"
+aktiv war, wurde dieser genutzt statt unserer eigenen Quelle).
+
+## Nur die Lampe leuchtet, nicht der ganze Signalmast
+
+Bisher machte `lightLevel(state -> 10)` den **gesamten Block** zur
+Lichtquelle - Vanilla-Blocklicht lässt sich nicht auf einzelne
+Modell-Elemente/Flächen beschränken, wodurch Mast und Signalkopf gleich hell
+wirkten. Jetzt zeichnet ein zusätzlicher `BlockEntityRenderer`
+(`SignalAspectLampRenderer`/`SignalLampRenderHelper`) nur die Lampenfläche
+(Nord-/Südseite des `head`-Elements) mit fest voller Helligkeit,
+unabhängig vom Umgebungslicht - der Mast bleibt normal vom Umgebungslicht
+abhängig (dunkel bei Nacht). Alle drei Signalblöcke haben dafür jetzt eine
+BlockEntity, auch `ks_distant_signal` (vorher keine) - rein technisch, ohne
+eigene Scan-Logik. `lightLevel` wurde entfernt (kein tatsächlicher
+Licht-Emitter mehr, rein optischer Effekt).
+
+## Fahrkartenautomat: Form stimmt, Textur sieht verzerrt aus
+
+Kein Rendering-Bug: Das gelieferte Modell (`db_fahrkartenautomat.obj`) nutzt
+UV-Koordinaten, die für die ursprüngliche, nie hochgeladene
+`ticket_machine_db_new.png` (vermutlich ein größeres Textur-Atlas, das
+mehrere Bereiche für unterschiedliche Teile des Automaten enthält) gedacht
+waren. Unser 32×32-Platzhalter deckt nur einen kleinen Ausschnitt davon ab
+(UV-Bereich u: 0–0,53, v: 0,40–1,0) und wird auf diesen Ausschnitt gequetscht
+- das sieht dadurch verzerrt/wie eine einfarbige Fläche aus, nicht wie ein
+Rendering-Fehler. Um das richtig zu fixen, bräuchte ich die echte
+`ticket_machine_db_new.png` (falls noch vorhanden) - einfach unter
+`textures/block/ticket_machine.png` ablegen, dann passt die Zuordnung
+automatisch.
 
 ## Konfiguration
 

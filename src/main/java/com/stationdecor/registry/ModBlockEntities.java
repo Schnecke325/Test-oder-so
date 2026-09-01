@@ -4,6 +4,7 @@ import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlockEntity;
 import com.stationdecor.block.obj.ObjDisplayBlockEntity;
 import com.stationdecor.block.seat.SeatBlockEntity;
+import com.stationdecor.block.signal.KsDistantSignalBlockEntity;
 import com.stationdecor.block.signal.KsMainSignalBlockEntity;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +32,10 @@ public final class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsMainSignalBlockEntity>> KS_MAIN_SIGNAL =
             BLOCK_ENTITIES.register("ks_main_signal", () -> BlockEntityType.Builder.of(
                     KsMainSignalBlockEntity::new, ModBlocks.KS_MAIN_SIGNAL.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsDistantSignalBlockEntity>> KS_DISTANT_SIGNAL =
+            BLOCK_ENTITIES.register("ks_distant_signal", () -> BlockEntityType.Builder.of(
+                    KsDistantSignalBlockEntity::new, ModBlocks.KS_DISTANT_SIGNAL.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsMultiSectionSignalBlockEntity>> KS_MULTI_SECTION_SIGNAL =
             BLOCK_ENTITIES.register("ks_multi_section_signal", () -> BlockEntityType.Builder.of(

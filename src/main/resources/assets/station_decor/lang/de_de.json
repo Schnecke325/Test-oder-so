@@ -6,6 +6,8 @@
   "block.station_decor.ks_main_signal": "Ks-Hauptsignal",
   "block.station_decor.ks_distant_signal": "Ks-Vorsignal",
   "block.station_decor.ks_multi_section_signal": "Ks-Mehrabschnittssignal",
+  "station_decor.display_source.ks_main_signal_aspect": "Ks-Hauptsignal Begriff",
+  "station_decor.display_source.ks_multi_section_signal_aspect": "Ks-Mehrabschnittssignal Begriff",
   "gui.station_decor.obj_display.destination": "Ziel %s",
   "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"

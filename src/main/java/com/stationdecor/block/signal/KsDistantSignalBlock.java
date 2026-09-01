@@ -8,8 +8,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -17,15 +20,20 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Ks-Vorsignal. Analog zu {@link KsMainSignalBlock}, zeigt aber
- * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2.
+ * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2. Hat (anders
+ * als früher) jetzt eine rein technische BlockEntity ohne eigene Scan-Logik -
+ * nur damit die Lampenfläche unabhängig vom Umgebungslicht gezeichnet werden
+ * kann, siehe {@link KsDistantSignalBlockEntity}.
  */
-public class KsDistantSignalBlock extends HorizontalDirectionalBlock {
+public class KsDistantSignalBlock extends BaseEntityBlock {
 
     public static final MapCodec<KsDistantSignalBlock> CODEC = simpleCodec(KsDistantSignalBlock::new);
     public static final EnumProperty<DistantSignalAspect> ASPECT = EnumProperty.create("aspect", DistantSignalAspect.class);
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     private static final VoxelShape SHAPE = box(6, 0, 6, 10, 16, 10);
 
@@ -52,6 +60,17 @@ public class KsDistantSignalBlock extends HorizontalDirectionalBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new KsDistantSignalBlockEntity(pos, state);
     }
 
     @Override

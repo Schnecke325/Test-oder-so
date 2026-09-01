@@ -25,12 +25,16 @@ public final class CreateCompat {
     }
 
     public static void register() {
-        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_MAIN_SIGNAL.get(), new KsMainSignalDisplayTarget());
-        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_DISTANT_SIGNAL.get(), new KsDistantSignalDisplayTarget());
-        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_MULTI_SECTION_SIGNAL.get(), new KsMultiSectionSignalDisplayTarget());
+        // Die eigentlichen DisplaySource-/DisplayTarget-Instanzen werden bereits im
+        // Mod-Konstruktor über CreateDisplayRegistry als echte Registry-Einträge
+        // registriert (zwingend nötig, siehe dort) - hier werden sie nur noch den
+        // jeweiligen Blöcken zugeordnet.
+        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_MAIN_SIGNAL.get(), CreateDisplayRegistry.KS_MAIN_SIGNAL_TARGET.get());
+        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_DISTANT_SIGNAL.get(), CreateDisplayRegistry.KS_DISTANT_SIGNAL_TARGET.get());
+        DisplayTarget.BY_BLOCK.register(ModBlocks.KS_MULTI_SECTION_SIGNAL.get(), CreateDisplayRegistry.KS_MULTI_SECTION_SIGNAL_TARGET.get());
 
-        DisplaySource.BY_BLOCK.add(ModBlocks.KS_MAIN_SIGNAL.get(), new KsMainSignalDisplaySource());
-        DisplaySource.BY_BLOCK.add(ModBlocks.KS_MULTI_SECTION_SIGNAL.get(), new KsMultiSectionSignalDisplaySource());
+        DisplaySource.BY_BLOCK.add(ModBlocks.KS_MAIN_SIGNAL.get(), CreateDisplayRegistry.KS_MAIN_SIGNAL_SOURCE.get());
+        DisplaySource.BY_BLOCK.add(ModBlocks.KS_MULTI_SECTION_SIGNAL.get(), CreateDisplayRegistry.KS_MULTI_SECTION_SIGNAL_SOURCE.get());
     }
 
     /**
