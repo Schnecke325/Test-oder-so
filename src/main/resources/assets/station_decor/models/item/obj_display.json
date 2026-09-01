@@ -1,3 +1,3 @@
 {
-  "parent": "station_decor:block/obj_display"
+  "parent": "station_decor:block/obj_display_render"
 }
