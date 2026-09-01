@@ -137,7 +137,9 @@ public class SeatBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        float yaw = blockEntity.getRotationDegrees();
+        // +180°: die Modellrotation zeigt die Ausrichtung der Rückenlehne, der
+        // Spieler soll aber von der Lehne weg blicken, nicht auf sie drauf.
+        float yaw = blockEntity.getRotationDegrees() + 180f;
         SeatEntity seat;
         if (existing.isEmpty()) {
             seat = SeatEntity.create(level, pos, yaw);

@@ -1,11 +1,15 @@
 package com.stationdecor.block.obj;
 
 import com.mojang.serialization.MapCodec;
+import com.stationdecor.block.rotation.RotationUtil;
+import com.stationdecor.config.StationDecorConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -20,10 +24,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Dekorativer Block, der über eine {@link BlockEntityRenderer} als OBJ-Modell
- * dargestellt wird. Aktuell bewusst ohne Rotation (fixe Ausrichtung), um beim
- * Debuggen des Modell-Ladens möglichst wenig bewegliche Teile zu haben - wird
- * wieder ergänzt, sobald das Modell zuverlässig rendert. Ein Rechtsklick
- * öffnet ein einfaches Platzhalter-GUI.
+ * dargestellt wird - frei rotierbar wie Sitzblock/Bodenmarkierung/Signale
+ * (siehe {@code AbstractRotatableBlockEntity}). Ein Rechtsklick öffnet ein
+ * einfaches Platzhalter-GUI.
  */
 public class ObjDisplayBlock extends BaseEntityBlock {
 
@@ -65,6 +68,17 @@ public class ObjDisplayBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ObjDisplayBlockEntity(pos, state);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level.isClientSide || !(level.getBlockEntity(pos) instanceof ObjDisplayBlockEntity blockEntity)) {
+            return;
+        }
+        int steps = StationDecorConfig.OBJ_BLOCK_ROTATION_STEPS.get();
+        float yaw = placer != null ? placer.getYRot() : 0f;
+        blockEntity.setRotation(RotationUtil.snapToIndex(yaw, steps), steps);
     }
 
     @Override

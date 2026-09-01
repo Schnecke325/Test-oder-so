@@ -2,6 +2,7 @@ package com.stationdecor.client;
 
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlock;
+import com.stationdecor.block.obj.ObjDisplayBlock;
 import com.stationdecor.block.rotation.RotationUtil;
 import com.stationdecor.block.seat.SeatBlock;
 import com.stationdecor.block.signal.KsDistantSignalBlock;
@@ -27,8 +28,6 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
  * eine Vorhersage anhand der reinen Blickrichtung - beim Sitzblock kann die
  * tatsächliche Platzierung abweichen, wenn "seatBlockAutoAlign" greift und
  * ein angrenzender Sitzblock gefunden wird (siehe {@code SeatBlock#setPlacedBy}).
- * Der Fahrkartenautomat ist bewusst ausgenommen, da seine Rotation beim
- * Platzieren aktuell noch fest auf 0° steht (siehe README).
  */
 @EventBusSubscriber(modid = StationDecorMod.MOD_ID, value = Dist.CLIENT)
 public final class RotationHudOverlay {
@@ -65,6 +64,9 @@ public final class RotationHudOverlay {
             return -1;
         }
         Block block = blockItem.getBlock();
+        if (block instanceof ObjDisplayBlock) {
+            return StationDecorConfig.OBJ_BLOCK_ROTATION_STEPS.get();
+        }
         if (block instanceof SeatBlock) {
             return StationDecorConfig.SEAT_BLOCK_ROTATION_STEPS.get();
         }

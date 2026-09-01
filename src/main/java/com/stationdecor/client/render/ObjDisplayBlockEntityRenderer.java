@@ -10,10 +10,9 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Zeichnet den OBJ-Anzeigeblock (Fahrkartenautomat). Aktuell mit fester
- * Rotation (0°) - wird wieder frei drehbar, sobald das Modell-Laden
- * zuverlässig funktioniert (siehe README). Das eigentliche OBJ-Modell wird
- * als "additional model" registriert, siehe {@link com.stationdecor.client.ClientSetup}.
+ * Zeichnet den OBJ-Anzeigeblock (Fahrkartenautomat), frei rotierbar. Das
+ * eigentliche OBJ-Modell wird als "additional model" registriert, siehe
+ * {@link com.stationdecor.client.ClientSetup}.
  */
 public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDisplayBlockEntity> {
 
@@ -44,7 +43,7 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
     @Override
     public void render(ObjDisplayBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                         MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        RotatedObjRenderHelper.render(MODEL, 0f, MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
+        RotatedObjRenderHelper.render(MODEL, blockEntity.getRotationDegrees(), MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
                 poseStack, bufferSource, packedLight, packedOverlay);
     }
 }

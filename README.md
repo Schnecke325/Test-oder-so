@@ -13,10 +13,9 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   breit × 3 Blöcke hoch × ~1 Block tief). Die Kollisionsbox deckt bewusst nur
   den Platzierungsblock ab – der optisch überstehende Teil ist begehbar
   (Mehrblock-Kollision wäre ein deutlich größeres Feature).
-- **Aktuell bewusst ohne Rotation** (feste Ausrichtung) und mit einem stark
-  vereinfachten GUI (nur ein grauer Kasten mit "Soon™", keine Knöpfe/Slots) –
-  das ist ein Zwischenschritt, um das Laden des OBJ-Modells isoliert zu
-  debuggen (siehe „Bekannte Einschränkungen"). Rotation und die richtige GUI
+- **Frei rotierbar** (wie Sitzblock/Bodenmarkierung/Signale, Config-Key
+  `objBlockRotationSteps`) und mit einem stark vereinfachten GUI (nur ein
+  grauer Kasten mit "Soon™", keine Knöpfe/Slots). Die richtige GUI
   (Zielknöpfe, Münzslot für eine spätere **Create: Numismatics**-Zahlung)
   kommen zurück, sobald das Modell zuverlässig rendert.
 
@@ -293,16 +292,13 @@ auf 4/8/16 – "8" ergibt z.B. 45°-Schritte, weil `360° / 8 = 45°`).
 Damit das Grundgerüst sofort baut und im Spiel testbar ist, wurden
 Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
 
-- **3D-Modelle:** `seat.obj`/`.mtl` und `floor_marking.obj`/`.mtl` sind
-  einfache Platzhaltergeometrien, keine fertigen Möbelstücke. Der
-  Fahrkartenautomat (`db_fahrkartenautomat.obj`/`.mtl`) ist dagegen bereits
-  das gelieferte, echte Modell. Ersetzen läuft über
-  `models/block/<name>_render.json` (Pfad zum `.obj`, Textur-Zuordnung).
-- **Textur des Fahrkartenautomaten fehlt noch:** Die `.mtl`-Datei referenzierte
-  ursprünglich `ticket_machine_db_new.png`, die nicht mit hochgeladen wurde.
-  Ich habe einen simplen 32×32-Platzhalter unter
-  `textures/block/ticket_machine.png` erzeugt. Die echte Textur einfach unter
-  gleichem Pfad/Namen ablegen, sobald verfügbar.
+- **3D-Modelle:** `floor_marking.obj`/`.mtl` ist noch eine einfache
+  Platzhaltergeometrie, kein fertiges Möbelstück. Der Fahrkartenautomat
+  (`db_fahrkartenautomat.obj`/`.mtl`) und der Sitzblock (`seat_render.json`,
+  ein vanilla Mehrelement-Blockmodell statt OBJ) sind bereits die
+  gelieferten, echten Modelle inklusive echter Texturen
+  (`ticket_machine.png` 256×256, `seat.png` 64×64). Ersetzen läuft über
+  `models/block/<name>_render.json` (Pfad zum Modell, Textur-Zuordnung).
 - **Root Cause gefunden und behoben (dank `logs/latest.log`):** Der Grund
   für den magenta/schwarzen "Missing Model"-Würfel war die
   `map_Kd`-Textur-Referenz gar nicht, sondern der **Dateiname** des Modells.
@@ -314,12 +310,12 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
   in `obj_display_render.json`) - das war der eigentliche Bug, nicht das
   `#texture0`-Token-Problem von vorher (das war trotzdem eine reale,
   separate Verbesserung).
-- **Aktuell weiterhin bewusst reduziert:** Rotation (feste 0°-Ausrichtung),
-  Inventar-Slot und die echte GUI (Zielknöpfe, Münzslot) wurden für das
-  Debugging entfernt und sind noch nicht zurückgebaut - sag Bescheid, wenn
-  das wieder rein soll, jetzt wo die eigentliche Ursache behoben ist.
-- **Weitere Texturen:** `textures/block/seat.png` und `floor_marking.png`
-  sind simple 16×16-Platzhalter.
+- **Rotation ist wieder aktiv** (siehe oben) - Inventar-Slot und die echte
+  GUI (Zielknöpfe, Münzslot) wurden für das Debugging entfernt und sind noch
+  nicht zurückgebaut - sag Bescheid, wenn das wieder rein soll.
+- **Weitere Texturen:** `textures/block/floor_marking.png` ist ein simpler
+  16×16-Platzhalter. `seat.png` (64×64) und `ticket_machine.png` (256×256)
+  sind mittlerweile die echten, gelieferten Texturen.
 - **Kollisionsbox:** Aus Einfachheitsgründen ist die Hitbox beider Blöcke
   rotationsunabhängig (ein fester, leicht verkleinerter Würfel). Eine exakt
   der 22,5°-Rotation folgende Box wäre nicht mehr achsenparallel und wurde
