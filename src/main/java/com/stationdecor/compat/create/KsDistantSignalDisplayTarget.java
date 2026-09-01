@@ -2,6 +2,7 @@ package com.stationdecor.compat.create;
 
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.target.SingleLineDisplayTarget;
+import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.signal.DistantSignalAspect;
 import com.stationdecor.block.signal.KsDistantSignalBlock;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,10 @@ public class KsDistantSignalDisplayTarget extends SingleLineDisplayTarget {
 
     @Override
     protected void acceptLine(MutableComponent text, DisplayLinkContext context) {
-        DistantSignalAspect aspect = parseAspect(text.getString());
+        String raw = text.getString();
+        DistantSignalAspect aspect = parseAspect(raw);
+        StationDecorMod.LOGGER.info("Ks-Vorsignal bei {} hat \"{}\" per Display Link empfangen -> {}",
+                context.getTargetPos(), raw, aspect);
         if (aspect == null) {
             return;
         }
@@ -36,12 +40,16 @@ public class KsDistantSignalDisplayTarget extends SingleLineDisplayTarget {
         return 4;
     }
 
+    /**
+     * Bewusst großzügig geparst, siehe {@link KsMainSignalDisplayTarget#parseAspect}.
+     * Was tatsächlich ankommt, steht im Log (siehe {@code acceptLine}).
+     */
     private static DistantSignalAspect parseAspect(String rawText) {
         String value = rawText.trim().toLowerCase();
         return switch (value) {
-            case "0", "vr0" -> DistantSignalAspect.VR0;
-            case "1", "vr1" -> DistantSignalAspect.VR1;
-            case "2", "vr2" -> DistantSignalAspect.VR2;
+            case "0", "vr0", "halt", "red", "stop" -> DistantSignalAspect.VR0;
+            case "1", "vr1", "fahrt", "green", "go", "proceed" -> DistantSignalAspect.VR1;
+            case "2", "vr2", "yellow" -> DistantSignalAspect.VR2;
             default -> null;
         };
     }

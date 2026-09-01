@@ -67,11 +67,13 @@ public class KsMultiSectionSignalBlockEntity extends BlockEntity {
             localSection = CreateCompat.readTrackSignalBelow(level, worldPosition, MAX_SCAN_DISTANCE);
         }
 
+        // Kombinationslogik (per Nutzervorgabe): das Gleissignal unter dem Block entscheidet
+        // ausschließlich über Halt/nicht-Halt. "Halt erwarten" tritt NUR ein, wenn das per
+        // Display Link gebundene Signal davor Halt zeigt - ein lokales "Vorsicht"/YELLOW
+        // allein löst es nicht mehr aus.
         CombinedSignalAspect newAspect;
         if (localSection == SectionState.HALT) {
             newAspect = CombinedSignalAspect.HALT;
-        } else if (localSection == SectionState.HALT_ERWARTEN) {
-            newAspect = CombinedSignalAspect.HALT_ERWARTEN;
         } else if (upstreamHalt) {
             newAspect = CombinedSignalAspect.HALT_ERWARTEN;
         } else {

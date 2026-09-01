@@ -102,14 +102,47 @@ er aktiv zwei Quellen kombiniert:
    (`halt`/`hp0`/`vr0`/`0`/`red`/`stop`), merkt sich das Mehrabschnittssignal
    das als "Vorwarnung".
 
-**Kombinationslogik** (siehe `KsMultiSectionSignalBlockEntity#recomputeAspect`):
-Gleissignal zeigt Halt → **Halt**. Sonst, wenn Gleissignal Halt erwarten
-zeigt ODER das gebundene Signal davor Halt zeigt → **Halt erwarten**. Sonst
-→ **Fahrt**. Ein bereits "Halt erwarten" zeigendes Signal propagiert das
-selbst nicht weiter als Vorwarnung an das Signal davor (entspricht realer
-Signallogik - die Vorwarnung gilt nur für den unmittelbar nächsten
-Halt-Begriff). Diese Logik ist eine bewusste Design-Entscheidung meinerseits
-bei mehrdeutiger Spezifikation - leicht anpassbar, falls anders gewünscht.
+**Kombinationslogik** (siehe `KsMultiSectionSignalBlockEntity#recomputeAspect`,
+nach Nutzer-Feedback angepasst): Gleissignal zeigt Halt → **Halt** (immer,
+unabhängig vom Link). Sonst, wenn das gebundene Signal davor Halt zeigt →
+**Halt erwarten**. Sonst → **Fahrt**. "Halt erwarten" tritt also **nur** ein,
+wenn das verlinkte Signal Halt zeigt - ein lokales Gleissignal-YELLOW allein
+löst es nicht mehr aus. Ein bereits "Halt erwarten" zeigendes Signal
+propagiert das selbst nicht weiter als Vorwarnung an das Signal davor
+(entspricht realer Signallogik - die Vorwarnung gilt nur für den unmittelbar
+nächsten Halt-Begriff).
+
+## Bekannter offener Bug: Ks-Hauptsignal/Vorsignal aktualisieren nicht per Display Link
+
+Laut Rückmeldung nach dem ersten In-Game-Test bleiben `ks_main_signal` und
+`ks_distant_signal` dauerhaft auf ihrem Startbegriff (Hp0/Vr0), auch wenn ein
+Display Link gebunden ist. Das Mehrabschnittssignal reagiert dagegen korrekt
+auf sein lokal gescanntes Gleissignal - das läuft aber komplett unabhängig
+vom Display-Link-Mechanismus (direkter `instanceof SignalBlockEntity`-Scan),
+beweist also nicht, dass Display Links bei uns grundsätzlich funktionieren.
+
+Da sich das ohne laufenden Client/Create-Setup nicht reproduzieren lässt,
+wurde in allen drei `DisplayTarget`-Implementierungen (`compat.create`) ein
+Log-Eintrag ergänzt, der bei jedem Empfang den rohen Text protokolliert:
+
+```
+Ks-Hauptsignal bei BlockPos{...} hat "..." per Display Link empfangen -> ...
+```
+
+**Bitte nach dem nächsten Test in `logs/latest.log` nach "Display Link
+empfangen" suchen:**
+- **Taucht die Zeile gar nicht auf** → der Display Link erreicht unser
+  `DisplayTarget` nie (Registrierungs-/Bindungsproblem, z.B. Create erkennt
+  den Block nicht als gültiges Ziel).
+- **Taucht sie auf, aber mit unerwartetem Text** (z.B. einer Redstone-Stärke
+  wie "15" statt "hp0") → das ist ein reines Parsing-Problem, leicht zu
+  fixen, sobald klar ist, welches Format die gebundene Quelle liefert. Die
+  Parser akzeptieren bereits `hp0`/`0`/`halt`/`red`/`stop` usw. (großzügig),
+  aber eben nicht beliebigen Text.
+
+Zusätzlich hinzugefügt (unabhängig vom obigen Bug): Alle drei Signalblöcke
+emittieren jetzt Licht (`lightLevel(state -> 10)`), damit sie im Dunkeln
+tatsächlich sichtbar leuchten.
 
 ## Konfiguration
 

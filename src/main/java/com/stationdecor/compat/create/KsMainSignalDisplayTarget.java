@@ -2,6 +2,7 @@ package com.stationdecor.compat.create;
 
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.target.SingleLineDisplayTarget;
+import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.signal.KsMainSignalBlock;
 import com.stationdecor.block.signal.MainSignalAspect;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,10 @@ public class KsMainSignalDisplayTarget extends SingleLineDisplayTarget {
 
     @Override
     protected void acceptLine(MutableComponent text, DisplayLinkContext context) {
-        MainSignalAspect aspect = parseAspect(text.getString());
+        String raw = text.getString();
+        MainSignalAspect aspect = parseAspect(raw);
+        StationDecorMod.LOGGER.info("Ks-Hauptsignal bei {} hat \"{}\" per Display Link empfangen -> {}",
+                context.getTargetPos(), raw, aspect);
         if (aspect == null) {
             return;
         }
@@ -36,12 +40,18 @@ public class KsMainSignalDisplayTarget extends SingleLineDisplayTarget {
         return 4;
     }
 
+    /**
+     * Bewusst großzügig: akzeptiert neben "hp0"/"hp1"/"hp2" auch Zahlen und
+     * gängige Klartext-Begriffe, falls die gebundene Quelle (z.B. Hebel,
+     * Redstone Link) etwas anderes als unsere eigene "hpX"-Notation liefert.
+     * Was tatsächlich ankommt, steht im Log (siehe {@code acceptLine}).
+     */
     private static MainSignalAspect parseAspect(String rawText) {
         String value = rawText.trim().toLowerCase();
         return switch (value) {
-            case "0", "hp0" -> MainSignalAspect.HP0;
-            case "1", "hp1" -> MainSignalAspect.HP1;
-            case "2", "hp2" -> MainSignalAspect.HP2;
+            case "0", "hp0", "halt", "red", "stop" -> MainSignalAspect.HP0;
+            case "1", "hp1", "fahrt", "green", "go", "proceed" -> MainSignalAspect.HP1;
+            case "2", "hp2", "yellow" -> MainSignalAspect.HP2;
             default -> null;
         };
     }

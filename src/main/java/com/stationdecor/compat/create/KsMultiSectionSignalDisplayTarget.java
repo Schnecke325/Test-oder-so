@@ -2,6 +2,7 @@ package com.stationdecor.compat.create;
 
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.target.SingleLineDisplayTarget;
+import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlockEntity;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,7 +25,10 @@ public class KsMultiSectionSignalDisplayTarget extends SingleLineDisplayTarget {
 
     @Override
     protected void acceptLine(MutableComponent text, DisplayLinkContext context) {
-        boolean halt = HALT_VALUES.contains(text.getString().trim().toLowerCase());
+        String raw = text.getString();
+        boolean halt = HALT_VALUES.contains(raw.trim().toLowerCase());
+        StationDecorMod.LOGGER.info("Ks-Mehrabschnittssignal bei {} hat \"{}\" per Display Link empfangen -> halt={}",
+                context.getTargetPos(), raw, halt);
         BlockEntity be = context.getTargetBlockEntity();
         if (be instanceof KsMultiSectionSignalBlockEntity signal) {
             signal.setUpstreamHalt(halt);
