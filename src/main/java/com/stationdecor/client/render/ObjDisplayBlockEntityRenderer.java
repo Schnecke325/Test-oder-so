@@ -21,12 +21,22 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
             ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/obj_display_render"));
 
     /**
-     * Die aktuelle Modellversion (Blockbench 5.1.6, hochgeladen) hat ihren
-     * Boden bereits bei Y=0 (Bounding Box Y: 0..3, X: -1..1, Z: -0.56..0.5) -
-     * anders als die vorherige Version (Y: -1..2), die einen Versatz von +1
-     * brauchte. X/Z sind bereits mittig zentriert.
+     * Die aktuelle Modellversion (Blockbench 5.1.6) hat ihren Boden bei Y=0
+     * (Bounding Box Y: 0..3, X: -1..1, Z: -0.56..0.5) - anders als die
+     * vorherige Version (Y: -1..2), die einen Versatz von +1 brauchte.
      */
     private static final float MODEL_Y_OFFSET = 0f;
+
+    /**
+     * {@link RotatedObjRenderHelper#render} setzt den Modell-Nullpunkt
+     * standardmäßig auf die Block-ECKE (0,0), passend für gewöhnliche
+     * Modelle mit lokalem X-Bereich 0..1. Dieses Modell ist aber 2 Blöcke
+     * breit (lokal X: -1..1, Mitte also bei lokal X=0) - ohne diesen Versatz
+     * landet die Blockmitte an der Block-Ecke statt an der Block-Mitte, und
+     * der platzierte (anklickbare) Block sitzt sichtbar am Rand des Modells
+     * statt mittig darin.
+     */
+    private static final float MODEL_X_OFFSET = 0.5f;
 
     public ObjDisplayBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -34,7 +44,7 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
     @Override
     public void render(ObjDisplayBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                         MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        RotatedObjRenderHelper.render(MODEL, 0f, 0f, MODEL_Y_OFFSET, 0f,
+        RotatedObjRenderHelper.render(MODEL, 0f, MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
                 poseStack, bufferSource, packedLight, packedOverlay);
     }
 }
