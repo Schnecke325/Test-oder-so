@@ -38,7 +38,7 @@ public class SeatBlock extends BaseEntityBlock {
 
     public static final MapCodec<SeatBlock> CODEC = simpleCodec(SeatBlock::new);
 
-    private static final VoxelShape SHAPE = box(2, 0, 2, 14, 10, 14);
+    private static final VoxelShape SHAPE = box(2, 0, 2, 14, 8, 14);
 
     public SeatBlock(BlockBehaviour.Properties properties) {
         super(properties);
