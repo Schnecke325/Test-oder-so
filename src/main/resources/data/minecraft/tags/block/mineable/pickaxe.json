@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "station_decor:obj_display"
+    "station_decor:obj_display",
+    "station_decor:ks_main_signal",
+    "station_decor:ks_distant_signal"
   ]
 }

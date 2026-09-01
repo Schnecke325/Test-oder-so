@@ -1,6 +1,7 @@
 # Station Decor
 
-NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke.
+NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke
+sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 
 ## Enthaltene Blöcke
 
@@ -48,6 +49,34 @@ NeoForge-Mod für Minecraft **1.21.1**. Enthält alle drei geplanten Blöcke.
 - Technischer Hinweis: Das `RenderHighlightEvent.Block` von NeoForge ist in
   1.21.1 nicht abbrechbar – die 2 Trennlinien werden daher zusätzlich zur
   vanilla Auswahlbox gezeichnet, nicht anstelle davon.
+
+### 4. `station_decor:ks_main_signal` – Ks-Hauptsignal & `station_decor:ks_distant_signal` – Ks-Vorsignal
+
+- Bewusst **ohne** BlockEntity/OBJ-Renderer gebaut (anders als Block 1-3):
+  der gezeigte Signalbegriff ist eine normale BlockState-Property
+  (`aspect`, dazu `facing`), wie bei einer Redstone-Lampe. Das ist der
+  robusteste Standardweg und Vanilla übernimmt die komplette
+  Client-Synchronisation automatisch - kein eigenes Sync-/Renderer-Risiko
+  wie beim Fahrkartenautomaten.
+- Hauptsignal zeigt **Hp0** (Halt), **Hp1** (Fahrt), **Hp2** (Fahrt mit
+  Geschwindigkeitsbeschränkung). Vorsignal zeigt **Vr0/Vr1/Vr2** analog.
+- Rechtsklick schaltet manuell zum nächsten Signalbegriff (zum Testen ohne
+  Create). Beim Platzieren richtet sich der Mast wie ein Ofen zur
+  Blickrichtung des Spielers aus (4 Himmelsrichtungen, keine freie Rotation).
+- **Create: Display Link-Kompatibilität** (wie bei Create's Nixie Tubes):
+  Beide Blöcke registrieren sich als `DisplayTarget`
+  (`com.simibubi.create.api.behaviour.display.DisplayTarget`, siehe
+  `com.stationdecor.compat.create`). Ein Display Link kann Text wie `hp0`,
+  `1` oder `Hp2` (bzw. `vr0`/`1`/`Vr2` beim Vorsignal) an das Signal senden,
+  um den gezeigten Begriff zu setzen.
+- **Create ist nur eine optionale, compile-time-only Abhängigkeit**
+  (`compileOnly` in `build.gradle`, siehe `create_version`/
+  `registrate_version` in `gradle.properties`). Ohne installiertes Create
+  funktionieren beide Blöcke ganz normal (nur eben ohne Display-Link-Bindung)
+  - die Compat-Klasse wird nur geladen, wenn
+  `ModList.get().isLoaded("create")` beim Start `true` liefert.
+- Platzhalter-Optik: einfache 16×16-Texturen mit 1-2 farbigen "Lampen"-Punkten
+  pro Signalbegriff (kein echtes Ks-Signal-Modell).
 
 ## Konfiguration
 

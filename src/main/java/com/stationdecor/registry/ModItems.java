@@ -21,6 +21,12 @@ public final class ModItems {
     public static final Supplier<FloorMarkingBlockItem> FLOOR_MARKING = ITEMS.register("floor_marking",
             () -> new FloorMarkingBlockItem(ModBlocks.FLOOR_MARKING.get(), new Item.Properties()));
 
+    public static final Supplier<BlockItem> KS_MAIN_SIGNAL = ITEMS.registerSimpleBlockItem(
+            "ks_main_signal", ModBlocks.KS_MAIN_SIGNAL, new Item.Properties());
+
+    public static final Supplier<BlockItem> KS_DISTANT_SIGNAL = ITEMS.registerSimpleBlockItem(
+            "ks_distant_signal", ModBlocks.KS_DISTANT_SIGNAL, new Item.Properties());
+
     private ModItems() {
     }
 }

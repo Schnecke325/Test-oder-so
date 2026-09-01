@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "aspect=hp0,facing=north": {
+      "model": "station_decor:block/ks_main_signal_hp0"
+    },
+    "aspect=hp0,facing=east": {
+      "model": "station_decor:block/ks_main_signal_hp0",
+      "y": 90
+    },
+    "aspect=hp0,facing=south": {
+      "model": "station_decor:block/ks_main_signal_hp0",
+      "y": 180
+    },
+    "aspect=hp0,facing=west": {
+      "model": "station_decor:block/ks_main_signal_hp0",
+      "y": 270
+    },
+    "aspect=hp1,facing=north": {
+      "model": "station_decor:block/ks_main_signal_hp1"
+    },
+    "aspect=hp1,facing=east": {
+      "model": "station_decor:block/ks_main_signal_hp1",
+      "y": 90
+    },
+    "aspect=hp1,facing=south": {
+      "model": "station_decor:block/ks_main_signal_hp1",
+      "y": 180
+    },
+    "aspect=hp1,facing=west": {
+      "model": "station_decor:block/ks_main_signal_hp1",
+      "y": 270
+    },
+    "aspect=hp2,facing=north": {
+      "model": "station_decor:block/ks_main_signal_hp2"
+    },
+    "aspect=hp2,facing=east": {
+      "model": "station_decor:block/ks_main_signal_hp2",
+      "y": 90
+    },
+    "aspect=hp2,facing=south": {
+      "model": "station_decor:block/ks_main_signal_hp2",
+      "y": 180
+    },
+    "aspect=hp2,facing=west": {
+      "model": "station_decor:block/ks_main_signal_hp2",
+      "y": 270
+    }
+  }
+}

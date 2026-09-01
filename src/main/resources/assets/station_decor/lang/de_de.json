@@ -3,6 +3,8 @@
   "block.station_decor.obj_display": "Fahrkartenautomat",
   "block.station_decor.seat": "Sitzbank",
   "block.station_decor.floor_marking": "Bodenmarkierung",
+  "block.station_decor.ks_main_signal": "Ks-Hauptsignal",
+  "block.station_decor.ks_distant_signal": "Ks-Vorsignal",
   "gui.station_decor.obj_display.destination": "Ziel %s",
   "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"

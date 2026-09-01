@@ -26,7 +26,10 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    // Create (optional compile-time dependency for the Display Link compat layer).
+    maven { url = "https://maven.createmod.net" }
+    // Registrate, required transitively to compile against Create's DisplayTarget class.
+    maven { url = "https://maven.ithundxr.dev/snapshots" }
 }
 
 base {
@@ -103,6 +106,14 @@ dependencies {
     // And its provides the option to then use net.minecraft as the group, and one of; client, server or joined as the module name, plus the game version as version.
     // For all intends and purposes: You can treat this dependency as if it is a normal library you would use.
     implementation "net.neoforged:neoforge:${neo_version}"
+
+    // Create (optional soft dependency, only used for the Display Link compat layer
+    // in com.stationdecor.compat.create). "slim" is Create's reduced compile-time
+    // artifact; transitive = false keeps its own large dependency tree out of our build.
+    // Registrate is required transitively because Create's DisplayTarget class references
+    // Registrate types (BlockBuilder/RegistryEntry) in its own method signatures.
+    compileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    compileOnly "com.tterrag.registrate:Registrate:${registrate_version}"
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
