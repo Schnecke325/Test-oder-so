@@ -21,11 +21,12 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
             ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/obj_display_render"));
 
     /**
-     * Das gelieferte Modell (db_fahrkartenautomat.obj) beginnt bei Y=-1 statt bei Y=0
-     * (Bounding Box Y: -1..2, X: -1..1, Z: -0.56..0.5) - dieser Versatz schiebt den
-     * Modellboden auf die Blockunterkante. X/Z sind bereits mittig zentriert.
+     * Die aktuelle Modellversion (Blockbench 5.1.6, hochgeladen) hat ihren
+     * Boden bereits bei Y=0 (Bounding Box Y: 0..3, X: -1..1, Z: -0.56..0.5) -
+     * anders als die vorherige Version (Y: -1..2), die einen Versatz von +1
+     * brauchte. X/Z sind bereits mittig zentriert.
      */
-    private static final float MODEL_Y_OFFSET = 1f;
+    private static final float MODEL_Y_OFFSET = 0f;
 
     public ObjDisplayBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
