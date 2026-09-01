@@ -6,9 +6,10 @@ import com.stationdecor.block.signal.KsMainSignalBlock;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlock;
 import com.stationdecor.client.render.FloorMarkingBlockEntityRenderer;
 import com.stationdecor.client.render.ObjDisplayBlockEntityRenderer;
+import com.stationdecor.client.render.RotatableSignalRenderer;
 import com.stationdecor.client.render.SeatBlockEntityRenderer;
 import com.stationdecor.client.render.SeatEntityRenderer;
-import com.stationdecor.client.render.SignalAspectLampRenderer;
+import com.stationdecor.client.render.SignalModels;
 import com.stationdecor.client.screen.ObjDisplayScreen;
 import com.stationdecor.registry.ModBlockEntities;
 import com.stationdecor.registry.ModEntities;
@@ -37,6 +38,16 @@ public final class ClientSetup {
         event.register(ObjDisplayBlockEntityRenderer.MODEL);
         event.register(SeatBlockEntityRenderer.MODEL);
         event.register(FloorMarkingBlockEntityRenderer.MODEL);
+
+        event.register(SignalModels.KS_MAIN_SIGNAL_HP0);
+        event.register(SignalModels.KS_MAIN_SIGNAL_HP1);
+        event.register(SignalModels.KS_MAIN_SIGNAL_HP2);
+        event.register(SignalModels.KS_DISTANT_SIGNAL_VR0);
+        event.register(SignalModels.KS_DISTANT_SIGNAL_VR1);
+        event.register(SignalModels.KS_DISTANT_SIGNAL_VR2);
+        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_FAHRT);
+        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_HALT);
+        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_HALT_ERWARTEN);
     }
 
     @SubscribeEvent
@@ -46,11 +57,28 @@ public final class ClientSetup {
         event.registerBlockEntityRenderer(ModBlockEntities.FLOOR_MARKING.get(), FloorMarkingBlockEntityRenderer::new);
         event.registerEntityRenderer(ModEntities.SEAT.get(), SeatEntityRenderer::new);
 
-        event.registerBlockEntityRenderer(ModBlockEntities.KS_MAIN_SIGNAL.get(), context -> new SignalAspectLampRenderer<>(
+        event.registerBlockEntityRenderer(ModBlockEntities.KS_MAIN_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
+                state -> switch (state.getValue(KsMainSignalBlock.ASPECT)) {
+                    case HP0 -> SignalModels.KS_MAIN_SIGNAL_HP0;
+                    case HP1 -> SignalModels.KS_MAIN_SIGNAL_HP1;
+                    case HP2 -> SignalModels.KS_MAIN_SIGNAL_HP2;
+                },
                 state -> lampTexture("ks_main_signal", state.getValue(KsMainSignalBlock.ASPECT).getSerializedName())));
-        event.registerBlockEntityRenderer(ModBlockEntities.KS_DISTANT_SIGNAL.get(), context -> new SignalAspectLampRenderer<>(
+
+        event.registerBlockEntityRenderer(ModBlockEntities.KS_DISTANT_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
+                state -> switch (state.getValue(KsDistantSignalBlock.ASPECT)) {
+                    case VR0 -> SignalModels.KS_DISTANT_SIGNAL_VR0;
+                    case VR1 -> SignalModels.KS_DISTANT_SIGNAL_VR1;
+                    case VR2 -> SignalModels.KS_DISTANT_SIGNAL_VR2;
+                },
                 state -> lampTexture("ks_distant_signal", state.getValue(KsDistantSignalBlock.ASPECT).getSerializedName())));
-        event.registerBlockEntityRenderer(ModBlockEntities.KS_MULTI_SECTION_SIGNAL.get(), context -> new SignalAspectLampRenderer<>(
+
+        event.registerBlockEntityRenderer(ModBlockEntities.KS_MULTI_SECTION_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
+                state -> switch (state.getValue(KsMultiSectionSignalBlock.ASPECT)) {
+                    case FAHRT -> SignalModels.KS_MULTI_SECTION_SIGNAL_FAHRT;
+                    case HALT -> SignalModels.KS_MULTI_SECTION_SIGNAL_HALT;
+                    case HALT_ERWARTEN -> SignalModels.KS_MULTI_SECTION_SIGNAL_HALT_ERWARTEN;
+                },
                 state -> lampTexture("ks_multi_section_signal", state.getValue(KsMultiSectionSignalBlock.ASPECT).getSerializedName())));
     }
 

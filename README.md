@@ -53,13 +53,23 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 ### 4. `station_decor:ks_main_signal` – Ks-Hauptsignal & `station_decor:ks_distant_signal` – Ks-Vorsignal
 
 - Der gezeigte Signalbegriff ist weiterhin eine normale BlockState-Property
-  (`aspect`, dazu `facing`), wie bei einer Redstone-Lampe - Vanilla übernimmt
-  die komplette Client-Synchronisation automatisch.
+  (`aspect`), wie bei einer Redstone-Lampe - Vanilla übernimmt die komplette
+  Client-Synchronisation automatisch.
 - Hauptsignal zeigt **Hp0** (Halt), **Hp1** (Fahrt), **Hp2** (Fahrt mit
   Geschwindigkeitsbeschränkung). Vorsignal zeigt **Vr0/Vr1/Vr2** analog.
 - Rechtsklick schaltet manuell zum nächsten Signalbegriff (zum Testen ohne
-  Create). Beim Platzieren richtet sich der Mast wie ein Ofen zur
-  Blickrichtung des Spielers aus (4 Himmelsrichtungen, keine freie Rotation).
+  Create).
+- **Frei rotierbar** (wie der Fahrkartenautomat/Sitzblock/Bodenmarkierung,
+  nach Nutzerwunsch nachgerüstet): `facing` wurde als BlockState-Property
+  entfernt, die Rotation lebt jetzt als Index+Schrittzahl auf der jeweiligen
+  BlockEntity (`AbstractRotatableBlockEntity`, Config-Key
+  `signalRotationSteps`, Standard 8 = 45°-Schritte). Beim Platzieren richtet
+  sich der Mast an der Blickrichtung des Spielers aus, eingerastet auf den
+  nächsten Schritt. Mast/Signalkopf werden dafür jetzt per
+  `BlockEntityRenderer` (`RotatableSignalRenderer`) gezeichnet statt über das
+  statische Blockmodell (`RenderShape.INVISIBLE` + `neoforge:obj`-freies
+  Standalone-Modell, siehe unten) - die Lampen-Überlagerung dreht sich
+  passend mit.
 - **Ks-Hauptsignal scannt jetzt selbst lokal** (per Nutzervorgabe geändert):
   anders als das Vorsignal hat `ks_main_signal` jetzt eine eigene
   `KsMainSignalBlockEntity`, die alle 10 Ticks bis zu 10 Blöcke gerade nach
@@ -91,10 +101,13 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   Ohne installiertes Create funktionieren alle drei Signale ganz normal (nur
   eben ohne Display-Link-Bindung) - die Compat-Klassen werden nur geladen,
   wenn `ModList.get().isLoaded("create")` beim Start `true` liefert.
-- **Modell:** Alle drei Signaltypen nutzen jetzt ein echtes Mehrelement-
-  Blockmodell (Mast + Signalkopf, reines Vanilla-Blockmodell-JSON mit
-  `"elements"`, bewusst **kein** OBJ-Loader/BlockEntityRenderer - siehe
-  „Bekannte Einschränkungen" zum Fahrkartenautomaten-Problem). Der
+- **Modell:** Alle drei Signaltypen nutzen ein echtes Mehrelement-Blockmodell
+  (Mast + Signalkopf, reines Vanilla-Blockmodell-JSON mit `"elements"`,
+  bewusst **kein** `neoforge:obj`-Loader - siehe „Bekannte Einschränkungen"
+  zum Fahrkartenautomaten-Problem). Seit der freien Rotation wird dasselbe
+  JSON-Modell zusätzlich als Standalone-Modell registriert (`SignalModels`)
+  und per `RotatableSignalRenderer` gedreht gezeichnet, statt fest über das
+  Blockmodell-System. Der
   Signalkopf trägt die jeweilige Lampen-Textur, der Mast eine neutrale
   Metalltextur (`textures/block/signal_mast.png`).
 
@@ -252,6 +265,7 @@ Nach dem ersten Start liegt die Common-Config unter
 | `seatBlockRotationSteps`  | `8`      | Rotationsschritte des Sitzblocks                                          |
 | `seatBlockAutoAlign`      | `true`   | Automatisches Ausrichten an einem angrenzenden Sitzblock beim Platzieren  |
 | `floorMarkingRotationSteps` | `8`    | Rotationsschritte der Bodenmarkierung                                     |
+| `signalRotationSteps`     | `8`      | Rotationsschritte der drei Ks-Signalblöcke                                |
 
 Die Schrittzahl ist frei zwischen 2 und 64 wählbar (keine feste Beschränkung
 auf 4/8/16 – "8" ergibt z.B. 45°-Schritte, weil `360° / 8 = 45°`).

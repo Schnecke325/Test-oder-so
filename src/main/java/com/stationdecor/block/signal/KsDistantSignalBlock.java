@@ -1,19 +1,21 @@
 package com.stationdecor.block.signal;
 
 import com.mojang.serialization.MapCodec;
+import com.stationdecor.block.rotation.RotationUtil;
+import com.stationdecor.config.StationDecorConfig;
+import com.stationdecor.item.SignalBinderItem;
+import com.stationdecor.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -27,27 +29,23 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import com.stationdecor.item.SignalBinderItem;
-import com.stationdecor.registry.ModBlockEntities;
-
 /**
  * Ks-Vorsignal. Analog zu {@link KsMainSignalBlock}, zeigt aber
  * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2. Die
- * BlockEntity scannt periodisch das per Signalbinder verlinkte "Signal
- * davor" (siehe {@link KsDistantSignalBlockEntity}) und zeichnet zusätzlich
- * die Lampenfläche unabhängig vom Umgebungslicht.
+ * BlockEntity trägt außerdem die freie Rotation (siehe
+ * {@code AbstractRotatableBlockEntity}) und scannt periodisch das per
+ * Signalbinder verlinkte "Signal davor" (siehe {@link KsDistantSignalBlockEntity}).
  */
 public class KsDistantSignalBlock extends BaseEntityBlock {
 
     public static final MapCodec<KsDistantSignalBlock> CODEC = simpleCodec(KsDistantSignalBlock::new);
     public static final EnumProperty<DistantSignalAspect> ASPECT = EnumProperty.create("aspect", DistantSignalAspect.class);
-    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     private static final VoxelShape SHAPE = box(6, 0, 6, 10, 16, 10);
 
     public KsDistantSignalBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ASPECT, DistantSignalAspect.VR0));
+        registerDefaultState(stateDefinition.any().setValue(ASPECT, DistantSignalAspect.VR0));
     }
 
     @Override
@@ -57,12 +55,7 @@ public class KsDistantSignalBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ASPECT);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        builder.add(ASPECT);
     }
 
     @Override
@@ -72,7 +65,8 @@ public class KsDistantSignalBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
+        // Wird per BlockEntityRenderer mit freier Rotation gezeichnet, nicht über das statische Blockmodell.
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable
@@ -86,6 +80,17 @@ public class KsDistantSignalBlock extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : createTickerHelper(type, ModBlockEntities.KS_DISTANT_SIGNAL.get(),
                 KsDistantSignalBlockEntity::serverTick);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level.isClientSide || !(level.getBlockEntity(pos) instanceof KsDistantSignalBlockEntity blockEntity)) {
+            return;
+        }
+        int steps = StationDecorConfig.SIGNAL_ROTATION_STEPS.get();
+        float yaw = placer != null ? placer.getYRot() : 0f;
+        blockEntity.setRotation(RotationUtil.snapToIndex(yaw, steps), steps);
     }
 
     @Override

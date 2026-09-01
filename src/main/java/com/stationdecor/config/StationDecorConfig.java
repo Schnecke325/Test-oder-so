@@ -14,6 +14,7 @@ public final class StationDecorConfig {
     public static final ModConfigSpec.IntValue SEAT_BLOCK_ROTATION_STEPS;
     public static final ModConfigSpec.BooleanValue SEAT_BLOCK_AUTO_ALIGN;
     public static final ModConfigSpec.IntValue FLOOR_MARKING_ROTATION_STEPS;
+    public static final ModConfigSpec.IntValue SIGNAL_ROTATION_STEPS;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -51,6 +52,14 @@ public final class StationDecorConfig {
                         "(z.B. diagonal bei einem 45°-Schritt)."
                 )
                 .defineInRange("floorMarkingRotationSteps", 8, 2, 64);
+
+        SIGNAL_ROTATION_STEPS = builder
+                .comment(
+                        "Anzahl der Rotationsschritte für die drei Ks-Signalblöcke (Hauptsignal/Vorsignal/",
+                        "Mehrabschnittssignal), gleichmäßig über 360° verteilt.",
+                        "Beispiele: 4 = 90°-Schritte, 8 = 45°-Schritte, 16 = 22,5°-Schritte."
+                )
+                .defineInRange("signalRotationSteps", 8, 2, 64);
 
         builder.pop();
 

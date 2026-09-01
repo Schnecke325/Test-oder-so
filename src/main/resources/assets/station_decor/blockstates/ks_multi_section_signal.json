@@ -1,49 +1,13 @@
 {
   "variants": {
-    "aspect=halt,facing=north": {
+    "aspect=halt": {
       "model": "station_decor:block/ks_multi_section_signal_halt"
     },
-    "aspect=halt,facing=east": {
-      "model": "station_decor:block/ks_multi_section_signal_halt",
-      "y": 90
-    },
-    "aspect=halt,facing=south": {
-      "model": "station_decor:block/ks_multi_section_signal_halt",
-      "y": 180
-    },
-    "aspect=halt,facing=west": {
-      "model": "station_decor:block/ks_multi_section_signal_halt",
-      "y": 270
-    },
-    "aspect=halt_erwarten,facing=north": {
+    "aspect=halt_erwarten": {
       "model": "station_decor:block/ks_multi_section_signal_halt_erwarten"
     },
-    "aspect=halt_erwarten,facing=east": {
-      "model": "station_decor:block/ks_multi_section_signal_halt_erwarten",
-      "y": 90
-    },
-    "aspect=halt_erwarten,facing=south": {
-      "model": "station_decor:block/ks_multi_section_signal_halt_erwarten",
-      "y": 180
-    },
-    "aspect=halt_erwarten,facing=west": {
-      "model": "station_decor:block/ks_multi_section_signal_halt_erwarten",
-      "y": 270
-    },
-    "aspect=fahrt,facing=north": {
+    "aspect=fahrt": {
       "model": "station_decor:block/ks_multi_section_signal_fahrt"
-    },
-    "aspect=fahrt,facing=east": {
-      "model": "station_decor:block/ks_multi_section_signal_fahrt",
-      "y": 90
-    },
-    "aspect=fahrt,facing=south": {
-      "model": "station_decor:block/ks_multi_section_signal_fahrt",
-      "y": 180
-    },
-    "aspect=fahrt,facing=west": {
-      "model": "station_decor:block/ks_multi_section_signal_fahrt",
-      "y": 270
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.stationdecor.block.signal;
 
+import com.stationdecor.block.rotation.AbstractRotatableBlockEntity;
 import com.stationdecor.compat.create.CreateCompat;
 import com.stationdecor.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -7,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
  * {@link ModList}-Check, damit diese Klasse auch ohne installiertes Create
  * anstandslos lädt.
  */
-public class KsMultiSectionSignalBlockEntity extends BlockEntity {
+public class KsMultiSectionSignalBlockEntity extends AbstractRotatableBlockEntity {
 
     private static final int SCAN_INTERVAL_TICKS = 10;
     private static final int MAX_SCAN_DISTANCE = 10;

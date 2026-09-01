@@ -1,12 +1,12 @@
 package com.stationdecor.block.signal;
 
+import com.stationdecor.block.rotation.AbstractRotatableBlockEntity;
 import com.stationdecor.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * wenn das Ziel gerade nicht lesbar ist) bleibt der zuletzt gesetzte Begriff
  * erhalten.
  */
-public class KsDistantSignalBlockEntity extends BlockEntity {
+public class KsDistantSignalBlockEntity extends AbstractRotatableBlockEntity {
 
     private static final int SCAN_INTERVAL_TICKS = 10;
 
