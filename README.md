@@ -52,23 +52,37 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 
 ### 4. `station_decor:ks_main_signal` – Ks-Hauptsignal & `station_decor:ks_distant_signal` – Ks-Vorsignal
 
-- Bewusst **ohne** BlockEntity/OBJ-Renderer gebaut (anders als Block 1-3):
-  der gezeigte Signalbegriff ist eine normale BlockState-Property
-  (`aspect`, dazu `facing`), wie bei einer Redstone-Lampe. Das ist der
-  robusteste Standardweg und Vanilla übernimmt die komplette
-  Client-Synchronisation automatisch - kein eigenes Sync-/Renderer-Risiko
-  wie beim Fahrkartenautomaten.
+- Der gezeigte Signalbegriff ist weiterhin eine normale BlockState-Property
+  (`aspect`, dazu `facing`), wie bei einer Redstone-Lampe - Vanilla übernimmt
+  die komplette Client-Synchronisation automatisch.
 - Hauptsignal zeigt **Hp0** (Halt), **Hp1** (Fahrt), **Hp2** (Fahrt mit
   Geschwindigkeitsbeschränkung). Vorsignal zeigt **Vr0/Vr1/Vr2** analog.
 - Rechtsklick schaltet manuell zum nächsten Signalbegriff (zum Testen ohne
   Create). Beim Platzieren richtet sich der Mast wie ein Ofen zur
   Blickrichtung des Spielers aus (4 Himmelsrichtungen, keine freie Rotation).
+- **Ks-Hauptsignal scannt jetzt selbst lokal** (per Nutzervorgabe geändert):
+  anders als das Vorsignal hat `ks_main_signal` jetzt eine eigene
+  `KsMainSignalBlockEntity`, die alle 10 Ticks bis zu 10 Blöcke gerade nach
+  unten nach einem Create-Gleissignal (`SignalBlockEntity`) sucht - exakt
+  derselbe Scan wie beim Mehrabschnittssignal (siehe unten), inklusive
+  Brass-Signalen: es wird nur per `instanceof SignalBlockEntity` geprüft,
+  Tier/Variante spielt keine Rolle. RED → Hp0, GREEN → Hp1, YELLOW → Hp2.
+  Wird **kein** Gleissignal in Reichweite gefunden (oder Create ist gar nicht
+  installiert), bleibt der zuletzt gesetzte Begriff unverändert (manuell per
+  Rechtsklick oder per Display Link gesetzt) - der Scan überschreibt also nur,
+  wenn er tatsächlich ein Signal findet.
+- **Ks-Vorsignal bleibt reiner Display-Link-Empfänger** (kein eigener lokaler
+  Scan) - es wird ausschließlich per Create Display Link an ein Signal davor
+  gebunden.
 - **Create: Display Link-Kompatibilität** (wie bei Create's Nixie Tubes):
-  Beide Blöcke registrieren sich als `DisplayTarget`
+  Beide Blöcke registrieren sich zusätzlich als `DisplayTarget`
   (`com.simibubi.create.api.behaviour.display.DisplayTarget`, siehe
   `com.stationdecor.compat.create`). Ein Display Link kann Text wie `hp0`,
   `1` oder `Hp2` (bzw. `vr0`/`1`/`Vr2` beim Vorsignal) an das Signal senden,
-  um den gezeigten Begriff zu setzen.
+  um den gezeigten Begriff zu setzen. Beim Hauptsignal gilt: der nächste
+  lokale Scan-Durchlauf überschreibt einen per Display Link gesetzten Begriff
+  wieder, sobald darunter ein Gleissignal gefunden wird - die beiden Quellen
+  konkurrieren also nicht, der lokale Scan hat Vorrang, wenn er fündig wird.
 - **Create ist nur eine optionale, compile-time-only Abhängigkeit**
   (`compileOnly` in `build.gradle`, siehe `create_version`/
   `registrate_version`/`ponder_version` in `gradle.properties` - Ponder wird
@@ -112,46 +126,34 @@ propagiert das selbst nicht weiter als Vorwarnung an das Signal davor
 (entspricht realer Signallogik - die Vorwarnung gilt nur für den unmittelbar
 nächsten Halt-Begriff).
 
-## Bekannter offener Bug: Ks-Hauptsignal/Vorsignal aktualisieren nicht per Display Link
+## Architektur-Änderung: Ks-Hauptsignal scannt jetzt selbst (statt nur Display Link)
 
-Laut Rückmeldung nach dem ersten In-Game-Test bleiben `ks_main_signal` und
-`ks_distant_signal` dauerhaft auf ihrem Startbegriff (Hp0/Vr0), auch wenn ein
-Display Link gebunden ist. Das Mehrabschnittssignal reagiert dagegen korrekt
-auf sein lokal gescanntes Gleissignal - das läuft aber komplett unabhängig
-vom Display-Link-Mechanismus (direkter `instanceof SignalBlockEntity`-Scan),
-beweist also nicht, dass Display Links bei uns grundsätzlich funktionieren.
+Ursprünglich verließ sich `ks_main_signal` beim Aktualisieren komplett auf
+manuelles Rechtsklicken oder einen gebundenen Create Display Link - ob
+Display Links bei uns zuverlässig ankommen, blieb ungeklärt (das zuerst
+geteilte `latest.log` deckte nur ~90 Sekunden ohne jeden Bindungsversuch ab).
 
-Da sich das ohne laufenden Client/Create-Setup nicht reproduzieren lässt,
-wurde in allen drei `DisplayTarget`-Implementierungen (`compat.create`) ein
-Log-Eintrag ergänzt, der bei jedem Empfang den rohen Text protokolliert:
+Auf Nutzervorgabe hin funktioniert `ks_main_signal` jetzt **wie das
+Mehrabschnittssignal**: eine eigene `KsMainSignalBlockEntity` scannt alle 10
+Ticks bis zu 10 Blöcke unter sich nach einem Create-Gleissignal und übernimmt
+dessen Zustand direkt (RED → Hp0, GREEN → Hp1, YELLOW → Hp2). Das ist
+derselbe robuste, log-mäßig bereits als funktionierend bestätigte Mechanismus
+wie beim Mehrabschnittssignal (`CreateCompat.readTrackSignalBelow`) - der
+Display-Link-Pfad bleibt als Zweitquelle bestehen, wird aber vom nächsten
+Scan-Durchlauf überschrieben, sobald ein physisches Gleissignal gefunden
+wird. Das Ks-Vorsignal (`ks_distant_signal`) bleibt bewusst **ohne** eigenen
+Scan - es hat ja kein "davor liegendes Gleissignal", sondern wird gezielt per
+Display Link an ein Signal gebunden.
 
-```
-Ks-Hauptsignal bei BlockPos{...} hat "..." per Display Link empfangen -> ...
-```
+Die Diagnose-Logs in den `DisplayTarget`-Implementierungen
+(`Ks-Hauptsignal bei BlockPos{...} hat "..." per Display Link empfangen -> ...`)
+bleiben für `ks_distant_signal` weiterhin relevant, falls dessen
+Display-Link-Bindung beim nächsten Test noch nicht greift - bitte in dem Fall
+wieder ein frisches `logs/latest.log` teilen, das eine tatsächliche
+Bindung+Auslösung eines Display Links an `ks_distant_signal` abdeckt.
 
-**Bitte nach dem nächsten Test in `logs/latest.log` nach "Display Link
-empfangen" suchen:**
-- **Taucht die Zeile gar nicht auf** → der Display Link erreicht unser
-  `DisplayTarget` nie (Registrierungs-/Bindungsproblem, z.B. Create erkennt
-  den Block nicht als gültiges Ziel).
-- **Taucht sie auf, aber mit unerwartetem Text** (z.B. einer Redstone-Stärke
-  wie "15" statt "hp0") → das ist ein reines Parsing-Problem, leicht zu
-  fixen, sobald klar ist, welches Format die gebundene Quelle liefert. Die
-  Parser akzeptieren bereits `hp0`/`0`/`halt`/`red`/`stop` usw. (großzügig),
-  aber eben nicht beliebigen Text.
-
-Zusätzlich hinzugefügt (unabhängig vom obigen Bug): Alle drei Signalblöcke
-emittieren jetzt Licht (`lightLevel(state -> 10)`), damit sie im Dunkeln
-tatsächlich sichtbar leuchten.
-
-**Update:** Das zugesendete `latest.log` deckt nur die ersten ~90 Sekunden ab
-(Welt geladen, kurz gespielt, wieder beendet) und enthält keine einzige
-"... per Display Link empfangen"-Zeile - es wurde also in dieser Sitzung
-noch kein Display Link an ein Signal gebunden/ausgelöst. Der Log hat aber
-den Fahrkartenautomat-Bug aufgedeckt (siehe unten) - für den Display-Link-Bug
-bräuchte ich einen frischen Log-Ausschnitt, der eine tatsächliche
-Bindung+Auslösung eines Display Links an `ks_main_signal`/`ks_distant_signal`
-abdeckt.
+Weiterhin aktiv: Alle drei Signalblöcke emittieren Licht
+(`lightLevel(state -> 10)`), damit sie im Dunkeln sichtbar leuchten.
 
 ## Konfiguration
 
