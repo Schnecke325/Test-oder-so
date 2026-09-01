@@ -9,7 +9,7 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 
 - Wird über einen `BlockEntityRenderer` als **OBJ-Modell** gerendert (nicht
   über ein normales Blockmodell).
-- Nutzt das gelieferte Modell `DB_Fahrkartenautomat.obj` (13 Cubes, 2 Blöcke
+- Nutzt das gelieferte Modell `db_fahrkartenautomat.obj` (13 Cubes, 2 Blöcke
   breit × 3 Blöcke hoch × ~1 Block tief). Die Kollisionsbox deckt bewusst nur
   den Platzierungsblock ab – der optisch überstehende Teil ist begehbar
   (Mehrblock-Kollision wäre ein deutlich größeres Feature).
@@ -144,6 +144,15 @@ Zusätzlich hinzugefügt (unabhängig vom obigen Bug): Alle drei Signalblöcke
 emittieren jetzt Licht (`lightLevel(state -> 10)`), damit sie im Dunkeln
 tatsächlich sichtbar leuchten.
 
+**Update:** Das zugesendete `latest.log` deckt nur die ersten ~90 Sekunden ab
+(Welt geladen, kurz gespielt, wieder beendet) und enthält keine einzige
+"... per Display Link empfangen"-Zeile - es wurde also in dieser Sitzung
+noch kein Display Link an ein Signal gebunden/ausgelöst. Der Log hat aber
+den Fahrkartenautomat-Bug aufgedeckt (siehe unten) - für den Display-Link-Bug
+bräuchte ich einen frischen Log-Ausschnitt, der eine tatsächliche
+Bindung+Auslösung eines Display Links an `ks_main_signal`/`ks_distant_signal`
+abdeckt.
+
 ## Konfiguration
 
 Nach dem ersten Start liegt die Common-Config unter
@@ -184,7 +193,7 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
 
 - **3D-Modelle:** `seat.obj`/`.mtl` und `floor_marking.obj`/`.mtl` sind
   einfache Platzhaltergeometrien, keine fertigen Möbelstücke. Der
-  Fahrkartenautomat (`DB_Fahrkartenautomat.obj`/`.mtl`) ist dagegen bereits
+  Fahrkartenautomat (`db_fahrkartenautomat.obj`/`.mtl`) ist dagegen bereits
   das gelieferte, echte Modell. Ersetzen läuft über
   `models/block/<name>_render.json` (Pfad zum `.obj`, Textur-Zuordnung).
 - **Textur des Fahrkartenautomaten fehlt noch:** Die `.mtl`-Datei referenzierte
@@ -192,22 +201,21 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
   Ich habe einen simplen 32×32-Platzhalter unter
   `textures/block/ticket_machine.png` erzeugt. Die echte Textur einfach unter
   gleichem Pfad/Namen ablegen, sobald verfügbar.
-- **Fix-Versuch nach erstem In-Game-Test:** Alle drei `.mtl`-Dateien
-  referenzieren die Textur jetzt direkt per Namespace
-  (`map_Kd station_decor:block/<name>`) statt über das `#texture0`-Token aus
-  dem model-json (laut einem bekannten NeoForge-Issue in dieser Version
-  nicht zuverlässig). **Das allein hat den magenta/schwarzen "Missing
-  Model"-Würfel beim Fahrkartenautomaten noch nicht behoben.**
-- **Aktueller Debug-Zwischenstand:** Um die eigentliche Ursache zu isolieren,
-  wurde der Fahrkartenautomat auf das Minimum reduziert - keine Rotation
-  (feste 0°-Ausrichtung), kein Inventar, GUI nur noch ein grauer Kasten mit
-  "Soon™". Falls das Modell danach immer noch als Karo-Würfel erscheint,
-  liegt es nicht an Rotation/GUI, sondern am Laden des OBJ-Modells selbst -
-  in dem Fall bräuchte ich die Zeilen rund um `obj_display_render` bzw.
-  `DB_Fahrkartenautomat` aus `logs/latest.log` (bzw. `logs/debug.log`) nach
-  dem Start, um die tatsächliche Fehlermeldung zu sehen statt zu raten.
-  Rotation, Inventar-Slot und die echte GUI kommen zurück, sobald das
-  Modell zuverlässig rendert.
+- **Root Cause gefunden und behoben (dank `logs/latest.log`):** Der Grund
+  für den magenta/schwarzen "Missing Model"-Würfel war die
+  `map_Kd`-Textur-Referenz gar nicht, sondern der **Dateiname** des Modells.
+  Minecraft-`ResourceLocation`-Pfade erlauben nur `[a-z0-9/._-]` -
+  `DB_Fahrkartenautomat.obj`/`.mtl` enthielt Großbuchstaben und wurde daher
+  mit `Invalid path in pack ... ignoring` komplett verworfen, bevor der
+  OBJ-Loader überhaupt zum Zug kam. Dateien in `db_fahrkartenautomat.obj`/
+  `.mtl` umbenannt (inkl. der internen `mtllib`-Referenz und des Verweises
+  in `obj_display_render.json`) - das war der eigentliche Bug, nicht das
+  `#texture0`-Token-Problem von vorher (das war trotzdem eine reale,
+  separate Verbesserung).
+- **Aktuell weiterhin bewusst reduziert:** Rotation (feste 0°-Ausrichtung),
+  Inventar-Slot und die echte GUI (Zielknöpfe, Münzslot) wurden für das
+  Debugging entfernt und sind noch nicht zurückgebaut - sag Bescheid, wenn
+  das wieder rein soll, jetzt wo die eigentliche Ursache behoben ist.
 - **Weitere Texturen:** `textures/block/seat.png` und `floor_marking.png`
   sind simple 16×16-Platzhalter.
 - **Kollisionsbox:** Aus Einfachheitsgründen ist die Hitbox beider Blöcke
@@ -234,7 +242,7 @@ echte NeoForge-API (das wurde in dieser Session mehrfach erfolgreich
 verifiziert). Blockstates, Modell-JSONs, `.obj`/`.mtl`-Dateien und Texturen
 werden dabei **nicht** validiert – das passiert erst beim tatsächlichen
 Laden im Client (`runClient`). Insbesondere das Laden des echten
-`DB_Fahrkartenautomat.obj`-Modells und der Y-Achsen-Ausrichtungskorrektur in
+`db_fahrkartenautomat.obj`-Modells und der Y-Achsen-Ausrichtungskorrektur in
 `ObjDisplayBlockEntityRenderer` wurden nur rechnerisch (Bounding-Box-Analyse),
 nicht visuell in einem laufenden Client geprüft, da diese Sandbox kein
 Display hat.

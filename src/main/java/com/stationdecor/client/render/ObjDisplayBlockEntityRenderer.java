@@ -21,7 +21,7 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
             ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/obj_display_render"));
 
     /**
-     * Das gelieferte Modell (DB_Fahrkartenautomat.obj) beginnt bei Y=-1 statt bei Y=0
+     * Das gelieferte Modell (db_fahrkartenautomat.obj) beginnt bei Y=-1 statt bei Y=0
      * (Bounding Box Y: -1..2, X: -1..1, Z: -0.56..0.5) - dieser Versatz schiebt den
      * Modellboden auf die Blockunterkante. X/Z sind bereits mittig zentriert.
      */

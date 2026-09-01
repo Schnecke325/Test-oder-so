@@ -1,6 +1,6 @@
 {
   "loader": "neoforge:obj",
-  "model": "station_decor:models/obj/DB_Fahrkartenautomat.obj",
+  "model": "station_decor:models/obj/db_fahrkartenautomat.obj",
   "flip_v": true,
   "textures": {
     "texture0": "station_decor:block/ticket_machine",
