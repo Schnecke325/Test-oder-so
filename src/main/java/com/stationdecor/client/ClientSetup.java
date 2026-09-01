@@ -59,7 +59,17 @@ public final class ClientSetup {
         event.register(ModMenus.OBJ_DISPLAY_MENU.get(), ObjDisplayScreen::new);
     }
 
+    /**
+     * {@code RenderType.entityCutout(...)} bindet die Textur direkt über den
+     * TextureManager (nicht über das Block-Atlas) - anders als in
+     * Blockmodell-JSONs muss der Pfad hier bereits das volle
+     * "textures/..."-Präfix und die ".png"-Endung enthalten, siehe z.B.
+     * {@link SeatEntityRenderer}. Ohne das liefert der TextureManager keine
+     * gültige Textur und es wird das lila/schwarze "Missing Texture"-Muster
+     * angezeigt (genau der Bug, der hier gefixt wurde).
+     */
     private static ResourceLocation lampTexture(String blockName, String aspectName) {
-        return ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/" + blockName + "_" + aspectName);
+        return ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID,
+                "textures/block/" + blockName + "_" + aspectName + ".png");
     }
 }
