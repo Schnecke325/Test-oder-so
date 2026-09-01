@@ -71,12 +71,45 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   um den gezeigten Begriff zu setzen.
 - **Create ist nur eine optionale, compile-time-only Abhängigkeit**
   (`compileOnly` in `build.gradle`, siehe `create_version`/
-  `registrate_version` in `gradle.properties`). Ohne installiertes Create
-  funktionieren beide Blöcke ganz normal (nur eben ohne Display-Link-Bindung)
-  - die Compat-Klasse wird nur geladen, wenn
-  `ModList.get().isLoaded("create")` beim Start `true` liefert.
-- Platzhalter-Optik: einfache 16×16-Texturen mit 1-2 farbigen "Lampen"-Punkten
-  pro Signalbegriff (kein echtes Ks-Signal-Modell).
+  `registrate_version`/`ponder_version` in `gradle.properties` - Ponder wird
+  transitiv gebraucht, weil Create's `SmartBlockEntity`, von der auch
+  Gleissignale erben, Ponders `VirtualBlockEntity`-Interface implementiert).
+  Ohne installiertes Create funktionieren alle drei Signale ganz normal (nur
+  eben ohne Display-Link-Bindung) - die Compat-Klassen werden nur geladen,
+  wenn `ModList.get().isLoaded("create")` beim Start `true` liefert.
+- **Modell:** Alle drei Signaltypen nutzen jetzt ein echtes Mehrelement-
+  Blockmodell (Mast + Signalkopf, reines Vanilla-Blockmodell-JSON mit
+  `"elements"`, bewusst **kein** OBJ-Loader/BlockEntityRenderer - siehe
+  „Bekannte Einschränkungen" zum Fahrkartenautomaten-Problem). Der
+  Signalkopf trägt die jeweilige Lampen-Textur, der Mast eine neutrale
+  Metalltextur (`textures/block/signal_mast.png`).
+
+### 5. `station_decor:ks_multi_section_signal` – Ks-Mehrabschnittssignal
+
+Kombiniert Haupt- und Vorsignalfunktion und zeigt **Fahrt**, **Halt** oder
+**Halt erwarten**. Anders als Block 4 hat dieser Block eine BlockEntity, weil
+er aktiv zwei Quellen kombiniert:
+
+1. **Gleissignal-Scan:** Alle 10 Ticks wird bis zu 10 Blöcke gerade nach
+   unten nach einem Create-Gleissignal (`SignalBlockEntity`) gesucht.
+   RED → Halt, YELLOW → Halt erwarten, GREEN/kein Signal gefunden → Fahrt
+   (aus Sicht dieser Quelle).
+2. **Display Link zum Signal davor:** Das Mehrabschnittssignal ist selbst
+   ein `DisplayTarget` - ein Create Display Link kann es an ein
+   vorausliegendes `ks_main_signal` oder `ks_multi_section_signal` binden
+   (beide sind zusätzlich als `DisplaySource` registriert, liefern also
+   ihren aktuellen Begriff als Text). Zeigt das gebundene Signal Halt
+   (`halt`/`hp0`/`vr0`/`0`/`red`/`stop`), merkt sich das Mehrabschnittssignal
+   das als "Vorwarnung".
+
+**Kombinationslogik** (siehe `KsMultiSectionSignalBlockEntity#recomputeAspect`):
+Gleissignal zeigt Halt → **Halt**. Sonst, wenn Gleissignal Halt erwarten
+zeigt ODER das gebundene Signal davor Halt zeigt → **Halt erwarten**. Sonst
+→ **Fahrt**. Ein bereits "Halt erwarten" zeigendes Signal propagiert das
+selbst nicht weiter als Vorwarnung an das Signal davor (entspricht realer
+Signallogik - die Vorwarnung gilt nur für den unmittelbar nächsten
+Halt-Begriff). Diese Logik ist eine bewusste Design-Entscheidung meinerseits
+bei mehrdeutiger Spezifikation - leicht anpassbar, falls anders gewünscht.
 
 ## Konfiguration
 

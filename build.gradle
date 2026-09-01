@@ -114,6 +114,9 @@ dependencies {
     // Registrate types (BlockBuilder/RegistryEntry) in its own method signatures.
     compileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     compileOnly "com.tterrag.registrate:Registrate:${registrate_version}"
+    // Required transitively too: Create's SmartBlockEntity (base class of e.g. SignalBlockEntity)
+    // implements Ponder's VirtualBlockEntity interface.
+    compileOnly "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

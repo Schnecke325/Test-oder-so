@@ -1,8 +1,8 @@
 {
   "textures": {
     "mast": "station_decor:block/signal_mast",
-    "lamp": "station_decor:block/ks_distant_signal_vr1",
-    "particle": "station_decor:block/ks_distant_signal_vr1"
+    "lamp": "station_decor:block/ks_multi_section_signal_fahrt",
+    "particle": "station_decor:block/ks_multi_section_signal_fahrt"
   },
   "elements": [
     {

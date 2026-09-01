@@ -24,6 +24,7 @@ public final class ModCreativeTabs {
                         output.accept(ModItems.FLOOR_MARKING.get());
                         output.accept(ModItems.KS_MAIN_SIGNAL.get());
                         output.accept(ModItems.KS_DISTANT_SIGNAL.get());
+                        output.accept(ModItems.KS_MULTI_SECTION_SIGNAL.get());
                     })
                     .build());
 
