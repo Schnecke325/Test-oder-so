@@ -3,6 +3,7 @@ package com.stationdecor.block.obj;
 import com.mojang.serialization.MapCodec;
 import com.stationdecor.block.rotation.RotationUtil;
 import com.stationdecor.config.StationDecorConfig;
+import com.stationdecor.registry.ModDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -79,6 +80,7 @@ public class ObjDisplayBlock extends BaseEntityBlock {
         int steps = StationDecorConfig.OBJ_BLOCK_ROTATION_STEPS.get();
         float yaw = placer != null ? placer.getYRot() : 0f;
         blockEntity.setRotation(RotationUtil.snapToIndex(yaw, steps), steps);
+        blockEntity.setStyle(stack.getOrDefault(ModDataComponents.TICKET_MACHINE_STYLE.get(), TicketMachineStyle.DB));
     }
 
     @Override

@@ -15,6 +15,8 @@
   "item.station_decor.signal_binder.invalid_target": "Not a valid target (click a Ks Distant Signal or Ks Multi-Section Signal)",
   "item.station_decor.signal_binder.invalid_source": "Not a valid signal (click a Ks Home Signal or Ks Multi-Section Signal)",
   "hud.station_decor.rotation": "Rotation: %s°",
+  "item.station_decor.obj_display.style_changed": "Style: %s",
+  "station_decor.ticket_machine_style.db": "DB",
   "gui.station_decor.obj_display.destination": "Dest. %s",
   "gui.station_decor.obj_display.not_implemented": "Ticket purchase not available yet",
   "config.station_decor.title": "Station Decor Settings"

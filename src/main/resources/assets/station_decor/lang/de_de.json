@@ -15,6 +15,8 @@
   "item.station_decor.signal_binder.invalid_target": "Kein gültiges Ziel (Ks-Vorsignal oder Ks-Mehrabschnittssignal anklicken)",
   "item.station_decor.signal_binder.invalid_source": "Kein gültiges Signal (Ks-Hauptsignal oder Ks-Mehrabschnittssignal anklicken)",
   "hud.station_decor.rotation": "Rotation: %s°",
+  "item.station_decor.obj_display.style_changed": "Variante: %s",
+  "station_decor.ticket_machine_style.db": "DB",
   "gui.station_decor.obj_display.destination": "Ziel %s",
   "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"

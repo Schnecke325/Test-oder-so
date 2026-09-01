@@ -1,23 +1,20 @@
 package com.stationdecor.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.obj.ObjDisplayBlockEntity;
+import com.stationdecor.block.obj.TicketMachineStyle;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Zeichnet den OBJ-Anzeigeblock (Fahrkartenautomat), frei rotierbar. Das
- * eigentliche OBJ-Modell wird als "additional model" registriert, siehe
- * {@link com.stationdecor.client.ClientSetup}.
+ * jeweilige OBJ-Modell (eins pro {@link TicketMachineStyle}, siehe
+ * {@link TicketMachineModels}) wird als "additional model" registriert,
+ * siehe {@link com.stationdecor.client.ClientSetup}.
  */
 public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDisplayBlockEntity> {
-
-    public static final ModelResourceLocation MODEL = ModelResourceLocation.standalone(
-            ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/obj_display_render"));
 
     /**
      * Die aktuelle Modellversion (Blockbench 5.1.6) hat ihren Boden bei Y=0
@@ -43,7 +40,14 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
     @Override
     public void render(ObjDisplayBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                         MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        RotatedObjRenderHelper.render(MODEL, blockEntity.getRotationDegrees(), MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
+        ModelResourceLocation model = modelFor(blockEntity.getStyle());
+        RotatedObjRenderHelper.render(model, blockEntity.getRotationDegrees(), MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
                 poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    private static ModelResourceLocation modelFor(TicketMachineStyle style) {
+        return switch (style) {
+            case DB -> TicketMachineModels.DB;
+        };
     }
 }

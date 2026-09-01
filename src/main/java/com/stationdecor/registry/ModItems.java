@@ -2,6 +2,7 @@ package com.stationdecor.registry;
 
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlockItem;
+import com.stationdecor.block.obj.ObjDisplayBlockItem;
 import com.stationdecor.item.SignalBinderItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -13,8 +14,8 @@ public final class ModItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(StationDecorMod.MOD_ID);
 
-    public static final Supplier<BlockItem> OBJ_DISPLAY = ITEMS.registerSimpleBlockItem(
-            "obj_display", ModBlocks.OBJ_DISPLAY, new Item.Properties());
+    public static final Supplier<ObjDisplayBlockItem> OBJ_DISPLAY = ITEMS.register("obj_display",
+            () -> new ObjDisplayBlockItem(ModBlocks.OBJ_DISPLAY.get(), new Item.Properties()));
 
     public static final Supplier<BlockItem> SEAT = ITEMS.registerSimpleBlockItem(
             "seat", ModBlocks.SEAT, new Item.Properties());

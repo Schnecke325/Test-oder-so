@@ -6,6 +6,7 @@ import com.stationdecor.config.StationDecorConfig;
 import com.stationdecor.registry.ModBlockEntities;
 import com.stationdecor.registry.ModBlocks;
 import com.stationdecor.registry.ModCreativeTabs;
+import com.stationdecor.registry.ModDataComponents;
 import com.stationdecor.registry.ModEntities;
 import com.stationdecor.registry.ModItems;
 import com.stationdecor.registry.ModMenus;
@@ -31,6 +32,7 @@ public class StationDecorMod {
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
+        ModDataComponents.DATA_COMPONENTS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, StationDecorConfig.SPEC);
 

@@ -18,6 +18,18 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   grauer Kasten mit "Soon™", keine Knöpfe/Slots). Die richtige GUI
   (Zielknöpfe, Münzslot für eine spätere **Create: Numismatics**-Zahlung)
   kommen zurück, sobald das Modell zuverlässig rendert.
+- **Varianten (`TicketMachineStyle`):** aktuell nur `db` (das gelieferte
+  DB-Modell), als Data Component auf dem Item gespeichert. Rechtsklick mit
+  dem Item **in die Luft** (kein Block in Reichweite) schaltet zur nächsten
+  Variante weiter (Chat-Bestätigung); die beim Platzieren aktive Variante
+  wird auf die BlockEntity übertragen und bestimmt Modell/Textur. Weitere
+  Varianten (z.B. `rmv`) hinzufügen: neuen Enum-Wert in `TicketMachineStyle`,
+  passende `models/block/obj_display_render_<name>.json` +
+  `textures/block/ticket_machine_<name>.png` anlegen, in
+  `TicketMachineModels`/`ObjDisplayBlockEntityRenderer#modelFor` verdrahten
+  und in `ClientSetup` als zusätzliches Modell registrieren. Die GUI-Textur
+  pro Variante ist als nächster Schritt vorgesehen, sobald die echte GUI
+  gebaut wird.
 
 ### 2. `station_decor:seat` – Sitzblock
 

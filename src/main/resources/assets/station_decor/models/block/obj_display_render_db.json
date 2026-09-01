@@ -3,8 +3,8 @@
   "model": "station_decor:models/obj/db_fahrkartenautomat.obj",
   "flip_v": true,
   "textures": {
-    "texture0": "station_decor:block/ticket_machine",
-    "particle": "station_decor:block/ticket_machine"
+    "texture0": "station_decor:block/ticket_machine_db",
+    "particle": "station_decor:block/ticket_machine_db"
   },
   "display": {
     "thirdperson_righthand": {

@@ -10,6 +10,7 @@ import com.stationdecor.client.render.RotatableSignalRenderer;
 import com.stationdecor.client.render.SeatBlockEntityRenderer;
 import com.stationdecor.client.render.SeatEntityRenderer;
 import com.stationdecor.client.render.SignalModels;
+import com.stationdecor.client.render.TicketMachineModels;
 import com.stationdecor.client.screen.ObjDisplayScreen;
 import com.stationdecor.registry.ModBlockEntities;
 import com.stationdecor.registry.ModEntities;
@@ -35,7 +36,7 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(ObjDisplayBlockEntityRenderer.MODEL);
+        event.register(TicketMachineModels.DB);
         event.register(SeatBlockEntityRenderer.MODEL);
         event.register(FloorMarkingBlockEntityRenderer.MODEL);
 

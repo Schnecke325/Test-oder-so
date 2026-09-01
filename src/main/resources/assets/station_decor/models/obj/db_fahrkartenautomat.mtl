@@ -1,4 +1,4 @@
 # Made in Blockbench 5.1.6
 newmtl m_e010923a-1c95-672b-a757-086599275e86
-map_Kd station_decor:block/ticket_machine
+map_Kd station_decor:block/ticket_machine_db
 newmtl none
