@@ -50,7 +50,8 @@ public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> imp
         if (lampTexture != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
+            // Vorzeichen umgekehrt wie in RotatedObjRenderHelper - siehe dort für die Begründung.
+            poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
             poseStack.translate(-0.5, 0, -0.5);
             SignalLampRenderHelper.renderLamp(poseStack, bufferSource, lampTexture);
             poseStack.popPose();

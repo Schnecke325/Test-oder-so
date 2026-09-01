@@ -48,7 +48,12 @@ public final class RotatedObjRenderHelper {
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
+        // Axis.YP.rotationDegrees dreht mathematisch positiv um +Y (Süden -> Osten mit
+        // steigendem Winkel) - das ist die GEGENRICHTUNG von Minecrafts Yaw-Konvention
+        // (Süden -> Westen mit steigendem Yaw, siehe RotationUtil#forwardVector). Ohne
+        // Vorzeichenumkehr würde das Modell an der Nord-Süd-Achse gespiegelt platziert
+        // (z.B. Blickrichtung Nordwest -> Modell zeigt Nordost).
+        poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
         poseStack.translate(offsetX, offsetY, offsetZ);
         poseStack.translate(-0.5, 0, -0.5);
 
