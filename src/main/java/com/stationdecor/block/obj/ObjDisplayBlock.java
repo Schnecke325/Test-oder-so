@@ -41,7 +41,7 @@ public class ObjDisplayBlock extends BaseEntityBlock {
      * folgende Box wäre bei 22,5°-Schritten zudem nicht mehr achsenparallel
      * und ist bewusst nicht implementiert.
      */
-    private static final VoxelShape SHAPE = box(1, 0, 1, 15, 16, 15);
+    private static final VoxelShape SHAPE = box(-4, 0, -4, 20, 48, 20);
 
     public ObjDisplayBlock(BlockBehaviour.Properties properties) {
         super(properties);
