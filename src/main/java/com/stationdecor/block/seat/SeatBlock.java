@@ -29,7 +29,9 @@ import java.util.List;
  * Sitz-Block: frei rotierbar (wie {@link com.stationdecor.block.obj.ObjDisplayBlock}),
  * richtet sich beim Platzieren aber automatisch an einem direkt angrenzenden
  * bereits vorhandenen Sitz-Block aus (statt an der Blickrichtung des Spielers),
- * sofern die Config das erlaubt. Ein Rechtsklick setzt den Spieler auf den Block,
+ * sofern die Config das erlaubt - Schleichen (Shift) beim Platzieren
+ * überschreibt das und erzwingt die eigene Blickrichtung, auch neben einem
+ * bestehenden Sitz-Block. Ein Rechtsklick setzt den Spieler auf den Block,
  * ein weiterer Rechtsklick lässt ihn wieder aufstehen.
  */
 public class SeatBlock extends BaseEntityBlock {
@@ -71,7 +73,8 @@ public class SeatBlock extends BaseEntityBlock {
         }
 
         int steps = StationDecorConfig.SEAT_BLOCK_ROTATION_STEPS.get();
-        Integer alignedIndex = StationDecorConfig.SEAT_BLOCK_AUTO_ALIGN.get()
+        boolean sneaking = placer != null && placer.isShiftKeyDown();
+        Integer alignedIndex = StationDecorConfig.SEAT_BLOCK_AUTO_ALIGN.get() && !sneaking
                 ? findNeighborRotationIndex(level, pos, steps)
                 : null;
 

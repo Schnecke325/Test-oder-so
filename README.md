@@ -262,7 +262,7 @@ Nach dem ersten Start liegt die Common-Config unter
 |----------------------------|----------|----------------------------------------------------------------------------|
 | `objBlockRotationSteps`   | `8`      | Rotationsschritte des Anzeigeterminals (4 = 90°, 8 = 45°, 16 = 22,5°, ...) |
 | `seatBlockRotationSteps`  | `8`      | Rotationsschritte des Sitzblocks                                          |
-| `seatBlockAutoAlign`      | `true`   | Automatisches Ausrichten an einem angrenzenden Sitzblock beim Platzieren  |
+| `seatBlockAutoAlign`      | `true`   | Automatisches Ausrichten an einem angrenzenden Sitzblock beim Platzieren (Shift beim Platzieren erzwingt eigene Blickrichtung) |
 | `floorMarkingRotationSteps` | `8`    | Rotationsschritte der Bodenmarkierung                                     |
 | `signalRotationSteps`     | `8`      | Rotationsschritte der drei Ks-Signalblöcke                                |
 
