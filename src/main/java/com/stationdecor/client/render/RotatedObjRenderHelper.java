@@ -33,7 +33,7 @@ public final class RotatedObjRenderHelper {
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees, float forwardOffset,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        render(modelLocation, rotationDegrees, 0f, 0f, forwardOffset, poseStack, bufferSource, packedLight, packedOverlay);
+        render(modelLocation, rotationDegrees, 0f, 0f, forwardOffset, 1f, poseStack, bufferSource, packedLight, packedOverlay);
     }
 
     /**
@@ -43,6 +43,20 @@ public final class RotatedObjRenderHelper {
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
                                float offsetX, float offsetY, float offsetZ,
+                               PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        render(modelLocation, rotationDegrees, offsetX, offsetY, offsetZ, 1f, poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    /**
+     * Wie oben, streckt das Modell zusätzlich um {@code forwardScale} entlang seiner eigenen
+     * (lokalen, unrotierten) Z-Achse, symmetrisch um seine Mitte. Genutzt von der
+     * Bodenmarkierung: bei einer diagonalen Rotation (z.B. 45°) ist die Diagonale eines
+     * Blocks um den Faktor 1/cos(Winkel zur nächsten Achse) länger als dessen Kante
+     * (bei 45° z.B. √2 ≈ 1,41), sonst würde die Markierung nicht mehr bis zum
+     * gegenüberliegenden Blockrand reichen.
+     */
+    public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
+                               float offsetX, float offsetY, float offsetZ, float forwardScale,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
@@ -56,6 +70,13 @@ public final class RotatedObjRenderHelper {
         poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
         poseStack.translate(offsetX, offsetY, offsetZ);
         poseStack.translate(-0.5, 0, -0.5);
+        if (forwardScale != 1f) {
+            // Um die lokale Mitte (Z=0.5) strecken statt um den Modellursprung (Z=0),
+            // sonst würde die Markierung nur nach einer Seite wachsen statt symmetrisch.
+            poseStack.translate(0, 0, 0.5);
+            poseStack.scale(1f, 1f, forwardScale);
+            poseStack.translate(0, 0, -0.5);
+        }
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(

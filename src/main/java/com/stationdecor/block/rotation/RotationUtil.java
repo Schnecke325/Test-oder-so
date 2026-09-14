@@ -62,4 +62,17 @@ public final class RotationUtil {
         double rad = Math.toRadians(degrees);
         return new Vec3(-Math.sin(rad), 0.0, Math.cos(rad));
     }
+
+    /**
+     * Streckfaktor für ein achsenparalleles Modell, das exakt eine Blockbreite lang ist und
+     * trotzdem bei jeder Rotation bis zum gegenüberliegenden Blockrand reichen soll (z.B. die
+     * Bodenmarkierung). Bei einer Diagonalen (z.B. 45°) ist die Strecke von Kante zu Kante um
+     * den Faktor 1/cos(Winkel zur nächsten 90°-Achse) länger als bei achsenparalleler Rotation -
+     * bei genau 45° also {@code 1/cos(45°) = √2 ≈ 1,41}. Periodisch alle 90°.
+     */
+    public static float diagonalStretch(float degrees) {
+        float mod90 = ((degrees % 90f) + 90f) % 90f;
+        float distanceToNearestAxis = Math.min(mod90, 90f - mod90);
+        return (float) (1.0 / Math.cos(Math.toRadians(distanceToNearestAxis)));
+    }
 }

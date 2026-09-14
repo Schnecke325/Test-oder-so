@@ -2,6 +2,7 @@ package com.stationdecor.client;
 
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlock;
+import com.stationdecor.block.marking.FloorMarkingBlockItem;
 import com.stationdecor.block.obj.ObjDisplayBlock;
 import com.stationdecor.block.rotation.RotationUtil;
 import com.stationdecor.block.seat.SeatBlock;
@@ -43,15 +44,21 @@ public final class RotationHudOverlay {
             return;
         }
 
-        int steps = rotationStepsFor(player.getMainHandItem());
+        ItemStack heldStack = player.getMainHandItem();
+        int steps = rotationStepsFor(heldStack);
         if (steps <= 0) {
-            steps = rotationStepsFor(player.getOffhandItem());
+            heldStack = player.getOffhandItem();
+            steps = rotationStepsFor(heldStack);
         }
         if (steps <= 0) {
             return;
         }
 
-        float degrees = RotationUtil.indexToDegrees(RotationUtil.snapToIndex(player.getYRot(), steps), steps);
+        float yaw = player.getYRot();
+        if (heldStack.getItem() instanceof FloorMarkingBlockItem) {
+            yaw += FloorMarkingBlockItem.ROTATION_OFFSET_DEGREES;
+        }
+        float degrees = RotationUtil.indexToDegrees(RotationUtil.snapToIndex(yaw, steps), steps);
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         Component text = Component.translatable("hud.station_decor.rotation", Math.round(degrees));
