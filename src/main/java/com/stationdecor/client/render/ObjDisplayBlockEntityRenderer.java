@@ -48,6 +48,11 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
     private static ModelResourceLocation modelFor(TicketMachineStyle style) {
         return switch (style) {
             case DB -> TicketMachineModels.DB;
+            case BVG -> TicketMachineModels.BVG;
+            case BEWEGT -> TicketMachineModels.BEWEGT;
+            case GOAHEAD -> TicketMachineModels.GOAHEAD;
+            case RMV -> TicketMachineModels.RMV;
+            case VVR -> TicketMachineModels.VVR;
         };
     }
 }

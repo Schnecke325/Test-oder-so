@@ -15,6 +15,11 @@ import net.minecraft.resources.ResourceLocation;
 public final class TicketMachineModels {
 
     public static final ModelResourceLocation DB = standalone("block/obj_display_render_db");
+    public static final ModelResourceLocation BVG = standalone("block/obj_display_render_bvg");
+    public static final ModelResourceLocation BEWEGT = standalone("block/obj_display_render_bewegt");
+    public static final ModelResourceLocation GOAHEAD = standalone("block/obj_display_render_goahead");
+    public static final ModelResourceLocation RMV = standalone("block/obj_display_render_rmv");
+    public static final ModelResourceLocation VVR = standalone("block/obj_display_render_vvr");
 
     private TicketMachineModels() {
     }

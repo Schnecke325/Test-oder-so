@@ -37,6 +37,11 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(TicketMachineModels.DB);
+        event.register(TicketMachineModels.BVG);
+        event.register(TicketMachineModels.BEWEGT);
+        event.register(TicketMachineModels.GOAHEAD);
+        event.register(TicketMachineModels.RMV);
+        event.register(TicketMachineModels.VVR);
         event.register(SeatBlockEntityRenderer.MODEL);
         event.register(FloorMarkingBlockEntityRenderer.MODEL);
 

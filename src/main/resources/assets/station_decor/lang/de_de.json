@@ -17,6 +17,11 @@
   "hud.station_decor.rotation": "Rotation: %s°",
   "item.station_decor.obj_display.style_changed": "Variante: %s",
   "station_decor.ticket_machine_style.db": "DB",
+  "station_decor.ticket_machine_style.bvg": "BVG",
+  "station_decor.ticket_machine_style.bewegt": "bwegt",
+  "station_decor.ticket_machine_style.goahead": "Go-Ahead",
+  "station_decor.ticket_machine_style.rmv": "RMV",
+  "station_decor.ticket_machine_style.vvr": "VVR",
   "gui.station_decor.obj_display.destination": "Ziel %s",
   "gui.station_decor.obj_display.not_implemented": "Fahrkartenkauf noch nicht verfügbar",
   "config.station_decor.title": "Station Decor Einstellungen"

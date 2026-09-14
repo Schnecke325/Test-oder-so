@@ -6,15 +6,19 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 
 /**
- * Optische Variante des Fahrkartenautomaten (aktuell nur "db", der gelieferte
- * DB-Automat). Weitere Varianten (z.B. "rmv") einfach hier als weiteren
- * Konstanten ergänzen, dazu eine passende
+ * Optische Variante des Fahrkartenautomaten. Weitere Varianten einfach hier
+ * als weiteren Konstanten ergänzen, dazu eine passende
  * {@code models/block/obj_display_render_<name>.json} (Textur-Zuordnung) und
  * {@code textures/block/ticket_machine_<name>.png} anlegen, siehe
  * {@link com.stationdecor.client.render.ObjDisplayBlockEntityRenderer}.
  */
 public enum TicketMachineStyle implements StringRepresentable {
-    DB("db");
+    DB("db"),
+    BVG("bvg"),
+    BEWEGT("bewegt"),
+    GOAHEAD("goahead"),
+    RMV("rmv"),
+    VVR("vvr");
 
     public static final StringRepresentable.EnumCodec<TicketMachineStyle> CODEC = StringRepresentable.fromEnum(TicketMachineStyle::values);
     public static final StreamCodec<ByteBuf, TicketMachineStyle> STREAM_CODEC =
