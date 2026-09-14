@@ -66,6 +66,17 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 - Technischer Hinweis: Das `RenderHighlightEvent.Block` von NeoForge ist in
   1.21.1 nicht abbrechbar – die 2 Trennlinien werden daher zusätzlich zur
   vanilla Auswahlbox gezeichnet, nicht anstelle davon.
+- **16 Farben, per Farbstoff umfärbbar:** Nutzt das gelieferte Modell
+  `platform_border_narrow_<farbe>.json` (eines pro Vanilla-`DyeColor`, z.B.
+  `platform_border_narrow_light_blue.json`), nicht mehr das alte
+  OBJ-Platzhaltermodell. Die Farbe liegt als `DyeColor`-Feld auf der
+  BlockEntity (Default `YELLOW`, persistiert + client-synchronisiert wie die
+  Rotation). Rechtsklick mit einem beliebigen Farbstoff-Item auf den
+  platzierten Block ändert die Farbe (`FloorMarkingBlock#useItemOn`), verbraucht
+  1 Farbstoff außerhalb des Kreativmodus und spielt `SoundEvents.DYE_USE`.
+  Modellauswahl beim Rendern über `client.render.FloorMarkingModels`, das
+  alle 16 Modelle dynamisch aus `DyeColor.values()` ableitet - eine neue
+  Farbe bräuchte daher nur ein zusätzliches Modell/Textur, keinen Code.
 
 ### 4. `station_decor:ks_main_signal` – Ks-Hauptsignal & `station_decor:ks_distant_signal` – Ks-Vorsignal
 
@@ -310,13 +321,11 @@ auf 4/8/16 – "8" ergibt z.B. 45°-Schritte, weil `360° / 8 = 45°`).
 Damit das Grundgerüst sofort baut und im Spiel testbar ist, wurden
 Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
 
-- **3D-Modelle:** `floor_marking.obj`/`.mtl` ist noch eine einfache
-  Platzhaltergeometrie, kein fertiges Möbelstück. Der Fahrkartenautomat
-  (`db_fahrkartenautomat.obj`/`.mtl`) und der Sitzblock (`seat_render.json`,
-  ein vanilla Mehrelement-Blockmodell statt OBJ) sind bereits die
-  gelieferten, echten Modelle inklusive echter Texturen
-  (`ticket_machine.png` 256×256, `seat.png` 64×64). Ersetzen läuft über
-  `models/block/<name>_render.json` (Pfad zum Modell, Textur-Zuordnung).
+- **3D-Modelle:** Der Fahrkartenautomat (`<style>_fahrkartenautomat.obj`/`.mtl`),
+  der Sitzblock (`seat_render.json`, ein vanilla Mehrelement-Blockmodell statt
+  OBJ) und die Bodenmarkierung (`platform_border_narrow_<farbe>.json`, ebenfalls
+  vanilla Mehrelement-Modelle, 16 Farbvarianten) sind die gelieferten, echten
+  Modelle inklusive echter Texturen.
 - **Root Cause gefunden und behoben (dank `logs/latest.log`):** Der Grund
   für den magenta/schwarzen "Missing Model"-Würfel war die
   `map_Kd`-Textur-Referenz gar nicht, sondern der **Dateiname** des Modells.
@@ -331,9 +340,11 @@ Platzhalter-Assets erzeugt, die ihr nach Bedarf ersetzen könnt:
 - **Rotation ist wieder aktiv** (siehe oben) - Inventar-Slot und die echte
   GUI (Zielknöpfe, Münzslot) wurden für das Debugging entfernt und sind noch
   nicht zurückgebaut - sag Bescheid, wenn das wieder rein soll.
-- **Weitere Texturen:** `textures/block/floor_marking.png` ist ein simpler
-  16×16-Platzhalter. `seat.png` (64×64) und `ticket_machine.png` (256×256)
-  sind mittlerweile die echten, gelieferten Texturen.
+- **Weitere Texturen:** `seat.png` (64×64), `ticket_machine_<style>.png`
+  (256×256) und `texture019.png`-`texture034.png` (16×16, eine pro
+  Bodenmarkierungs-Farbe) sind die echten, gelieferten Texturen. Die alte
+  `floor_marking.png` (16×16-Platzhalter) ist nur noch als unbenutztes
+  Cube-all-Fallback-Modell (`block/floor_marking.json`) vorhanden.
 - **Kollisionsbox:** Aus Einfachheitsgründen ist die Hitbox beider Blöcke
   rotationsunabhängig (ein fester, leicht verkleinerter Würfel). Eine exakt
   der 22,5°-Rotation folgende Box wäre nicht mehr achsenparallel und wurde

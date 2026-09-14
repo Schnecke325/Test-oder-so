@@ -5,6 +5,7 @@ import com.stationdecor.block.signal.KsDistantSignalBlock;
 import com.stationdecor.block.signal.KsMainSignalBlock;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlock;
 import com.stationdecor.client.render.FloorMarkingBlockEntityRenderer;
+import com.stationdecor.client.render.FloorMarkingModels;
 import com.stationdecor.client.render.ObjDisplayBlockEntityRenderer;
 import com.stationdecor.client.render.RotatableSignalRenderer;
 import com.stationdecor.client.render.SeatBlockEntityRenderer;
@@ -43,7 +44,9 @@ public final class ClientSetup {
         event.register(TicketMachineModels.RMV);
         event.register(TicketMachineModels.VVR);
         event.register(SeatBlockEntityRenderer.MODEL);
-        event.register(FloorMarkingBlockEntityRenderer.MODEL);
+        for (var model : FloorMarkingModels.all()) {
+            event.register(model);
+        }
 
         event.register(SignalModels.KS_MAIN_SIGNAL_HP0);
         event.register(SignalModels.KS_MAIN_SIGNAL_HP1);
