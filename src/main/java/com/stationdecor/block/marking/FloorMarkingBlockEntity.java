@@ -6,15 +6,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * BlockEntity der Bodenmarkierung. Neben der geerbten freien Rotation wird
  * zusätzlich ein Nah/Mitte/Fern-Versatz gespeichert, der beim Platzieren über
- * die 3 Zonen der Vorschau-Outline gewählt wird (siehe {@link FloorMarkingBlockItem}),
- * sowie die aktuelle Farbe (per Rechtsklick mit Farbstoff änderbar, siehe
- * {@link FloorMarkingBlock#useItemOn}).
+ * die 3 Zonen der Vorschau-Outline gewählt wird (siehe {@link FloorMarkingBlockItem}).
+ * Die Farbe selbst ist keine eigene, veränderliche Eigenschaft der
+ * BlockEntity mehr, sondern ergibt sich aus dem konkreten Block (jede Farbe
+ * ist ein eigener Block, siehe {@link FloorMarkingBlock}) - Umfärben per
+ * Farbstoff (siehe {@link FloorMarkingBlock#useItemOn}) tauscht daher den
+ * Block an dieser Position komplett aus, statt nur ein Feld zu ändern.
  */
 public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
 
@@ -22,7 +24,6 @@ public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
     public static final float OFFSET_STEP = 1f / 3f;
 
     private int offsetIndex = 0;
-    private DyeColor color = DyeColor.YELLOW;
 
     public FloorMarkingBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FLOOR_MARKING.get(), pos, state);
@@ -46,30 +47,18 @@ public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
     }
 
     public DyeColor getColor() {
-        return color;
-    }
-
-    /** Setzt die Farbe, speichert die Änderung und synchronisiert sie zu allen Clients in der Nähe. */
-    public void setColor(DyeColor color) {
-        this.color = color;
-        setChanged();
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_ALL);
-        }
+        return ((FloorMarkingBlock) getBlockState().getBlock()).getColor();
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("OffsetIndex", offsetIndex);
-        tag.putString("Color", color.getSerializedName());
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.offsetIndex = Math.max(-1, Math.min(1, tag.getInt("OffsetIndex")));
-        this.color = DyeColor.byName(tag.getString("Color"), DyeColor.YELLOW);
     }
 }

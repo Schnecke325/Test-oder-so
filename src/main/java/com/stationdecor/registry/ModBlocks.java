@@ -8,6 +8,7 @@ import com.stationdecor.block.seat.SeatBlock;
 import com.stationdecor.block.signal.KsDistantSignalBlock;
 import com.stationdecor.block.signal.KsMainSignalBlock;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlock;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -44,13 +45,22 @@ public final class ModBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
 
-    public static final DeferredBlock<FloorMarkingBlock> FLOOR_MARKING = BLOCKS.register("floor_marking",
-            () -> new FloorMarkingBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.COLOR_YELLOW)
-                    .strength(0.5f)
-                    .sound(SoundType.STONE)
-                    .noOcclusion()
-                    .noCollission()));
+    /** Ein separat registrierter Block pro Farbe, siehe {@link DyeColor}. */
+    public static final Map<DyeColor, DeferredBlock<FloorMarkingBlock>> FLOOR_MARKING = registerFloorMarkingBlocks();
+
+    private static Map<DyeColor, DeferredBlock<FloorMarkingBlock>> registerFloorMarkingBlocks() {
+        Map<DyeColor, DeferredBlock<FloorMarkingBlock>> blocks = new EnumMap<>(DyeColor.class);
+        for (DyeColor color : DyeColor.values()) {
+            blocks.put(color, BLOCKS.register("floor_marking_" + color.getSerializedName(),
+                    () -> new FloorMarkingBlock(BlockBehaviour.Properties.of()
+                            .mapColor(color.getMapColor())
+                            .strength(0.5f)
+                            .sound(SoundType.STONE)
+                            .noOcclusion()
+                            .noCollission(), color)));
+        }
+        return blocks;
+    }
 
     public static final DeferredBlock<KsMainSignalBlock> KS_MAIN_SIGNAL = BLOCKS.register("ks_main_signal",
             () -> new KsMainSignalBlock(BlockBehaviour.Properties.of()

@@ -5,6 +5,7 @@ import com.stationdecor.block.marking.FloorMarkingBlockItem;
 import com.stationdecor.block.obj.TicketMachineStyle;
 import com.stationdecor.item.SignalBinderItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -31,8 +32,17 @@ public final class ModItems {
     public static final Supplier<BlockItem> SEAT = ITEMS.registerSimpleBlockItem(
             "seat", ModBlocks.SEAT, new Item.Properties());
 
-    public static final Supplier<FloorMarkingBlockItem> FLOOR_MARKING = ITEMS.register("floor_marking",
-            () -> new FloorMarkingBlockItem(ModBlocks.FLOOR_MARKING.get(), new Item.Properties()));
+    /** Ein separat registriertes Item pro Farbe, siehe {@link DyeColor}. */
+    public static final Map<DyeColor, Supplier<FloorMarkingBlockItem>> FLOOR_MARKING = registerFloorMarkingItems();
+
+    private static Map<DyeColor, Supplier<FloorMarkingBlockItem>> registerFloorMarkingItems() {
+        Map<DyeColor, Supplier<FloorMarkingBlockItem>> items = new EnumMap<>(DyeColor.class);
+        for (DyeColor color : DyeColor.values()) {
+            items.put(color, ITEMS.register("floor_marking_" + color.getSerializedName(),
+                    () -> new FloorMarkingBlockItem(ModBlocks.FLOOR_MARKING.get(color).get(), new Item.Properties())));
+        }
+        return items;
+    }
 
     public static final Supplier<BlockItem> KS_MAIN_SIGNAL = ITEMS.registerSimpleBlockItem(
             "ks_main_signal", ModBlocks.KS_MAIN_SIGNAL, new Item.Properties());

@@ -49,7 +49,7 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   automatisch dessen Rotation, statt sich an der Blickrichtung des Spielers
   zu orientieren. Abschaltbar per Config.
 
-### 3. `station_decor:floor_marking` – Bodenmarkierung
+### 3. `station_decor:floor_marking_<farbe>` – Bodenmarkierung
 
 - Ebenfalls frei rotierbar (eigene konfigurierbare Schrittzahl).
 - **Vorschau-Outline beim Zielen:** Hält man das Item in der Hand und zielt
@@ -66,17 +66,23 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 - Technischer Hinweis: Das `RenderHighlightEvent.Block` von NeoForge ist in
   1.21.1 nicht abbrechbar – die 2 Trennlinien werden daher zusätzlich zur
   vanilla Auswahlbox gezeichnet, nicht anstelle davon.
-- **16 Farben, per Farbstoff umfärbbar:** Nutzt das gelieferte Modell
-  `platform_border_narrow_<farbe>.json` (eines pro Vanilla-`DyeColor`, z.B.
-  `platform_border_narrow_light_blue.json`), nicht mehr das alte
-  OBJ-Platzhaltermodell. Die Farbe liegt als `DyeColor`-Feld auf der
-  BlockEntity (Default `YELLOW`, persistiert + client-synchronisiert wie die
-  Rotation). Rechtsklick mit einem beliebigen Farbstoff-Item auf den
-  platzierten Block ändert die Farbe (`FloorMarkingBlock#useItemOn`), verbraucht
-  1 Farbstoff außerhalb des Kreativmodus und spielt `SoundEvents.DYE_USE`.
-  Modellauswahl beim Rendern über `client.render.FloorMarkingModels`, das
-  alle 16 Modelle dynamisch aus `DyeColor.values()` ableitet - eine neue
-  Farbe bräuchte daher nur ein zusätzliches Modell/Textur, keinen Code.
+- **16 Farben als separate Blöcke, per Farbstoff umfärbbar:** Jede Farbe
+  (ein Vanilla-`DyeColor`) ist ein eigener, separat im Creative-Tab
+  wählbarer Block/Item (`floor_marking_white`, `floor_marking_yellow`, ...) -
+  genau wie bei den Fahrkartenautomat-Varianten. Nutzt das gelieferte Modell
+  `platform_border_narrow_<farbe>.json` (eines pro Farbe, z.B.
+  `platform_border_narrow_light_blue.json`) statt des alten
+  OBJ-Platzhaltermodells; Modellauswahl beim Rendern über
+  `client.render.FloorMarkingModels`, das alle 16 Modelle dynamisch aus
+  `DyeColor.values()` ableitet. Trotzdem lässt sich ein bereits platzierter
+  Block per Rechtsklick mit einem beliebigen Farbstoff umfärben
+  (`FloorMarkingBlock#useItemOn`): dabei wird der Block an dieser Position
+  durch die passende Farbvariante ersetzt (Rotation und Nah/Mitte/Fern-Versatz
+  werden auf die neue BlockEntity übernommen), verbraucht 1 Farbstoff
+  außerhalb des Kreativmodus und spielt `SoundEvents.DYE_USE`. Alle 16
+  Blöcke teilen sich eine `BlockEntityType`, die ihre Farbe direkt vom
+  Block-Objekt abliest (`FloorMarkingBlockEntity#getColor`), wie beim
+  Fahrkartenautomaten.
 
 ### 4. `station_decor:ks_main_signal` – Ks-Hauptsignal & `station_decor:ks_distant_signal` – Ks-Vorsignal
 

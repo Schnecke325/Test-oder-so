@@ -29,9 +29,12 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("seat", () -> BlockEntityType.Builder.of(
                     SeatBlockEntity::new, ModBlocks.SEAT.get()).build(null));
 
+    /** Eine BlockEntityType-Definition, gültig für alle Bodenmarkierungs-Farbvarianten. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FloorMarkingBlockEntity>> FLOOR_MARKING =
             BLOCK_ENTITIES.register("floor_marking", () -> BlockEntityType.Builder.of(
-                    FloorMarkingBlockEntity::new, ModBlocks.FLOOR_MARKING.get()).build(null));
+                    FloorMarkingBlockEntity::new,
+                    ModBlocks.FLOOR_MARKING.values().stream().map(DeferredHolder::get).toArray(Block[]::new)
+            ).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsMainSignalBlockEntity>> KS_MAIN_SIGNAL =
             BLOCK_ENTITIES.register("ks_main_signal", () -> BlockEntityType.Builder.of(
