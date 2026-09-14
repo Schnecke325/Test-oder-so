@@ -3,7 +3,6 @@ package com.stationdecor.block.obj;
 import com.mojang.serialization.MapCodec;
 import com.stationdecor.block.rotation.RotationUtil;
 import com.stationdecor.config.StationDecorConfig;
-import com.stationdecor.registry.ModDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -28,10 +27,16 @@ import org.jetbrains.annotations.Nullable;
  * dargestellt wird - frei rotierbar wie Sitzblock/Bodenmarkierung/Signale
  * (siehe {@code AbstractRotatableBlockEntity}). Ein Rechtsklick öffnet ein
  * einfaches Platzhalter-GUI.
+ * <p>
+ * Jede optische Variante ({@link TicketMachineStyle}) ist ein eigener,
+ * separat registrierter Block (siehe {@code ModBlocks.OBJ_DISPLAY}) - die
+ * Variante ist also fest an den platzierten Blocktyp gebunden, nicht am
+ * Item umschaltbar.
  */
 public class ObjDisplayBlock extends BaseEntityBlock {
 
-    public static final MapCodec<ObjDisplayBlock> CODEC = simpleCodec(ObjDisplayBlock::new);
+    private final TicketMachineStyle style;
+    private final MapCodec<ObjDisplayBlock> codec;
 
     /**
      * Feste, rotationsunabhängige Kollisionsbox, nahezu blockfüllend. Das
@@ -44,13 +49,19 @@ public class ObjDisplayBlock extends BaseEntityBlock {
      */
     private static final VoxelShape SHAPE = box(-4, 0, -4, 20, 48, 20);
 
-    public ObjDisplayBlock(BlockBehaviour.Properties properties) {
+    public ObjDisplayBlock(BlockBehaviour.Properties properties, TicketMachineStyle style) {
         super(properties);
+        this.style = style;
+        this.codec = simpleCodec(props -> new ObjDisplayBlock(props, style));
+    }
+
+    public TicketMachineStyle getStyle() {
+        return style;
     }
 
     @Override
     protected MapCodec<ObjDisplayBlock> codec() {
-        return CODEC;
+        return codec;
     }
 
     @Override
@@ -80,7 +91,6 @@ public class ObjDisplayBlock extends BaseEntityBlock {
         int steps = StationDecorConfig.OBJ_BLOCK_ROTATION_STEPS.get();
         float yaw = placer != null ? placer.getYRot() : 0f;
         blockEntity.setRotation(RotationUtil.snapToIndex(yaw, steps), steps);
-        blockEntity.setStyle(stack.getOrDefault(ModDataComponents.TICKET_MACHINE_STYLE.get(), TicketMachineStyle.DB));
     }
 
     @Override

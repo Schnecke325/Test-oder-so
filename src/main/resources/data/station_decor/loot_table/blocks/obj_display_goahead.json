@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "station_decor:obj_display"
+          "name": "station_decor:obj_display_goahead"
         }
       ]
     }

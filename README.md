@@ -5,7 +5,7 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 
 ## Enthaltene Blöcke
 
-### 1. `station_decor:obj_display` – Fahrkartenautomat (OBJ-Block)
+### 1. `station_decor:obj_display_<style>` – Fahrkartenautomat (OBJ-Block)
 
 - Wird über einen `BlockEntityRenderer` als **OBJ-Modell** gerendert (nicht
   über ein normales Blockmodell).
@@ -19,19 +19,23 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   (Zielknöpfe, Münzslot für eine spätere **Create: Numismatics**-Zahlung)
   kommen zurück, sobald das Modell zuverlässig rendert.
 - **Varianten (`TicketMachineStyle`):** `db`, `bvg`, `bewegt`, `goahead`,
-  `rmv`, `vvr` - alle mit eigenem gelieferten Modell + Textur, funktional
-  identisch zum DB-Automaten. Die Variante wird als Data Component auf dem
-  Item gespeichert. Rechtsklick mit dem Item **in die Luft** (kein Block in
-  Reichweite) schaltet zur nächsten Variante weiter (Chat-Bestätigung); die
-  beim Platzieren aktive Variante wird auf die BlockEntity übertragen und
-  bestimmt Modell/Textur. Weitere Varianten hinzufügen: neuen Enum-Wert in
+  `rmv`, `vvr` - jede Variante ist ein **eigener, separat platzierbarer
+  Block/Item** (`obj_display_db`, `obj_display_bvg`, ...), nicht ein
+  umschaltbarer Zustand. Alle sechs teilen sich eine `BlockEntityType`
+  (`ObjDisplayBlockEntity`), die ihre Variante beim Rendern direkt vom
+  Block-Objekt abliest (`ObjDisplayBlock#getStyle()`) statt sie selbst zu
+  speichern. Weitere Varianten hinzufügen: neuen Enum-Wert in
   `TicketMachineStyle`, passende
   `models/block/obj_display_render_<name>.json` +
-  `textures/block/ticket_machine_<name>.png` anlegen, in
-  `TicketMachineModels`/`ObjDisplayBlockEntityRenderer#modelFor` verdrahten
-  und in `ClientSetup` als zusätzliches Modell registrieren. Jede Variante
-  bekommt später eine eigene GUI-Textur, sobald die echte GUI gebaut wird -
-  aktuell zeigen alle Varianten denselben "Soon™"-Platzhalter.
+  `textures/block/ticket_machine_<name>.png` anlegen, dazu
+  `blockstates/obj_display_<name>.json`, `models/block/obj_display_<name>.json`,
+  `models/item/obj_display_<name>.json` und
+  `data/.../loot_table/blocks/obj_display_<name>.json` - der Rest (Block-,
+  Item- und Modellregistrierung sowie die Creative-Tab-Liste) läuft
+  automatisch über die `TicketMachineStyle.values()`-Schleifen in
+  `ModBlocks`/`ModItems`/`ModCreativeTabs`. Jede Variante bekommt später eine
+  eigene GUI-Textur, sobald die echte GUI gebaut wird - aktuell zeigen alle
+  Varianten denselben "Soon™"-Platzhalter.
 
 ### 2. `station_decor:seat` – Sitzblock
 

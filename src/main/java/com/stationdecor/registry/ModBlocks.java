@@ -3,6 +3,7 @@ package com.stationdecor.registry;
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlock;
 import com.stationdecor.block.obj.ObjDisplayBlock;
+import com.stationdecor.block.obj.TicketMachineStyle;
 import com.stationdecor.block.seat.SeatBlock;
 import com.stationdecor.block.signal.KsDistantSignalBlock;
 import com.stationdecor.block.signal.KsMainSignalBlock;
@@ -13,16 +14,28 @@ import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public final class ModBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(StationDecorMod.MOD_ID);
 
-    public static final DeferredBlock<ObjDisplayBlock> OBJ_DISPLAY = BLOCKS.register("obj_display",
-            () -> new ObjDisplayBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.METAL)
-                    .strength(2.5f)
-                    .sound(SoundType.METAL)
-                    .noOcclusion()));
+    /** Ein separat registrierter Block pro Fahrkartenautomat-Variante, siehe {@link TicketMachineStyle}. */
+    public static final Map<TicketMachineStyle, DeferredBlock<ObjDisplayBlock>> OBJ_DISPLAY = registerObjDisplayBlocks();
+
+    private static Map<TicketMachineStyle, DeferredBlock<ObjDisplayBlock>> registerObjDisplayBlocks() {
+        Map<TicketMachineStyle, DeferredBlock<ObjDisplayBlock>> blocks = new EnumMap<>(TicketMachineStyle.class);
+        for (TicketMachineStyle style : TicketMachineStyle.values()) {
+            blocks.put(style, BLOCKS.register("obj_display_" + style.getSerializedName(),
+                    () -> new ObjDisplayBlock(BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.METAL)
+                            .strength(2.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion(), style)));
+        }
+        return blocks;
+    }
 
     public static final DeferredBlock<SeatBlock> SEAT = BLOCKS.register("seat",
             () -> new SeatBlock(BlockBehaviour.Properties.of()

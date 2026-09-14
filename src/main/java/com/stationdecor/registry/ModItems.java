@@ -2,20 +2,31 @@ package com.stationdecor.registry;
 
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.marking.FloorMarkingBlockItem;
-import com.stationdecor.block.obj.ObjDisplayBlockItem;
+import com.stationdecor.block.obj.TicketMachineStyle;
 import com.stationdecor.item.SignalBinderItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public final class ModItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(StationDecorMod.MOD_ID);
 
-    public static final Supplier<ObjDisplayBlockItem> OBJ_DISPLAY = ITEMS.register("obj_display",
-            () -> new ObjDisplayBlockItem(ModBlocks.OBJ_DISPLAY.get(), new Item.Properties()));
+    /** Ein separat registriertes Item pro Fahrkartenautomat-Variante, siehe {@link TicketMachineStyle}. */
+    public static final Map<TicketMachineStyle, Supplier<BlockItem>> OBJ_DISPLAY = registerObjDisplayItems();
+
+    private static Map<TicketMachineStyle, Supplier<BlockItem>> registerObjDisplayItems() {
+        Map<TicketMachineStyle, Supplier<BlockItem>> items = new EnumMap<>(TicketMachineStyle.class);
+        for (TicketMachineStyle style : TicketMachineStyle.values()) {
+            items.put(style, ITEMS.registerSimpleBlockItem(
+                    "obj_display_" + style.getSerializedName(), ModBlocks.OBJ_DISPLAY.get(style), new Item.Properties()));
+        }
+        return items;
+    }
 
     public static final Supplier<BlockItem> SEAT = ITEMS.registerSimpleBlockItem(
             "seat", ModBlocks.SEAT, new Item.Properties());

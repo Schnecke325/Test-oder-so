@@ -8,6 +8,7 @@ import com.stationdecor.block.signal.KsDistantSignalBlockEntity;
 import com.stationdecor.block.signal.KsMainSignalBlockEntity;
 import com.stationdecor.block.signal.KsMultiSectionSignalBlockEntity;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -17,9 +18,12 @@ public final class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, StationDecorMod.MOD_ID);
 
+    /** Eine BlockEntityType-Definition, gültig für alle Fahrkartenautomat-Varianten-Blöcke. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ObjDisplayBlockEntity>> OBJ_DISPLAY =
             BLOCK_ENTITIES.register("obj_display", () -> BlockEntityType.Builder.of(
-                    ObjDisplayBlockEntity::new, ModBlocks.OBJ_DISPLAY.get()).build(null));
+                    ObjDisplayBlockEntity::new,
+                    ModBlocks.OBJ_DISPLAY.values().stream().map(DeferredHolder::get).toArray(Block[]::new)
+            ).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeatBlockEntity>> SEAT =
             BLOCK_ENTITIES.register("seat", () -> BlockEntityType.Builder.of(
