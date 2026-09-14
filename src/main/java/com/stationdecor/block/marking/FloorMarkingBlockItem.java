@@ -21,17 +21,6 @@ import net.minecraft.world.phys.Vec3;
  */
 public class FloorMarkingBlockItem extends BlockItem {
 
-    /**
-     * Das Modell ist lokal entlang Z ausgerichtet (Länge in Blickrichtung) -
-     * ohne Korrektur läge die Markierung beim Platzieren also parallel zur
-     * Blickrichtung statt quer dazu, was sich unpraktisch anfühlt. Dieser
-     * feste Versatz macht die Standardausrichtung quer zur Blickrichtung
-     * (wie eine Bahnsteigkante, die man von vorne anläuft). Wird konsistent
-     * hier, in der Vorschau-Outline ({@code client.PlacementOutlineHandler})
-     * und im Rotations-HUD ({@code client.RotationHudOverlay}) angewendet.
-     */
-    public static final float ROTATION_OFFSET_DEGREES = 90f;
-
     public FloorMarkingBlockItem(Block block, Item.Properties properties) {
         super(block, properties);
     }
@@ -54,7 +43,7 @@ public class FloorMarkingBlockItem extends BlockItem {
 
         int steps = StationDecorConfig.FLOOR_MARKING_ROTATION_STEPS.get();
         Player player = context.getPlayer();
-        float yaw = (player != null ? player.getYRot() : 0f) + ROTATION_OFFSET_DEGREES;
+        float yaw = player != null ? player.getYRot() : 0f;
         int rotationIndex = RotationUtil.snapToIndex(yaw, steps);
         float rotationDegrees = RotationUtil.indexToDegrees(rotationIndex, steps);
 

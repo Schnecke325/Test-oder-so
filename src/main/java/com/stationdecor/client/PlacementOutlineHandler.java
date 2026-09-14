@@ -54,8 +54,7 @@ public final class PlacementOutlineHandler {
         Direction face = target.getDirection();
 
         int steps = StationDecorConfig.FLOOR_MARKING_ROTATION_STEPS.get();
-        float yaw = player.getYRot() + FloorMarkingBlockItem.ROTATION_OFFSET_DEGREES;
-        float rotationDegrees = RotationUtil.indexToDegrees(RotationUtil.snapToIndex(yaw, steps), steps);
+        float rotationDegrees = RotationUtil.indexToDegrees(RotationUtil.snapToIndex(player.getYRot(), steps), steps);
         Vec3 forward = RotationUtil.forwardVector(rotationDegrees);
         // Horizontale Senkrechte zu "forward", um die Trennlinien quer über die Fläche zu ziehen.
         Vec3 sideways = new Vec3(forward.z, 0, -forward.x);

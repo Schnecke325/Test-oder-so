@@ -48,15 +48,17 @@ public final class RotatedObjRenderHelper {
     }
 
     /**
-     * Wie oben, streckt das Modell zusätzlich um {@code forwardScale} entlang seiner eigenen
-     * (lokalen, unrotierten) Z-Achse, symmetrisch um seine Mitte. Genutzt von der
-     * Bodenmarkierung: bei einer diagonalen Rotation (z.B. 45°) ist die Diagonale eines
-     * Blocks um den Faktor 1/cos(Winkel zur nächsten Achse) länger als dessen Kante
-     * (bei 45° z.B. √2 ≈ 1,41), sonst würde die Markierung nicht mehr bis zum
-     * gegenüberliegenden Blockrand reichen.
+     * Wie oben, streckt das Modell zusätzlich um {@code lengthScale} entlang seiner eigenen
+     * (lokalen, unrotierten) X-Achse, symmetrisch um seine Mitte - das ist bei der
+     * Bodenmarkierung die Längsachse des Modells (das Modell liegt lokal quer zur
+     * Blickrichtung, siehe die {@code platform_border_narrow_<farbe>.json}-Modelle).
+     * Bei einer diagonalen Rotation (z.B. 45°) ist die Diagonale eines Blocks um den
+     * Faktor 1/cos(Winkel zur nächsten Achse) länger als dessen Kante (bei 45° z.B.
+     * √2 ≈ 1,41), sonst würde die Markierung nicht mehr bis zum gegenüberliegenden
+     * Blockrand reichen.
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
-                               float offsetX, float offsetY, float offsetZ, float forwardScale,
+                               float offsetX, float offsetY, float offsetZ, float lengthScale,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
@@ -70,12 +72,12 @@ public final class RotatedObjRenderHelper {
         poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
         poseStack.translate(offsetX, offsetY, offsetZ);
         poseStack.translate(-0.5, 0, -0.5);
-        if (forwardScale != 1f) {
-            // Um die lokale Mitte (Z=0.5) strecken statt um den Modellursprung (Z=0),
+        if (lengthScale != 1f) {
+            // Um die lokale Mitte (X=0.5) strecken statt um den Modellursprung (X=0),
             // sonst würde die Markierung nur nach einer Seite wachsen statt symmetrisch.
-            poseStack.translate(0, 0, 0.5);
-            poseStack.scale(1f, 1f, forwardScale);
-            poseStack.translate(0, 0, -0.5);
+            poseStack.translate(0.5, 0, 0);
+            poseStack.scale(lengthScale, 1f, 1f);
+            poseStack.translate(-0.5, 0, 0);
         }
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());

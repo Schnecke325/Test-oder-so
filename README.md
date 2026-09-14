@@ -52,20 +52,22 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
 ### 3. `station_decor:floor_marking_<farbe>` – Bodenmarkierung
 
 - Ebenfalls frei rotierbar (eigene konfigurierbare Schrittzahl).
-- **90°-Basisausrichtung:** Das Modell ist lokal entlang Z ausgerichtet
-  (Länge in Blickrichtung); `FloorMarkingBlockItem.ROTATION_OFFSET_DEGREES`
-  (90°) sorgt dafür, dass die Markierung standardmäßig quer zur
-  Blickrichtung liegt statt parallel dazu - praktischer beim Platzieren
-  (z.B. als Bahnsteigkante, die man von vorne anläuft). Wird konsistent auf
-  die tatsächliche Platzierung, die Vorschau-Outline und das Rotations-HUD
-  angewendet.
+- **90°-Basisausrichtung:** Im gelieferten Modell lag die Länge lokal entlang
+  Z (Blickrichtung) - unpraktisch beim Platzieren, da die Markierung parallel
+  statt quer zur Blickrichtung erschien. Statt dessen im Code zu korrigieren
+  (das hätte den Nah/Mitte/Fern-Versatz und die Vorschau-Outline gleich mit
+  verdreht, da beide denselben Rotationswert nutzen), ist die Drehung direkt
+  in die 16 `platform_border_narrow_<farbe>.json`-Modelle einbebacken (X-
+  und Z-Spanne inkl. der `up`/`down`-UVs vertauscht) - die Länge liegt jetzt
+  lokal entlang X. Rotation, Versatz und Vorschau-Outline bleiben dadurch
+  unverändert an der reinen Blickrichtung ausgerichtet.
 - **Diagonale Streckung:** Bei einer Rotation abseits der 4 Achsenwinkel
   (z.B. 45°) reicht die Diagonale eines Blocks weiter als dessen Kante -
   ohne Korrektur würde die Markierung nicht mehr bis zum gegenüberliegenden
   Blockrand reichen. `RotationUtil#diagonalStretch` berechnet den nötigen
   Streckfaktor (bei genau 45°: `1/cos(45°) ≈ 1,41`), `RotatedObjRenderHelper`
-  streckt das Modell entsprechend nur entlang seiner Länge (nicht der Breite),
-  symmetrisch um seine Mitte.
+  streckt das Modell entsprechend nur entlang seiner lokalen X-Achse (der
+  Länge, nicht der Breite), symmetrisch um seine Mitte.
 - **Vorschau-Outline beim Zielen:** Hält man das Item in der Hand und zielt
   auf einen Block, wird zusätzlich zur normalen Auswahlbox eine Outline
   gezeichnet, die die anvisierte Fläche entlang der (eingerasteten)
