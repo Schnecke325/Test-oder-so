@@ -14,8 +14,20 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
  * Modell/Farbton (siehe {@link FloorMarkingModels}) und einer winkelabhängigen
  * Streckung (siehe {@link RotationUtil#diagonalStretch}), damit die Markierung
  * auch diagonal (z.B. 45°) noch bis zum gegenüberliegenden Blockrand reicht.
+ * <p>
+ * Zusätzlich ein rein visueller {@link #PRACTICAL_TWIST_DEGREES}-Dreh am Modell
+ * selbst (siehe {@code RotatedObjRenderHelper#render} mit {@code localTwistDegrees}) -
+ * das gelieferte Modell/Textur ist lokal entlang Z ausgerichtet (Länge in
+ * Blickrichtung), was sich beim Platzieren unpraktisch anfühlt. Bewusst NICHT
+ * über {@code rotationDegrees} selbst gelöst, da dieser Wert auch für den
+ * Nah/Mitte/Fern-Versatz und die Vorschau-Outline verwendet wird
+ * ({@code FloorMarkingBlockItem}, {@code client.PlacementOutlineHandler}) - die
+ * sollen weiterhin exakt der Blickrichtung folgen, nicht der (praktischeren)
+ * Modellausrichtung.
  */
 public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<FloorMarkingBlockEntity> {
+
+    private static final float PRACTICAL_TWIST_DEGREES = 90f;
 
     public FloorMarkingBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -25,7 +37,8 @@ public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<Floo
                         MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         float rotationDegrees = blockEntity.getRotationDegrees();
         RotatedObjRenderHelper.render(FloorMarkingModels.forColor(blockEntity.getColor()), rotationDegrees,
-                0f, 0f, blockEntity.getOffsetDistance(), RotationUtil.diagonalStretch(rotationDegrees),
+                0f, 0f, blockEntity.getOffsetDistance(),
+                PRACTICAL_TWIST_DEGREES, RotationUtil.diagonalStretch(rotationDegrees),
                 poseStack, bufferSource, packedLight, packedOverlay);
     }
 }

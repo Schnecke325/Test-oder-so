@@ -33,7 +33,7 @@ public final class RotatedObjRenderHelper {
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees, float forwardOffset,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        render(modelLocation, rotationDegrees, 0f, 0f, forwardOffset, 1f, poseStack, bufferSource, packedLight, packedOverlay);
+        render(modelLocation, rotationDegrees, 0f, 0f, forwardOffset, 0f, 1f, poseStack, bufferSource, packedLight, packedOverlay);
     }
 
     /**
@@ -44,21 +44,35 @@ public final class RotatedObjRenderHelper {
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
                                float offsetX, float offsetY, float offsetZ,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        render(modelLocation, rotationDegrees, offsetX, offsetY, offsetZ, 1f, poseStack, bufferSource, packedLight, packedOverlay);
+        render(modelLocation, rotationDegrees, offsetX, offsetY, offsetZ, 0f, 1f, poseStack, bufferSource, packedLight, packedOverlay);
     }
 
     /**
-     * Wie oben, streckt das Modell zusätzlich um {@code lengthScale} entlang seiner eigenen
-     * (lokalen, unrotierten) X-Achse, symmetrisch um seine Mitte - das ist bei der
-     * Bodenmarkierung die Längsachse des Modells (das Modell liegt lokal quer zur
-     * Blickrichtung, siehe die {@code platform_border_narrow_<farbe>.json}-Modelle).
-     * Bei einer diagonalen Rotation (z.B. 45°) ist die Diagonale eines Blocks um den
-     * Faktor 1/cos(Winkel zur nächsten Achse) länger als dessen Kante (bei 45° z.B.
-     * √2 ≈ 1,41), sonst würde die Markierung nicht mehr bis zum gegenüberliegenden
-     * Blockrand reichen.
+     * Wie oben, mit 2 zusätzlichen, rein lokalen Anpassungen des Modells selbst - unabhängig von
+     * {@code rotationDegrees}/{@code offset} (die weiterhin exakt der Blickrichtung entsprechen,
+     * z.B. für den Nah/Mitte/Fern-Versatz und die Vorschau-Outline der Bodenmarkierung):
+     * <ul>
+     *   <li>{@code localTwistDegrees}: dreht NUR das Modell selbst um seine eigene Mitte
+     *   (0.5, *, 0.5) - genutzt von der Bodenmarkierung, deren geliefertes Modell/Textur lokal
+     *   entlang Z ausgerichtet ist (Länge in Blickrichtung), was sich beim Platzieren unpraktisch
+     *   anfühlte. Wichtig: Textur UND Geometrie der Bodenmarkierung gehören fest zusammen (die
+     *   Textur ist nur in einem schmalen Band entlang X undurchsichtig, passend zur schmalen
+     *   X-Spanne des Modells) - eine Drehung direkt im Modell (X/Z vertauschen) hätte das
+     *   Zusammenspiel kaputt gemacht, siehe die 16 {@code platform_border_narrow_<farbe>.json}.
+     *   Daher rein visuell hier im Renderer gelöst.</li>
+     *   <li>{@code lengthScale}: streckt das Modell entlang seiner eigenen (lokalen, unrotierten)
+     *   Z-Achse (der Längsachse vor jeder Drehung), symmetrisch um seine Mitte. Bei einer
+     *   diagonalen Rotation (z.B. 45°) ist die Diagonale eines Blocks um den Faktor
+     *   1/cos(Winkel zur nächsten Achse) länger als dessen Kante (bei 45° z.B. √2 ≈ 1,41), sonst
+     *   würde die Markierung nicht mehr bis zum gegenüberliegenden Blockrand reichen.</li>
+     * </ul>
+     * Reihenfolge: erst strecken (im ursprünglichen Modell-Koordinatensystem, in dem Z die
+     * Längsachse ist), dann drehen - damit {@code lengthScale} unabhängig von
+     * {@code localTwistDegrees} immer entlang der tatsächlichen Modell-Länge wirkt.
      */
     public static void render(ModelResourceLocation modelLocation, float rotationDegrees,
-                               float offsetX, float offsetY, float offsetZ, float lengthScale,
+                               float offsetX, float offsetY, float offsetZ,
+                               float localTwistDegrees, float lengthScale,
                                PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
 
@@ -72,12 +86,17 @@ public final class RotatedObjRenderHelper {
         poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
         poseStack.translate(offsetX, offsetY, offsetZ);
         poseStack.translate(-0.5, 0, -0.5);
+        if (localTwistDegrees != 0f) {
+            poseStack.translate(0.5, 0, 0.5);
+            poseStack.mulPose(Axis.YP.rotationDegrees(localTwistDegrees));
+            poseStack.translate(-0.5, 0, -0.5);
+        }
         if (lengthScale != 1f) {
-            // Um die lokale Mitte (X=0.5) strecken statt um den Modellursprung (X=0),
+            // Um die lokale Mitte (Z=0.5) strecken statt um den Modellursprung (Z=0),
             // sonst würde die Markierung nur nach einer Seite wachsen statt symmetrisch.
-            poseStack.translate(0.5, 0, 0);
-            poseStack.scale(lengthScale, 1f, 1f);
-            poseStack.translate(-0.5, 0, 0);
+            poseStack.translate(0, 0, 0.5);
+            poseStack.scale(1f, 1f, lengthScale);
+            poseStack.translate(0, 0, -0.5);
         }
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());
