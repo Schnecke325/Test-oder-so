@@ -9,9 +9,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Zeichnet den Sitz-Block mit seiner frei konfigurierbaren Rotation.
- */
 public class SeatBlockEntityRenderer implements BlockEntityRenderer<SeatBlockEntity> {
 
     public static final ModelResourceLocation MODEL = ModelResourceLocation.standalone(

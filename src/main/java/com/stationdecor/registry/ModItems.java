@@ -17,7 +17,6 @@ public final class ModItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(StationDecorMod.MOD_ID);
 
-    /** Ein separat registriertes Item pro Fahrkartenautomat-Variante, siehe {@link TicketMachineStyle}. */
     public static final Map<TicketMachineStyle, Supplier<BlockItem>> OBJ_DISPLAY = registerObjDisplayItems();
 
     private static Map<TicketMachineStyle, Supplier<BlockItem>> registerObjDisplayItems() {
@@ -32,7 +31,6 @@ public final class ModItems {
     public static final Supplier<BlockItem> SEAT = ITEMS.registerSimpleBlockItem(
             "seat", ModBlocks.SEAT, new Item.Properties());
 
-    /** Ein separat registriertes Item pro Farbe, siehe {@link DyeColor}. */
     public static final Map<DyeColor, Supplier<FloorMarkingBlockItem>> FLOOR_MARKING = registerFloorMarkingItems();
 
     private static Map<DyeColor, Supplier<FloorMarkingBlockItem>> registerFloorMarkingItems() {

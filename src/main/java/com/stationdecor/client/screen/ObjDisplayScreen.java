@@ -6,11 +6,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-/**
- * Stark vereinfachter Platzhalter-Screen: nur ein grauer Kasten mit "Soon™".
- * Bewusst ohne Knöpfe/Slots, um beim Debuggen des OBJ-Modell-Ladens
- * (Fahrkartenautomat) möglichst wenig bewegliche Teile zu haben.
- */
 public class ObjDisplayScreen extends AbstractContainerScreen<ObjDisplayMenu> {
 
     private static final int PANEL_COLOR = 0xF0202225;
@@ -21,7 +16,7 @@ public class ObjDisplayScreen extends AbstractContainerScreen<ObjDisplayMenu> {
         super(menu, playerInventory, title);
         this.imageWidth = 140;
         this.imageHeight = 80;
-        this.inventoryLabelY = -1000; // "Inventar"-Label ausblenden, es gibt keine Inventar-Slots
+        this.inventoryLabelY = -1000;
     }
 
     @Override

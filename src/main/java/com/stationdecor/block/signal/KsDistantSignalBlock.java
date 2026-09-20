@@ -29,13 +29,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Ks-Vorsignal. Analog zu {@link KsMainSignalBlock}, zeigt aber
- * {@link DistantSignalAspect} (Vr0/Vr1/Vr2) statt Hp0/Hp1/Hp2. Die
- * BlockEntity trägt außerdem die freie Rotation (siehe
- * {@code AbstractRotatableBlockEntity}) und scannt periodisch das per
- * Signalbinder verlinkte "Signal davor" (siehe {@link KsDistantSignalBlockEntity}).
- */
 public class KsDistantSignalBlock extends BaseEntityBlock {
 
     public static final MapCodec<KsDistantSignalBlock> CODEC = simpleCodec(KsDistantSignalBlock::new);
@@ -65,7 +58,6 @@ public class KsDistantSignalBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // Wird per BlockEntityRenderer mit freier Rotation gezeichnet, nicht über das statische Blockmodell.
         return RenderShape.INVISIBLE;
     }
 

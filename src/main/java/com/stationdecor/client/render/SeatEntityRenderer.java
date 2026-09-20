@@ -7,11 +7,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * {@link SeatEntity} ist rein technisch und unsichtbar - dieser Renderer
- * zeichnet absichtlich nichts. Ein Renderer muss dennoch registriert werden,
- * da NeoForge sonst beim ersten Auftauchen der Entity abstürzt.
- */
 public class SeatEntityRenderer extends EntityRenderer<SeatEntity> {
 
     private static final ResourceLocation NO_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/none.png");
@@ -23,7 +18,6 @@ public class SeatEntityRenderer extends EntityRenderer<SeatEntity> {
     @Override
     public void render(SeatEntity entity, float entityYaw, float partialTick, PoseStack poseStack,
                         MultiBufferSource bufferSource, int packedLight) {
-        // Absichtlich leer - die SeatEntity ist unsichtbar.
     }
 
     @Override

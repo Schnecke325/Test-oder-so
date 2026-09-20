@@ -13,12 +13,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Eigenes {@link BlockItem} für die Bodenmarkierung: setzt nach dem
- * Platzieren Rotation und Nah/Mitte/Fern-Versatz auf der BlockEntity, auf
- * Basis des exakten Klickpunkts. Ein normales {@code BlockItem} hat dafür
- * keinen Zugriff mehr, weil {@code setPlacedBy} den Klickpunkt nicht kennt.
- */
 public class FloorMarkingBlockItem extends BlockItem {
 
     public FloorMarkingBlockItem(Block block, Item.Properties properties) {
@@ -52,12 +46,6 @@ public class FloorMarkingBlockItem extends BlockItem {
         return true;
     }
 
-    /**
-     * Bestimmt anhand des exakten Klickpunkts auf der anvisierten Fläche, ob
-     * näher, mittig oder weiter entfernt (entlang der gedrehten Vorwärtsachse)
-     * platziert werden soll - passend zu den 3 Zonen der Vorschau-Outline aus
-     * {@code client.render.PlacementOutlineHandler}.
-     */
     private static int computeOffsetIndex(BlockPlaceContext context, float rotationDegrees) {
         Direction face = context.getClickedFace();
         BlockPos targetPos = context.replacingClickedOnBlock()

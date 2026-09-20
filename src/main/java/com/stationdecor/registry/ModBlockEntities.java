@@ -18,7 +18,6 @@ public final class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, StationDecorMod.MOD_ID);
 
-    /** Eine BlockEntityType-Definition, gültig für alle Fahrkartenautomat-Varianten-Blöcke. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ObjDisplayBlockEntity>> OBJ_DISPLAY =
             BLOCK_ENTITIES.register("obj_display", () -> BlockEntityType.Builder.of(
                     ObjDisplayBlockEntity::new,
@@ -29,7 +28,6 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("seat", () -> BlockEntityType.Builder.of(
                     SeatBlockEntity::new, ModBlocks.SEAT.get()).build(null));
 
-    /** Eine BlockEntityType-Definition, gültig für alle Bodenmarkierungs-Farbvarianten. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FloorMarkingBlockEntity>> FLOOR_MARKING =
             BLOCK_ENTITIES.register("floor_marking", () -> BlockEntityType.Builder.of(
                     FloorMarkingBlockEntity::new,

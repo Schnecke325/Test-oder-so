@@ -22,7 +22,6 @@ public final class ModBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(StationDecorMod.MOD_ID);
 
-    /** Ein separat registrierter Block pro Fahrkartenautomat-Variante, siehe {@link TicketMachineStyle}. */
     public static final Map<TicketMachineStyle, DeferredBlock<ObjDisplayBlock>> OBJ_DISPLAY = registerObjDisplayBlocks();
 
     private static Map<TicketMachineStyle, DeferredBlock<ObjDisplayBlock>> registerObjDisplayBlocks() {
@@ -45,7 +44,6 @@ public final class ModBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
 
-    /** Ein separat registrierter Block pro Farbe, siehe {@link DyeColor}. */
     public static final Map<DyeColor, DeferredBlock<FloorMarkingBlock>> FLOOR_MARKING = registerFloorMarkingBlocks();
 
     private static Map<DyeColor, DeferredBlock<FloorMarkingBlock>> registerFloorMarkingBlocks() {

@@ -29,21 +29,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Ks-Hauptsignal. Der aktuell gezeigte Signalbegriff ({@link MainSignalAspect})
- * ist als BlockState-Property abgebildet, damit Vanilla die Synchronisation
- * zum Client automatisch übernimmt. Die Rotation dagegen ist frei (nicht auf
- * 90°-Schritte beschränkt) und lebt daher auf der BlockEntity
- * ({@link KsMainSignalBlockEntity}, siehe {@code AbstractRotatableBlockEntity})
- * - Mast/Signalkopf werden per BlockEntityRenderer gezeichnet, siehe
- * {@code com.stationdecor.client.render.RotatableSignalRenderer}.
- * Die BlockEntity scannt außerdem periodisch bis zu 10 Blöcke unter sich nach
- * einem Create-Gleissignal und übernimmt dessen Zustand automatisch.
- * Rechtsklick schaltet weiterhin manuell weiter (überschrieben vom nächsten
- * Scan, falls dabei ein Gleissignal gefunden wird); ein Create Display Link
- * kann den Begriff ebenfalls setzen, siehe
- * {@code com.stationdecor.compat.create.KsMainSignalDisplayTarget}.
- */
 public class KsMainSignalBlock extends BaseEntityBlock {
 
     public static final MapCodec<KsMainSignalBlock> CODEC = simpleCodec(KsMainSignalBlock::new);
@@ -73,7 +58,6 @@ public class KsMainSignalBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // Wird per BlockEntityRenderer mit freier Rotation gezeichnet, nicht über das statische Blockmodell.
         return RenderShape.INVISIBLE;
     }
 

@@ -8,18 +8,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
 
-/**
- * BlockEntity des Ks-Hauptsignals. Scannt periodisch bis zu 10 Blöcke unter
- * sich nach einem Create-Gleissignal und übernimmt dessen Zustand direkt als
- * Signalbegriff. Wird dabei kein Gleissignal gefunden (z.B. weil kein Create
- * installiert ist, oder einfach keins in Reichweite steht), bleibt der zuletzt
- * gesetzte Begriff (manuell per Rechtsklick oder per Display Link) erhalten.
- * <p>
- * Referenziert absichtlich NIE direkt eine {@code com.simibubi.create}-Klasse -
- * das übernimmt ausschließlich {@link CreateCompat}, aufgerufen hinter einem
- * {@link ModList}-Check, damit diese Klasse auch ohne installiertes Create
- * anstandslos lädt.
- */
 public class KsMainSignalBlockEntity extends AbstractRotatableBlockEntity {
 
     private static final int SCAN_INTERVAL_TICKS = 10;

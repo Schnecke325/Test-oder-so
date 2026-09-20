@@ -34,10 +34,6 @@ public class StationDecorMod {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, StationDecorConfig.SPEC);
 
-        // Muss bereits hier im Konstruktor passieren (nicht erst in FMLCommonSetupEvent),
-        // da NeoForge Registry-Einträge für Creates DisplaySource-/DisplayTarget-Registries
-        // über das reguläre RegisterEvent sammelt, das vor Common Setup feuert. Siehe
-        // CreateDisplayRegistry für den Grund, warum diese Registrierung überhaupt nötig ist.
         if (ModList.get().isLoaded("create")) {
             CreateDisplayRegistry.register(modEventBus);
         }
@@ -46,9 +42,6 @@ public class StationDecorMod {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        // Create ist nur eine optionale compileOnly-Abhängigkeit (siehe build.gradle) -
-        // die Integrationsklasse referenziert Create-Klassen direkt und darf daher nur
-        // geladen werden, wenn Create tatsächlich installiert ist.
         if (ModList.get().isLoaded("create")) {
             CreateCompat.register();
             LOGGER.info("Create gefunden - Display-Link-Unterstützung für Ks-Signale aktiviert.");

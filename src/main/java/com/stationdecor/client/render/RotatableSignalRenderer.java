@@ -11,19 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Function;
 
-/**
- * Generischer BlockEntityRenderer für alle drei Ks-Signalblöcke. Zeichnet
- * zwei Dinge, beide um {@link AbstractRotatableBlockEntity#getRotationDegrees()}
- * gedreht:
- * <ol>
- *   <li>Das Mast-/Signalkopf-Modell des aktuellen Begriffs (per
- *       {@link RotatedObjRenderHelper}, das trotz des Namens ein beliebiges
- *       Baked Model dreht, nicht nur OBJ-Modelle) - ersetzt das (jetzt
- *       {@code RenderShape.INVISIBLE}) statische Blockmodell.</li>
- *   <li>Die zusätzliche, immer volle helle Lampenfläche (siehe
- *       {@link SignalLampRenderHelper}).</li>
- * </ol>
- */
 public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> implements BlockEntityRenderer<T> {
 
     private final Function<BlockState, ModelResourceLocation> modelResolver;
@@ -50,7 +37,6 @@ public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> imp
         if (lampTexture != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0, 0.5);
-            // Vorzeichen umgekehrt wie in RotatedObjRenderHelper - siehe dort für die Begründung.
             poseStack.mulPose(Axis.YP.rotationDegrees(-rotationDegrees));
             poseStack.translate(-0.5, 0, -0.5);
             SignalLampRenderHelper.renderLamp(poseStack, bufferSource, lampTexture);

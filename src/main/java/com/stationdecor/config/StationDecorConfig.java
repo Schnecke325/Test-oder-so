@@ -2,10 +2,6 @@ package com.stationdecor.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-/**
- * Common-Config der Mod. Steuert u.a. wie viele Rotationsschritte die
- * einzelnen Blöcke beim Platzieren anbieten (z.B. 4 = 90°, 8 = 45°, 16 = 22,5°).
- */
 public final class StationDecorConfig {
 
     public static final ModConfigSpec SPEC;

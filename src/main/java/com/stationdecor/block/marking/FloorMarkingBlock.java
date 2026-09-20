@@ -24,25 +24,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Flache Bodenmarkierung. Rotation ebenso frei/konfigurierbar wie bei den
- * anderen Blöcken, zusätzlich mit einem Nah/Mitte/Fern-Versatz, der beim
- * Platzieren über {@link FloorMarkingBlockItem} anhand der 3 Zonen der
- * Vorschau-Outline (siehe {@code client.render.PlacementOutlineHandler})
- * bestimmt wird. Rotation und Versatz werden bewusst dort (im Item, mit
- * Zugriff auf den genauen Klickpunkt) gesetzt statt in {@code setPlacedBy}.
- * <p>
- * Jede Farbe (16 Varianten, siehe {@code client.render.FloorMarkingModels})
- * ist ein eigener, separat im Creative-Tab wählbarer Block/Item - so wie bei
- * den Fahrkartenautomat-Varianten (siehe {@code block.obj.ObjDisplayBlock}).
- * Ein bereits platzierter Block lässt sich trotzdem per Rechtsklick mit
- * einem Farbstoff umfärben: dabei wird der Block an dieser Position durch
- * die entsprechende Farbvariante ersetzt, Rotation und Nah/Mitte/Fern-Versatz
- * werden dabei von der alten auf die neue BlockEntity übernommen.
- */
 public class FloorMarkingBlock extends BaseEntityBlock {
 
-    /** Dünne, rotationsunabhängige Kollisionsbox knapp über dem Boden. */
     private static final VoxelShape SHAPE = box(0, 0, 0, 16, 1, 16);
 
     private final DyeColor color;

@@ -11,15 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Unsichtbare, technische Entity, die als "Sitzplatz" für {@link SeatBlock}
- * dient. Sie wird beim Aufsetzen erzeugt und verschwindet automatisch
- * wieder, sobald niemand mehr auf ihr sitzt oder der zugehörige Block
- * entfernt wird - es bleiben also nie verwaiste Entities zurück.
- */
 public class SeatEntity extends Entity {
 
-    /** Höhe über der Blockunterkante, auf der der Spieler "sitzt". */
     public static final double SEAT_Y_OFFSET = 0.4;
 
     public SeatEntity(EntityType<? extends SeatEntity> type, Level level) {
@@ -29,11 +22,6 @@ public class SeatEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    /**
-     * Erzeugt (aber fügt noch nicht der Welt hinzu) eine neue SeatEntity an
-     * der Sitzposition über dem angegebenen Block, mit der Blickrichtung des
-     * Blocks als Ausrichtung.
-     */
     @Nullable
     public static SeatEntity create(Level level, BlockPos pos, float yawDegrees) {
         SeatEntity seat = ModEntities.SEAT.get().create(level);
@@ -46,17 +34,14 @@ public class SeatEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        // Keine zusätzlichen synchronisierten Daten nötig.
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        // Rein technische Entity, es gibt nichts zu laden.
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        // Rein technische Entity, es gibt nichts zu speichern.
     }
 
     @Override
@@ -71,8 +56,6 @@ public class SeatEntity extends Entity {
 
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
-        // Der Spieler sitzt exakt auf Höhe dieser Entity (siehe SEAT_Y_OFFSET beim Erzeugen),
-        // ohne zusätzlichen Versatz.
         return Vec3.ZERO;
     }
 

@@ -19,24 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Verlinkt zwei Signale ohne Create Display Link: erster Rechtsklick auf das
- * Ziel (Ks-Vorsignal oder Ks-Mehrabschnittssignal), zweiter Rechtsklick auf
- * das Quellsignal ("Signal davor", Ks-Hauptsignal oder Ks-Mehrabschnittssignal).
- * Der "ausstehende Klick"-Zustand wird bewusst nur im Arbeitsspeicher pro
- * Spieler gehalten (nicht auf dem Item persistiert) - ein einfacher,
- * sitzungsbezogener Zwei-Klick-Vorgang.
- * <p>
- * Die eigentliche Klick-Logik ({@link #handleClick}) wird NICHT über
- * {@link #useOn(UseOnContext)} erreicht, sondern direkt von
- * {@code useItemOn(...)} der jeweiligen Signalblöcke aufgerufen: alle drei
- * Signalblöcke überschreiben bereits {@code useWithoutItem} (manuelles
- * Weiterschalten per Rechtsklick), das - anders als der Name suggeriert -
- * IMMER zuerst versucht wird, unabhängig vom gehaltenen Item, und die
- * Interaktion konsumiert, bevor {@code Item#useOn} überhaupt zum Zug käme.
- * Ohne den Hook in den Blöcken selbst würde der Signalbinder also nie
- * auslösen, sondern nur den Signalbegriff manuell weiterschalten.
- */
 public class SignalBinderItem extends Item {
 
     private static final Map<UUID, BlockPos> PENDING_TARGET = new HashMap<>();

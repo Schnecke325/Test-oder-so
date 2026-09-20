@@ -29,20 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import com.stationdecor.item.SignalBinderItem;
 import com.stationdecor.registry.ModBlockEntities;
 
-/**
- * Ks-Mehrabschnittssignal: kombiniert Haupt- und Vorsignalfunktion.
- * Braucht eine BlockEntity, weil er aktiv zwei Quellen kombiniert:
- * <ol>
- *   <li>Ein Create-Gleissignal bis zu 10 Blöcke unter sich (periodisch
- *       gescannt, siehe {@link KsMultiSectionSignalBlockEntity}).</li>
- *   <li>Der Signalbegriff des per Signalbinder verlinkten "Signal davor".</li>
- * </ol>
- * Dieselbe BlockEntity trägt auch die freie Rotation (siehe
- * {@code AbstractRotatableBlockEntity}). Der angezeigte Begriff
- * ({@link CombinedSignalAspect}) bleibt wie bei den anderen Signalen eine
- * BlockState-Property, damit Vanilla die Anzeige automatisch zum Client
- * synchronisiert.
- */
 public class KsMultiSectionSignalBlock extends BaseEntityBlock {
 
     public static final MapCodec<KsMultiSectionSignalBlock> CODEC = simpleCodec(KsMultiSectionSignalBlock::new);
@@ -72,7 +58,6 @@ public class KsMultiSectionSignalBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // Wird per BlockEntityRenderer mit freier Rotation gezeichnet, nicht über das statische Blockmodell.
         return RenderShape.INVISIBLE;
     }
 

@@ -12,12 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-/**
- * Lässt ein Create Display Link den aktuellen Begriff eines
- * {@link KsMultiSectionSignalBlock} auslesen - damit lassen sich mehrere
- * Mehrabschnittssignale hintereinander verketten (jedes bindet sich per
- * Display Link an das vorherige).
- */
 public class KsMultiSectionSignalDisplaySource extends DisplaySource {
 
     @Override

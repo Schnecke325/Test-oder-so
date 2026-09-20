@@ -8,12 +8,6 @@ import net.minecraft.world.item.DyeColor;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Ein Standalone-Modell pro Farbtupfer der Bodenmarkierung (siehe
- * {@code models/block/platform_border_narrow_<farbe>.json}), benannt genau
- * nach {@link DyeColor#getSerializedName()} - so lässt sich die Zuordnung
- * dynamisch bilden statt sie pro Farbe von Hand zu verdrahten.
- */
 public final class FloorMarkingModels {
 
     private static final Map<DyeColor, ModelResourceLocation> MODELS = buildModels();

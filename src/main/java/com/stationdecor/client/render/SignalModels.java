@@ -4,14 +4,6 @@ import com.stationdecor.StationDecorMod;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Standalone-Modellreferenzen (siehe {@code ModelEvent.RegisterAdditional} in
- * {@link com.stationdecor.client.ClientSetup}) für die Mast-/Signalkopf-Modelle
- * der drei Ks-Signalblöcke - dieselben vanilla Mehrelement-Blockmodell-JSONs,
- * die auch für die Item-Icons genutzt werden, hier aber zusätzlich standalone
- * geladen, damit {@link RotatableSignalRenderer} sie frei gedreht per
- * BlockEntityRenderer zeichnen kann (statt fest über das Blockmodell-System).
- */
 public final class SignalModels {
 
     public static final ModelResourceLocation KS_MAIN_SIGNAL_HP0 = standalone("block/ks_main_signal_hp0");

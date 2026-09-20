@@ -10,11 +10,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Bindet {@link KsDistantSignalBlock} als Create-Display-Link-Ziel an. Ein
- * Display Link kann Text wie "vr0", "1" oder "Vr2" senden, um den gezeigten
- * Signalbegriff zu setzen.
- */
 public class KsDistantSignalDisplayTarget extends SingleLineDisplayTarget {
 
     @Override
@@ -40,10 +35,6 @@ public class KsDistantSignalDisplayTarget extends SingleLineDisplayTarget {
         return 4;
     }
 
-    /**
-     * Bewusst großzügig geparst, siehe {@link KsMainSignalDisplayTarget#parseAspect}.
-     * Was tatsächlich ankommt, steht im Log (siehe {@code acceptLine}).
-     */
     private static DistantSignalAspect parseAspect(String rawText) {
         String value = rawText.trim().toLowerCase();
         return switch (value) {

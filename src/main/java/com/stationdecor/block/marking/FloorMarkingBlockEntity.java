@@ -8,19 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * BlockEntity der Bodenmarkierung. Neben der geerbten freien Rotation wird
- * zusätzlich ein Nah/Mitte/Fern-Versatz gespeichert, der beim Platzieren über
- * die 3 Zonen der Vorschau-Outline gewählt wird (siehe {@link FloorMarkingBlockItem}).
- * Die Farbe selbst ist keine eigene, veränderliche Eigenschaft der
- * BlockEntity mehr, sondern ergibt sich aus dem konkreten Block (jede Farbe
- * ist ein eigener Block, siehe {@link FloorMarkingBlock}) - Umfärben per
- * Farbstoff (siehe {@link FloorMarkingBlock#useItemOn}) tauscht daher den
- * Block an dieser Position komplett aus, statt nur ein Feld zu ändern.
- */
 public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
 
-    /** Versatz in Dritteln eines Blocks entlang der eigenen (gedrehten) Vorwärtsachse. */
     public static final float OFFSET_STEP = 1f / 3f;
 
     private int offsetIndex = 0;
@@ -29,9 +18,6 @@ public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
         super(ModBlockEntities.FLOOR_MARKING.get(), pos, state);
     }
 
-    /**
-     * Setzt Rotation und Nah/Mitte/Fern-Versatz gemeinsam (ein einziger Sync statt zwei).
-     */
     public void setPlacement(int rotationIndex, int rotationSteps, int offsetIndex) {
         this.offsetIndex = Math.max(-1, Math.min(1, offsetIndex));
         setRotation(rotationIndex, rotationSteps);
@@ -41,7 +27,6 @@ public class FloorMarkingBlockEntity extends AbstractRotatableBlockEntity {
         return offsetIndex;
     }
 
-    /** Versatz entlang der eigenen Vorwärtsachse in Blöcken, z.B. -1/3, 0 oder +1/3. */
     public float getOffsetDistance() {
         return offsetIndex * OFFSET_STEP;
     }

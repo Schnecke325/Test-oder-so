@@ -10,15 +10,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * BlockEntity des Ks-Vorsignals. Statt (nur) über Create Display Link wird
- * das "Signal davor" jetzt über den Signalbinder ({@code SignalBinderItem})
- * verlinkt - {@link #linkedSignalPos} wird periodisch (alle 10 Ticks)
- * ausgelesen (siehe {@link SignalLinkUtil}) und direkt in Vr0/Vr1 übersetzt.
- * Zeigt das verlinkte Signal Halt → Vr0, sonst → Vr1. Ohne Verlinkung (oder
- * wenn das Ziel gerade nicht lesbar ist) bleibt der zuletzt gesetzte Begriff
- * erhalten.
- */
 public class KsDistantSignalBlockEntity extends AbstractRotatableBlockEntity {
 
     private static final int SCAN_INTERVAL_TICKS = 10;
@@ -31,7 +22,6 @@ public class KsDistantSignalBlockEntity extends AbstractRotatableBlockEntity {
         super(ModBlockEntities.KS_DISTANT_SIGNAL.get(), pos, state);
     }
 
-    /** Wird vom Signalbinder beim zweiten Klick (auf das Quellsignal) aufgerufen. */
     public void setLinkedSignalPos(@Nullable BlockPos pos) {
         this.linkedSignalPos = pos;
         setChanged();

@@ -9,16 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Set;
 
-/**
- * Bindet {@link KsMultiSectionSignalBlockEntity} als Create-Display-Link-Ziel
- * an: der per Display Link vom "Signal davor" empfangene Begriff wird auf
- * "zeigt Halt?" reduziert und in {@link KsMultiSectionSignalBlockEntity#setUpstreamHalt}
- * gespeichert. Nur ein tatsächliches Halt-Signal propagiert weiter als
- * "Halt erwarten" - ein bereits "Halt erwarten" zeigendes Signal muss vom
- * Signal davor nicht ebenfalls vorgewarnt werden (entspricht realer
- * Signallogik: die Vorwarnung gilt immer nur für den unmittelbar nächsten
- * Halt-Begriff).
- */
 public class KsMultiSectionSignalDisplayTarget extends SingleLineDisplayTarget {
 
     private static final Set<String> HALT_VALUES = Set.of("halt", "hp0", "vr0", "0", "red", "stop");

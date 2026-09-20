@@ -2,10 +2,6 @@ package com.stationdecor.block.signal;
 
 import net.minecraft.util.StringRepresentable;
 
-/**
- * Signalbegriffe des Ks-Hauptsignals: Hp0 (Halt), Hp1 (Fahrt),
- * Hp2 (Fahrt mit Geschwindigkeitsbeschränkung).
- */
 public enum MainSignalAspect implements StringRepresentable {
     HP0("hp0"),
     HP1("hp1"),

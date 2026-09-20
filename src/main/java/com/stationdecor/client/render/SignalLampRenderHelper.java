@@ -8,21 +8,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Zeichnet die Signallampen-Fläche (Nord-/Südseite des "head"-Elements aus
- * den Ks-Signal-Blockmodellen, siehe {@code models/block/ks_*_signal_*.json})
- * zusätzlich mit fester voller Helligkeit, unabhängig vom Umgebungslicht.
- * <p>
- * Grund: {@code lightLevel} auf Blockebene lässt den GESAMTEN Block
- * (inklusive Mast) gleich hell erscheinen, weil Vanilla-Block-Licht nicht auf
- * einzelne Flächen/Elemente beschränkt werden kann. Damit nur die Lampe
- * "leuchtet" und der Mast weiterhin normal vom Umgebungslicht abhängt, wird
- * hier stattdessen ein zusätzliches, immer voll ausgeleuchtetes Quad exakt
- * über die vorhandene Lampenfläche gezeichnet (siehe {@code head}-Element:
- * x 3..13, y 12..20, z 7..9 von 16). Ein winziger Versatz nach außen
- * verhindert Z-Fighting mit der darunterliegenden, normal beleuchteten
- * Modellfläche.
- */
 public final class SignalLampRenderHelper {
 
     private static final int FULL_BRIGHT = LightTexture.pack(15, 15);
@@ -42,11 +27,9 @@ public final class SignalLampRenderHelper {
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(texture));
         PoseStack.Pose pose = poseStack.last();
 
-        // Nordseite (Blickrichtung -Z), Normale zeigt nach Norden.
         quad(buffer, pose,
                 X0, Y1, Z_NORTH, X1, Y1, Z_NORTH, X1, Y0, Z_NORTH, X0, Y0, Z_NORTH,
                 0, 0, -1);
-        // Südseite (Blickrichtung +Z), Normale zeigt nach Süden.
         quad(buffer, pose,
                 X1, Y1, Z_SOUTH, X0, Y1, Z_SOUTH, X0, Y0, Z_SOUTH, X1, Y0, Z_SOUTH,
                 0, 0, 1);

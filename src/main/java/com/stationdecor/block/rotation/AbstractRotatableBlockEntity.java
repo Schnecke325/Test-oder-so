@@ -12,14 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Basisklasse für BlockEntities, deren visuelle Rotation frei (nicht nur in
- * 90°-Schritten) einstellbar ist. Die Rotation wird bewusst NICHT als
- * BlockState-Property abgebildet, da die Anzahl möglicher Zustände von der
- * Config abhängt (2-64 Schritte) - stattdessen hält die BlockEntity selbst
- * den aktuellen Index und die Schrittzahl, mit der er erzeugt wurde, und
- * kümmert sich um Persistenz sowie Client-Synchronisation.
- */
 public abstract class AbstractRotatableBlockEntity extends BlockEntity {
 
     private int rotationIndex = 0;
@@ -29,10 +21,6 @@ public abstract class AbstractRotatableBlockEntity extends BlockEntity {
         super(type, pos, state);
     }
 
-    /**
-     * Setzt Index und Schrittzahl, speichert die Änderung und synchronisiert
-     * sie zu allen Clients in der Nähe.
-     */
     public void setRotation(int index, int steps) {
         this.rotationSteps = Math.max(1, steps);
         this.rotationIndex = RotationUtil.clampIndex(index, this.rotationSteps);
@@ -51,9 +39,6 @@ public abstract class AbstractRotatableBlockEntity extends BlockEntity {
         return rotationSteps;
     }
 
-    /**
-     * Aktueller Rotationswinkel in Grad, passend zu {@link net.minecraft.world.entity.Entity#getYRot()}.
-     */
     public float getRotationDegrees() {
         return RotationUtil.indexToDegrees(rotationIndex, rotationSteps);
     }

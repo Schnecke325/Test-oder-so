@@ -22,31 +22,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Dekorativer Block, der über eine {@link BlockEntityRenderer} als OBJ-Modell
- * dargestellt wird - frei rotierbar wie Sitzblock/Bodenmarkierung/Signale
- * (siehe {@code AbstractRotatableBlockEntity}). Ein Rechtsklick öffnet ein
- * einfaches Platzhalter-GUI.
- * <p>
- * Jede optische Variante ({@link TicketMachineStyle}) ist ein eigener,
- * separat registrierter Block (siehe {@code ModBlocks.OBJ_DISPLAY}) - die
- * Variante ist also fest an den platzierten Blocktyp gebunden, nicht am
- * Item umschaltbar.
- */
 public class ObjDisplayBlock extends BaseEntityBlock {
 
     private final TicketMachineStyle style;
     private final MapCodec<ObjDisplayBlock> codec;
 
-    /**
-     * Feste, rotationsunabhängige Kollisionsbox, nahezu blockfüllend. Das
-     * gelieferte Fahrkartenautomat-Modell ist real 2 Blöcke breit / 3 Blöcke
-     * hoch (siehe {@code ObjDisplayBlockEntityRenderer}) - die Kollision
-     * deckt bewusst nur den Platzierungsblock ab, der optisch überstehende
-     * Teil ist rein visuell begehbar. Eine exakt der gewählten Rotation
-     * folgende Box wäre bei 22,5°-Schritten zudem nicht mehr achsenparallel
-     * und ist bewusst nicht implementiert.
-     */
     private static final VoxelShape SHAPE = box(-4, 0, -4, 20, 48, 20);
 
     public ObjDisplayBlock(BlockBehaviour.Properties properties, TicketMachineStyle style) {
@@ -66,8 +46,6 @@ public class ObjDisplayBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // Das eigentliche Modell wird per BlockEntityRenderer mit freier
-        // Rotation gezeichnet, nicht über das statische Blockmodell.
         return RenderShape.INVISIBLE;
     }
 

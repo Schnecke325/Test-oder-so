@@ -10,11 +10,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Bindet {@link KsMainSignalBlock} als Create-Display-Link-Ziel an, analog zu
- * Create's eigenen Nixie Tubes. Ein Display Link kann Text wie "hp0", "1"
- * oder "Hp2" an dieses Ziel senden, um den gezeigten Signalbegriff zu setzen.
- */
 public class KsMainSignalDisplayTarget extends SingleLineDisplayTarget {
 
     @Override
@@ -40,12 +35,6 @@ public class KsMainSignalDisplayTarget extends SingleLineDisplayTarget {
         return 4;
     }
 
-    /**
-     * Bewusst großzügig: akzeptiert neben "hp0"/"hp1"/"hp2" auch Zahlen und
-     * gängige Klartext-Begriffe, falls die gebundene Quelle (z.B. Hebel,
-     * Redstone Link) etwas anderes als unsere eigene "hpX"-Notation liefert.
-     * Was tatsächlich ankommt, steht im Log (siehe {@code acceptLine}).
-     */
     private static MainSignalAspect parseAspect(String rawText) {
         String value = rawText.trim().toLowerCase();
         return switch (value) {

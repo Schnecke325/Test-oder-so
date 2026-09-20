@@ -25,15 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Sitz-Block: frei rotierbar (wie {@link com.stationdecor.block.obj.ObjDisplayBlock}),
- * richtet sich beim Platzieren aber automatisch an einem direkt angrenzenden
- * bereits vorhandenen Sitz-Block aus (statt an der Blickrichtung des Spielers),
- * sofern die Config das erlaubt - Schleichen (Shift) beim Platzieren
- * überschreibt das und erzwingt die eigene Blickrichtung, auch neben einem
- * bestehenden Sitz-Block. Ein Rechtsklick setzt den Spieler auf den Block,
- * ein weiterer Rechtsklick lässt ihn wieder aufstehen.
- */
 public class SeatBlock extends BaseEntityBlock {
 
     public static final MapCodec<SeatBlock> CODEC = simpleCodec(SeatBlock::new);
@@ -86,11 +77,6 @@ public class SeatBlock extends BaseEntityBlock {
         }
     }
 
-    /**
-     * Sucht in den vier horizontalen Nachbarblöcken nach einem bereits
-     * vorhandenen Sitz-Block und übernimmt dessen Rotation (umgerechnet auf
-     * die aktuell konfigurierte Schrittzahl).
-     */
     @Nullable
     private static Integer findNeighborRotationIndex(Level level, BlockPos pos, int steps) {
         for (Direction direction : Direction.Plane.HORIZONTAL) {
@@ -125,14 +111,12 @@ public class SeatBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (player.isPassenger()) {
-            // Spieler sitzt bereits woanders.
             return InteractionResult.PASS;
         }
 
         AABB searchBox = new AABB(pos).inflate(0.1);
         List<SeatEntity> existing = level.getEntitiesOfClass(SeatEntity.class, searchBox);
         if (!existing.isEmpty() && !existing.get(0).getPassengers().isEmpty()) {
-            // Sitzplatz bereits belegt.
             return InteractionResult.PASS;
         }
 
@@ -140,8 +124,6 @@ public class SeatBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        // +180°: die Modellrotation zeigt die Ausrichtung der Rückenlehne, der
-        // Spieler soll aber von der Lehne weg blicken, nicht auf sie drauf.
         float yaw = blockEntity.getRotationDegrees() + 180f;
         SeatEntity seat;
         if (existing.isEmpty()) {

@@ -7,24 +7,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
-/**
- * Zeichnet die Bodenmarkierung mit ihrer frei konfigurierbaren Rotation, dem
- * beim Platzieren gewählten Nah/Mitte/Fern-Versatz entlang der eigenen
- * (gedrehten) Vorwärtsachse, dem per Rechtsklick mit Farbstoff eingestellten
- * Modell/Farbton (siehe {@link FloorMarkingModels}) und einer winkelabhängigen
- * Streckung (siehe {@link RotationUtil#diagonalStretch}), damit die Markierung
- * auch diagonal (z.B. 45°) noch bis zum gegenüberliegenden Blockrand reicht.
- * <p>
- * Zusätzlich ein rein visueller {@link #PRACTICAL_TWIST_DEGREES}-Dreh am Modell
- * selbst (siehe {@code RotatedObjRenderHelper#render} mit {@code localTwistDegrees}) -
- * das gelieferte Modell/Textur ist lokal entlang Z ausgerichtet (Länge in
- * Blickrichtung), was sich beim Platzieren unpraktisch anfühlt. Bewusst NICHT
- * über {@code rotationDegrees} selbst gelöst, da dieser Wert auch für den
- * Nah/Mitte/Fern-Versatz und die Vorschau-Outline verwendet wird
- * ({@code FloorMarkingBlockItem}, {@code client.PlacementOutlineHandler}) - die
- * sollen weiterhin exakt der Blickrichtung folgen, nicht der (praktischeren)
- * Modellausrichtung.
- */
 public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<FloorMarkingBlockEntity> {
 
     private static final float PRACTICAL_TWIST_DEGREES = 90f;

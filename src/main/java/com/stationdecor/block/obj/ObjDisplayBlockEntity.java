@@ -12,13 +12,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * BlockEntity des Fahrkartenautomaten. Frei rotierbar wie Sitzblock/
- * Bodenmarkierung/Signale (siehe {@link AbstractRotatableBlockEntity}). Die
- * optische Variante ({@link TicketMachineStyle}) ist fest am platzierten
- * Blocktyp gebunden (siehe {@link ObjDisplayBlock#getStyle()}), nicht als
- * eigener veränderlicher Zustand hier gespeichert.
- */
 public class ObjDisplayBlockEntity extends AbstractRotatableBlockEntity implements MenuProvider {
 
     public ObjDisplayBlockEntity(BlockPos pos, BlockState state) {

@@ -24,11 +24,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-/**
- * Client-seitige Registrierungen. Über {@code Dist.CLIENT} sorgt NeoForge
- * dafür, dass diese Klasse (und damit alle client-only Klassen wie Screens
- * und Renderer) auf dem dedizierten Server gar nicht erst geladen wird.
- */
 @EventBusSubscriber(modid = StationDecorMod.MOD_ID, value = Dist.CLIENT)
 public final class ClientSetup {
 
@@ -96,15 +91,6 @@ public final class ClientSetup {
         event.register(ModMenus.OBJ_DISPLAY_MENU.get(), ObjDisplayScreen::new);
     }
 
-    /**
-     * {@code RenderType.entityCutout(...)} bindet die Textur direkt über den
-     * TextureManager (nicht über das Block-Atlas) - anders als in
-     * Blockmodell-JSONs muss der Pfad hier bereits das volle
-     * "textures/..."-Präfix und die ".png"-Endung enthalten, siehe z.B.
-     * {@link SeatEntityRenderer}. Ohne das liefert der TextureManager keine
-     * gültige Textur und es wird das lila/schwarze "Missing Texture"-Muster
-     * angezeigt (genau der Bug, der hier gefixt wurde).
-     */
     private static ResourceLocation lampTexture(String blockName, String aspectName) {
         return ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID,
                 "textures/block/" + blockName + "_" + aspectName + ".png");

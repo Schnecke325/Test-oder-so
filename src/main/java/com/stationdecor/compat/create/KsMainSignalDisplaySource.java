@@ -12,11 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-/**
- * Lässt ein Create Display Link den aktuellen Signalbegriff eines
- * {@link KsMainSignalBlock} auslesen (z.B. um ihn per Display Link an ein
- * {@code station_decor:ks_multi_section_signal} als "Signal davor" zu binden).
- */
 public class KsMainSignalDisplaySource extends DisplaySource {
 
     @Override

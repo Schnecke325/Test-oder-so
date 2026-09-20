@@ -21,14 +21,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
-/**
- * Zeigt über der Hotbar an, in welchem Winkel ein frei rotierbarer Block
- * gerade platziert würde (eingerastet auf die konfigurierte Schrittzahl),
- * solange der Spieler ihn in der Haupt- oder Nebenhand hält. Bewusst nur
- * eine Vorhersage anhand der reinen Blickrichtung - beim Sitzblock kann die
- * tatsächliche Platzierung abweichen, wenn "seatBlockAutoAlign" greift und
- * ein angrenzender Sitzblock gefunden wird (siehe {@code SeatBlock#setPlacedBy}).
- */
 @EventBusSubscriber(modid = StationDecorMod.MOD_ID, value = Dist.CLIENT)
 public final class RotationHudOverlay {
 
@@ -58,7 +50,6 @@ public final class RotationHudOverlay {
         guiGraphics.drawCenteredString(minecraft.font, text, guiGraphics.guiWidth() / 2, guiGraphics.guiHeight() - 59, 0xFFFFFF);
     }
 
-    /** @return die konfigurierte Schrittzahl, oder -1, wenn dieser Stack keinen frei rotierbaren Block platziert. */
     private static int rotationStepsFor(ItemStack stack) {
         if (!(stack.getItem() instanceof BlockItem blockItem)) {
             return -1;
