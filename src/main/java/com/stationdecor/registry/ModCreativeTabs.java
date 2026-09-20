@@ -28,10 +28,13 @@ public final class ModCreativeTabs {
                         for (DyeColor color : DyeColor.values()) {
                             output.accept(ModItems.FLOOR_MARKING.get(color).get());
                         }
-                        output.accept(ModItems.KS_MAIN_SIGNAL.get());
-                        output.accept(ModItems.KS_DISTANT_SIGNAL.get());
-                        output.accept(ModItems.KS_MULTI_SECTION_SIGNAL.get());
-                        output.accept(ModItems.SIGNAL_BINDER.get());
+                        // Signale + Signalbinder vorübergehend aus dem Creative-Tab entfernt,
+                        // bis echte Modelle dafür da sind - Block/Item bleiben registriert,
+                        // hier einfach die 4 output.accept(...)-Zeilen wieder einfügen:
+                        // output.accept(ModItems.KS_MAIN_SIGNAL.get());
+                        // output.accept(ModItems.KS_DISTANT_SIGNAL.get());
+                        // output.accept(ModItems.KS_MULTI_SECTION_SIGNAL.get());
+                        // output.accept(ModItems.SIGNAL_BINDER.get());
                     })
                     .build());
 
