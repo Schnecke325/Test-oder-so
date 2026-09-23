@@ -1,0 +1,10 @@
+# Made in Blockbench 5.2.1
+newmtl m_b2af6bd8-ffc8-ff72-7f7b-7b18782af15d
+map_Kd metal.png
+newmtl m_3d215661-f591-00a8-53e2-d8d611c756be
+map_Kd texture-signal.png
+newmtl m_0ed6d099-74de-45bd-8197-6ecee274aa75
+map_Kd signal_glow.png
+newmtl m_eec543d4-6232-31c3-d493-fbdf2ecf3d5d
+map_Kd signal_glow_3.png
+newmtl none
