@@ -25,6 +25,7 @@
   "block.station_decor.floor_marking_black": "Floor Marking (Black)",
   "block.station_decor.ks_main_signal": "Ks Home Signal",
   "block.station_decor.ks_distant_signal": "Ks Distant Signal",
+  "block.station_decor.ks_distant_signal_repeater": "Ks Distant Signal Repeater",
   "block.station_decor.ks_multi_section_signal": "Ks Multi-Section Signal",
   "station_decor.display_source.ks_main_signal_aspect": "Ks Home Signal Aspect",
   "station_decor.display_source.ks_multi_section_signal_aspect": "Ks Multi-Section Signal Aspect",

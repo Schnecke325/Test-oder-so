@@ -2,8 +2,6 @@ package com.stationdecor.client;
 
 import com.stationdecor.StationDecorMod;
 import com.stationdecor.block.signal.KsDistantSignalBlock;
-import com.stationdecor.block.signal.KsMainSignalBlock;
-import com.stationdecor.block.signal.KsMultiSectionSignalBlock;
 import com.stationdecor.client.render.FloorMarkingBlockEntityRenderer;
 import com.stationdecor.client.render.FloorMarkingModels;
 import com.stationdecor.client.render.ObjDisplayBlockEntityRenderer;
@@ -16,7 +14,6 @@ import com.stationdecor.client.screen.ObjDisplayScreen;
 import com.stationdecor.registry.ModBlockEntities;
 import com.stationdecor.registry.ModEntities;
 import com.stationdecor.registry.ModMenus;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -43,15 +40,10 @@ public final class ClientSetup {
             event.register(model);
         }
 
-        event.register(SignalModels.KS_MAIN_SIGNAL_HP0);
-        event.register(SignalModels.KS_MAIN_SIGNAL_HP1);
-        event.register(SignalModels.KS_MAIN_SIGNAL_HP2);
-        event.register(SignalModels.KS_DISTANT_SIGNAL_VR0);
-        event.register(SignalModels.KS_DISTANT_SIGNAL_VR1);
-        event.register(SignalModels.KS_DISTANT_SIGNAL_VR2);
-        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_FAHRT);
-        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_HALT);
-        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL_HALT_ERWARTEN);
+        event.register(SignalModels.KS_MAIN_SIGNAL);
+        event.register(SignalModels.KS_DISTANT_SIGNAL);
+        event.register(SignalModels.KS_DISTANT_SIGNAL_REPEATER);
+        event.register(SignalModels.KS_MULTI_SECTION_SIGNAL);
     }
 
     @SubscribeEvent
@@ -62,37 +54,19 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.SEAT.get(), SeatEntityRenderer::new);
 
         event.registerBlockEntityRenderer(ModBlockEntities.KS_MAIN_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
-                state -> switch (state.getValue(KsMainSignalBlock.ASPECT)) {
-                    case HP0 -> SignalModels.KS_MAIN_SIGNAL_HP0;
-                    case HP1 -> SignalModels.KS_MAIN_SIGNAL_HP1;
-                    case HP2 -> SignalModels.KS_MAIN_SIGNAL_HP2;
-                },
-                state -> lampTexture("ks_main_signal", state.getValue(KsMainSignalBlock.ASPECT).getSerializedName())));
+                state -> SignalModels.KS_MAIN_SIGNAL));
 
         event.registerBlockEntityRenderer(ModBlockEntities.KS_DISTANT_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
-                state -> switch (state.getValue(KsDistantSignalBlock.ASPECT)) {
-                    case VR0 -> SignalModels.KS_DISTANT_SIGNAL_VR0;
-                    case VR1 -> SignalModels.KS_DISTANT_SIGNAL_VR1;
-                    case VR2 -> SignalModels.KS_DISTANT_SIGNAL_VR2;
-                },
-                state -> lampTexture("ks_distant_signal", state.getValue(KsDistantSignalBlock.ASPECT).getSerializedName())));
+                state -> state.getBlock() instanceof KsDistantSignalBlock block && block.isRepeater()
+                        ? SignalModels.KS_DISTANT_SIGNAL_REPEATER
+                        : SignalModels.KS_DISTANT_SIGNAL));
 
         event.registerBlockEntityRenderer(ModBlockEntities.KS_MULTI_SECTION_SIGNAL.get(), context -> new RotatableSignalRenderer<>(
-                state -> switch (state.getValue(KsMultiSectionSignalBlock.ASPECT)) {
-                    case FAHRT -> SignalModels.KS_MULTI_SECTION_SIGNAL_FAHRT;
-                    case HALT -> SignalModels.KS_MULTI_SECTION_SIGNAL_HALT;
-                    case HALT_ERWARTEN -> SignalModels.KS_MULTI_SECTION_SIGNAL_HALT_ERWARTEN;
-                },
-                state -> lampTexture("ks_multi_section_signal", state.getValue(KsMultiSectionSignalBlock.ASPECT).getSerializedName())));
+                state -> SignalModels.KS_MULTI_SECTION_SIGNAL));
     }
 
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.OBJ_DISPLAY_MENU.get(), ObjDisplayScreen::new);
-    }
-
-    private static ResourceLocation lampTexture(String blockName, String aspectName) {
-        return ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID,
-                "textures/block/" + blockName + "_" + aspectName + ".png");
     }
 }

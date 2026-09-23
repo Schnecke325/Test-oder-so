@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "aspect=vr0": { "model": "station_decor:block/ks_distant_signal_repeater_render" },
+    "aspect=vr1": { "model": "station_decor:block/ks_distant_signal_repeater_render" },
+    "aspect=vr2": { "model": "station_decor:block/ks_distant_signal_repeater_render" }
+  }
+}

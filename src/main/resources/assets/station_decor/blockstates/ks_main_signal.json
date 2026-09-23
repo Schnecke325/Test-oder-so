@@ -1,13 +1,7 @@
 {
   "variants": {
-    "aspect=hp0": {
-      "model": "station_decor:block/ks_main_signal_hp0"
-    },
-    "aspect=hp1": {
-      "model": "station_decor:block/ks_main_signal_hp1"
-    },
-    "aspect=hp2": {
-      "model": "station_decor:block/ks_main_signal_hp2"
-    }
+    "aspect=hp0": { "model": "station_decor:block/ks_main_signal_render" },
+    "aspect=hp1": { "model": "station_decor:block/ks_main_signal_render" },
+    "aspect=hp2": { "model": "station_decor:block/ks_main_signal_render" }
   }
 }

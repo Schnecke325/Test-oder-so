@@ -40,7 +40,9 @@ public final class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsDistantSignalBlockEntity>> KS_DISTANT_SIGNAL =
             BLOCK_ENTITIES.register("ks_distant_signal", () -> BlockEntityType.Builder.of(
-                    KsDistantSignalBlockEntity::new, ModBlocks.KS_DISTANT_SIGNAL.get()).build(null));
+                    KsDistantSignalBlockEntity::new,
+                    ModBlocks.KS_DISTANT_SIGNAL.get(), ModBlocks.KS_DISTANT_SIGNAL_REPEATER.get()
+            ).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KsMultiSectionSignalBlockEntity>> KS_MULTI_SECTION_SIGNAL =
             BLOCK_ENTITIES.register("ks_multi_section_signal", () -> BlockEntityType.Builder.of(

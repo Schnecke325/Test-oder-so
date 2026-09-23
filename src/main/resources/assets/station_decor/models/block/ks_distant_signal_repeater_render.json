@@ -1,0 +1,44 @@
+{
+  "loader": "neoforge:obj",
+  "model": "station_decor:models/obj/kssignal-vorwiederholer2.obj",
+  "flip_v": true,
+  "textures": {
+    "texture0": "station_decor:block/metal",
+    "texture1": "station_decor:block/texture-signal",
+    "texture2": "station_decor:block/signal_glow_2",
+    "texture3": "station_decor:block/signal_glow_3",
+    "particle": "station_decor:block/metal"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.1, 0.1, 0.1]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.1, 0.1, 0.1]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 45, 0],
+      "scale": [0.1, 0.1, 0.1]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, 45, 0],
+      "scale": [0.1, 0.1, 0.1]
+    },
+    "gui": {
+      "rotation": [30, 45, 0],
+      "translation": [0, -1.5, 0],
+      "scale": [0.11, 0.11, 0.11]
+    },
+    "ground": {
+      "translation": [0, 2, 0],
+      "scale": [0.1, 0.1, 0.1]
+    },
+    "fixed": {
+      "scale": [0.1, 0.1, 0.1]
+    }
+  }
+}

@@ -31,19 +31,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class KsDistantSignalBlock extends BaseEntityBlock {
 
-    public static final MapCodec<KsDistantSignalBlock> CODEC = simpleCodec(KsDistantSignalBlock::new);
     public static final EnumProperty<DistantSignalAspect> ASPECT = EnumProperty.create("aspect", DistantSignalAspect.class);
 
     private static final VoxelShape SHAPE = box(6, 0, 6, 10, 16, 10);
 
-    public KsDistantSignalBlock(BlockBehaviour.Properties properties) {
+    private final boolean repeater;
+    private final MapCodec<KsDistantSignalBlock> codec;
+
+    public KsDistantSignalBlock(BlockBehaviour.Properties properties, boolean repeater) {
         super(properties);
+        this.repeater = repeater;
+        this.codec = simpleCodec(props -> new KsDistantSignalBlock(props, repeater));
         registerDefaultState(stateDefinition.any().setValue(ASPECT, DistantSignalAspect.VR0));
+    }
+
+    public boolean isRepeater() {
+        return repeater;
     }
 
     @Override
     protected MapCodec<KsDistantSignalBlock> codec() {
-        return CODEC;
+        return codec;
     }
 
     @Override

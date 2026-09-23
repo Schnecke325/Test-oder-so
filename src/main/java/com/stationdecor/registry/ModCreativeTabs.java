@@ -28,6 +28,11 @@ public final class ModCreativeTabs {
                         for (DyeColor color : DyeColor.values()) {
                             output.accept(ModItems.FLOOR_MARKING.get(color).get());
                         }
+                        output.accept(ModItems.KS_MAIN_SIGNAL.get());
+                        output.accept(ModItems.KS_DISTANT_SIGNAL.get());
+                        output.accept(ModItems.KS_DISTANT_SIGNAL_REPEATER.get());
+                        output.accept(ModItems.KS_MULTI_SECTION_SIGNAL.get());
+                        output.accept(ModItems.SIGNAL_BINDER.get());
                     })
                     .build());
 

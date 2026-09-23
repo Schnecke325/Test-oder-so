@@ -48,6 +48,9 @@ public final class ModItems {
     public static final Supplier<BlockItem> KS_DISTANT_SIGNAL = ITEMS.registerSimpleBlockItem(
             "ks_distant_signal", ModBlocks.KS_DISTANT_SIGNAL, new Item.Properties());
 
+    public static final Supplier<BlockItem> KS_DISTANT_SIGNAL_REPEATER = ITEMS.registerSimpleBlockItem(
+            "ks_distant_signal_repeater", ModBlocks.KS_DISTANT_SIGNAL_REPEATER, new Item.Properties());
+
     public static final Supplier<BlockItem> KS_MULTI_SECTION_SIGNAL = ITEMS.registerSimpleBlockItem(
             "ks_multi_section_signal", ModBlocks.KS_MULTI_SECTION_SIGNAL, new Item.Properties());
 

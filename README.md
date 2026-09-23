@@ -120,6 +120,28 @@ sowie zwei Ks-Signalblöcke mit optionaler Create-Integration.
   statische Blockmodell (`RenderShape.INVISIBLE` + `neoforge:obj`-freies
   Standalone-Modell, siehe unten) - die Lampen-Überlagerung dreht sich
   passend mit.
+- **Echte Modelle statt Platzhalter** (`kssignal-haupt2`/`-vor2`/`-mehrabschnitt2`/`-vorwiederholer2.obj`):
+  Mast + Signalkopf sind jetzt die gelieferten, mehrere Blöcke hohen
+  OBJ-Modelle statt der ursprünglichen kleinen Platzhalterbox. Jedes Modell
+  hat mehrere Lampenpositionen fest als eigene Materialien/Elemente
+  einmodelliert (`signal_glow`/`_2`/`_3`, aktuell nur der **"an"**-Zustand
+  geliefert) statt der alten separaten Lampen-Überlagerung
+  (`SignalLampRenderHelper`, entfernt) - pro Signaltyp gibt es daher aktuell
+  nur noch **ein** Rendermodell (`models/block/ks_*_render.json`, geladen
+  über `neoforge:obj` mit `texture0..N`-Zuordnung in
+  Deklarationsreihenfolge der `.mtl`), nicht mehr eins pro Begriff. Sobald
+  die "aus"-Textur für die Lampen geliefert wird, kann pro Begriff ein
+  eigenes Rendermodell mit passender An/Aus-Kombination gebaut und der
+  Modell-Resolver in `ClientSetup` wieder aspektabhängig gemacht werden
+  (wie zuvor bei den Platzhaltern).
+- **Ks-Vorsignalwiederholer** (`station_decor:ks_distant_signal_repeater`):
+  technisch identisch zum Vorsignal (gleiche `DistantSignalAspect`,
+  gleiches Display-Link-/Bindungsverhalten über `SignalLinkUtil`, da
+  `instanceof KsDistantSignalBlock` beide Varianten erfasst) - nur mit
+  eigenem Modell. `KsDistantSignalBlock` nimmt dafür einen
+  `repeater`-Konstruktorparameter (Instanz-Codec, wie bei
+  `ObjDisplayBlock`/`FloorMarkingBlock`), beide Blockvarianten teilen sich
+  eine `BlockEntityType`.
 - **Ks-Hauptsignal scannt jetzt selbst lokal** (per Nutzervorgabe geändert):
   anders als das Vorsignal hat `ks_main_signal` jetzt eine eigene
   `KsMainSignalBlockEntity`, die alle 10 Ticks bis zu 10 Blöcke gerade nach

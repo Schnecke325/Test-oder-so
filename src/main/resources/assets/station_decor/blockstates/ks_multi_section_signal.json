@@ -1,13 +1,7 @@
 {
   "variants": {
-    "aspect=halt": {
-      "model": "station_decor:block/ks_multi_section_signal_halt"
-    },
-    "aspect=halt_erwarten": {
-      "model": "station_decor:block/ks_multi_section_signal_halt_erwarten"
-    },
-    "aspect=fahrt": {
-      "model": "station_decor:block/ks_multi_section_signal_fahrt"
-    }
+    "aspect=halt": { "model": "station_decor:block/ks_multi_section_signal_render" },
+    "aspect=halt_erwarten": { "model": "station_decor:block/ks_multi_section_signal_render" },
+    "aspect=fahrt": { "model": "station_decor:block/ks_multi_section_signal_render" }
   }
 }
