@@ -3,6 +3,7 @@ package com.stationdecor.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stationdecor.block.rotation.AbstractRotatableBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +26,8 @@ public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> imp
 
         ModelResourceLocation model = modelResolver.apply(state);
         if (model != null) {
-            RotatedObjRenderHelper.render(model, rotationDegrees, poseStack, bufferSource, packedLight, packedOverlay);
+            RotatedObjRenderHelper.render(model, rotationDegrees, RenderType.translucent(),
+                    poseStack, bufferSource, packedLight, packedOverlay);
         }
     }
 }
