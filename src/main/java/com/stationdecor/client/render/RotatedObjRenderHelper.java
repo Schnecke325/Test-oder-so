@@ -27,9 +27,7 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public final class RotatedObjRenderHelper {
@@ -39,6 +37,9 @@ public final class RotatedObjRenderHelper {
     private static final ResourceLocation FLARE_SPRITE =
             ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/signal_flare");
     private static final float FLARE_HALF_SIZE = 0.22f;
+    private static final float LAMP_CLUSTER_DISTANCE = 0.3f;
+    private static final float REFERENCE_LAMP_EXTENT = 0.18f;
+    private static final float MIN_FLARE_SCALE = 0.35f;
 
     private RotatedObjRenderHelper() {
     }
@@ -126,8 +127,7 @@ public final class RotatedObjRenderHelper {
         PoseStack.Pose pose = poseStack.last();
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
 
-        Map<LampColor, Vector3f> flareLocalSum = new EnumMap<>(LampColor.class);
-        Map<LampColor, Integer> flareVertexCount = new EnumMap<>(LampColor.class);
+        List<LampCluster> clusters = new ArrayList<>();
 
         for (BakedQuad quad : collectAllQuads(model)) {
             LampColor lampColor = lampColorOf(quad.getSprite());
@@ -138,26 +138,51 @@ public final class RotatedObjRenderHelper {
             boolean on = litColors.contains(lampColor);
             putLampQuad(buffer, pose, quad, on ? LAMP_ON_LIGHT : packedLight, packedOverlay, on ? 0f : LAMP_OFF_U_SHIFT);
             if (on) {
-                accumulateLocalCenter(flareLocalSum, flareVertexCount, lampColor, quad);
+                addQuadToClusters(clusters, lampColor, quad);
             }
         }
 
-        drawFlares(flareLocalSum, flareVertexCount, rotationDegrees, poseStack, bufferSource, packedOverlay);
+        drawFlares(clusters, rotationDegrees, poseStack, bufferSource, packedOverlay);
         poseStack.popPose();
     }
 
-    private static void accumulateLocalCenter(Map<LampColor, Vector3f> sumByColor, Map<LampColor, Integer> countByColor,
-                                                LampColor lampColor, BakedQuad quad) {
+    /**
+     * Mehrere Lampen können dieselbe Glow-Textur (also dieselbe {@link LampColor}) teilen, obwohl sie
+     * physisch getrennte Lampen sind (z.B. Haupt- und Zs-Lampe beim Vorsignalwiederholer). Statt pro
+     * Farbe einen einzigen Flare zu mitteln, werden Quads anhand ihrer lokalen Position geclustert:
+     * nahe beieinanderliegende Quads (eine Lampen-Cube) verschmelzen zu einem Cluster, weit entfernte
+     * Quads der gleichen Farbe bilden einen eigenen Cluster mit eigenem Flare.
+     */
+    private static void addQuadToClusters(List<LampCluster> clusters, LampColor lampColor, BakedQuad quad) {
         int[] data = quad.getVertices();
         int vertexCount = data.length / 8;
-        Vector3f sum = sumByColor.computeIfAbsent(lampColor, c -> new Vector3f());
+        Vector3f quadSum = new Vector3f();
+        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
         for (int i = 0; i < vertexCount; i++) {
             float x = Float.intBitsToFloat(data[i * 8]);
             float y = Float.intBitsToFloat(data[i * 8 + 1]);
             float z = Float.intBitsToFloat(data[i * 8 + 2]);
-            sum.add(x, y, z);
+            quadSum.add(x, y, z);
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+            minZ = Math.min(minZ, z);
+            maxZ = Math.max(maxZ, z);
         }
-        countByColor.merge(lampColor, vertexCount, Integer::sum);
+        Vector3f quadCenter = new Vector3f(quadSum).div(vertexCount);
+
+        for (LampCluster cluster : clusters) {
+            if (cluster.color == lampColor && cluster.centroid().distance(quadCenter) < LAMP_CLUSTER_DISTANCE) {
+                cluster.merge(quadSum, vertexCount, minX, maxX, minY, maxY, minZ, maxZ);
+                return;
+            }
+        }
+        LampCluster cluster = new LampCluster(lampColor);
+        cluster.merge(quadSum, vertexCount, minX, maxX, minY, maxY, minZ, maxZ);
+        clusters.add(cluster);
     }
 
     /**
@@ -167,9 +192,9 @@ public final class RotatedObjRenderHelper {
      * wieder aufgehoben, damit nur noch die reine Position übrig bleibt, auf die die Kamera-Rotation
      * für das Billboard angewendet wird.
      */
-    private static void drawFlares(Map<LampColor, Vector3f> flareLocalSum, Map<LampColor, Integer> flareVertexCount,
-                                    float rotationDegrees, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
-        if (flareLocalSum.isEmpty()) {
+    private static void drawFlares(List<LampCluster> clusters, float rotationDegrees,
+                                    PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
+        if (clusters.isEmpty()) {
             return;
         }
 
@@ -177,28 +202,59 @@ public final class RotatedObjRenderHelper {
         TextureAtlasSprite flareSprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(FLARE_SPRITE);
         VertexConsumer flareBuffer = bufferSource.getBuffer(RenderType.translucent());
 
-        for (Map.Entry<LampColor, Vector3f> entry : flareLocalSum.entrySet()) {
-            LampColor lampColor = entry.getKey();
-            int count = flareVertexCount.get(lampColor);
-            Vector3f localCenter = new Vector3f(entry.getValue()).div(count);
+        for (LampCluster cluster : clusters) {
+            Vector3f localCenter = cluster.centroid();
+            float scale = Math.max(MIN_FLARE_SCALE, Math.min(1f, cluster.extent() / REFERENCE_LAMP_EXTENT));
 
             poseStack.pushPose();
             poseStack.translate(localCenter.x(), localCenter.y(), localCenter.z());
             poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
             poseStack.mulPose(camera.rotation());
-            drawFlareQuad(flareBuffer, poseStack.last(), lampColor, flareSprite, packedOverlay);
+            drawFlareQuad(flareBuffer, poseStack.last(), cluster.color, flareSprite, packedOverlay, FLARE_HALF_SIZE * scale);
             poseStack.popPose();
         }
     }
 
+    private static final class LampCluster {
+        final LampColor color;
+        final Vector3f centroidSum = new Vector3f();
+        int vertexCount;
+        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+        float minZ = Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
+
+        LampCluster(LampColor color) {
+            this.color = color;
+        }
+
+        void merge(Vector3f sum, int count, float minX, float maxX, float minY, float maxY, float minZ, float maxZ) {
+            centroidSum.add(sum);
+            vertexCount += count;
+            this.minX = Math.min(this.minX, minX);
+            this.maxX = Math.max(this.maxX, maxX);
+            this.minY = Math.min(this.minY, minY);
+            this.maxY = Math.max(this.maxY, maxY);
+            this.minZ = Math.min(this.minZ, minZ);
+            this.maxZ = Math.max(this.maxZ, maxZ);
+        }
+
+        Vector3f centroid() {
+            return new Vector3f(centroidSum).div(vertexCount);
+        }
+
+        float extent() {
+            return Math.max(maxX - minX, Math.max(maxY - minY, maxZ - minZ));
+        }
+    }
+
     private static void drawFlareQuad(VertexConsumer buffer, PoseStack.Pose pose, LampColor lampColor,
-                                        TextureAtlasSprite sprite, int packedOverlay) {
+                                        TextureAtlasSprite sprite, int packedOverlay, float halfSize) {
         int color = FastColor.ARGB32.color(255, lampColor.flareRed(), lampColor.flareGreen(), lampColor.flareBlue());
         float u0 = sprite.getU0();
         float u1 = sprite.getU1();
         float v0 = sprite.getV0();
         float v1 = sprite.getV1();
-        float s = FLARE_HALF_SIZE;
+        float s = halfSize;
 
         float[][] corners = {
                 {-s, -s, u0, v1},

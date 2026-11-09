@@ -38,7 +38,7 @@ public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> imp
 
     @Override
     public AABB getRenderBoundingBox(T blockEntity) {
-        return AABB.INFINITE;
+        return new AABB(blockEntity.getBlockPos()).inflate(8.0);
     }
 
     private static Set<LampColor> litColorsOf(BlockState state) {

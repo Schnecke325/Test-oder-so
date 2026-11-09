@@ -28,7 +28,7 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
 
     @Override
     public AABB getRenderBoundingBox(ObjDisplayBlockEntity blockEntity) {
-        return AABB.INFINITE;
+        return new AABB(blockEntity.getBlockPos()).inflate(8.0);
     }
 
     private static ModelResourceLocation modelFor(TicketMachineStyle style) {

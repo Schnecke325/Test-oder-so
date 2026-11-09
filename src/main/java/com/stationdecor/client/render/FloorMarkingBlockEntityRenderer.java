@@ -27,6 +27,6 @@ public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<Floo
 
     @Override
     public AABB getRenderBoundingBox(FloorMarkingBlockEntity blockEntity) {
-        return AABB.INFINITE;
+        return new AABB(blockEntity.getBlockPos()).inflate(8.0);
     }
 }

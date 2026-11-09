@@ -26,6 +26,6 @@ public class SeatBlockEntityRenderer implements BlockEntityRenderer<SeatBlockEnt
 
     @Override
     public AABB getRenderBoundingBox(SeatBlockEntity blockEntity) {
-        return AABB.INFINITE;
+        return new AABB(blockEntity.getBlockPos()).inflate(8.0);
     }
 }
