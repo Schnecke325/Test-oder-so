@@ -6,6 +6,7 @@ import com.stationdecor.block.rotation.RotationUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.phys.AABB;
 
 public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<FloorMarkingBlockEntity> {
 
@@ -22,5 +23,10 @@ public class FloorMarkingBlockEntityRenderer implements BlockEntityRenderer<Floo
                 0f, 0f, blockEntity.getOffsetDistance(),
                 PRACTICAL_TWIST_DEGREES, RotationUtil.diagonalStretch(rotationDegrees),
                 poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(FloorMarkingBlockEntity blockEntity) {
+        return AABB.INFINITE;
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -33,6 +34,11 @@ public class RotatableSignalRenderer<T extends AbstractRotatableBlockEntity> imp
             RotatedObjRenderHelper.renderSignal(model, rotationDegrees, litColorsOf(state),
                     poseStack, bufferSource, packedLight, packedOverlay);
         }
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(T blockEntity) {
+        return AABB.INFINITE;
     }
 
     private static Set<LampColor> litColorsOf(BlockState state) {

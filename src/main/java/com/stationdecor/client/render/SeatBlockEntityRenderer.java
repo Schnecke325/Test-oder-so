@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 
 public class SeatBlockEntityRenderer implements BlockEntityRenderer<SeatBlockEntity> {
 
@@ -21,5 +22,10 @@ public class SeatBlockEntityRenderer implements BlockEntityRenderer<SeatBlockEnt
     public void render(SeatBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                         MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RotatedObjRenderHelper.render(MODEL, blockEntity.getRotationDegrees(), poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(SeatBlockEntity blockEntity) {
+        return AABB.INFINITE;
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.phys.AABB;
 
 public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDisplayBlockEntity> {
 
@@ -23,6 +24,11 @@ public class ObjDisplayBlockEntityRenderer implements BlockEntityRenderer<ObjDis
         ModelResourceLocation model = modelFor(blockEntity.getStyle());
         RotatedObjRenderHelper.render(model, blockEntity.getRotationDegrees(), MODEL_X_OFFSET, MODEL_Y_OFFSET, 0f,
                 poseStack, bufferSource, packedLight, packedOverlay);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(ObjDisplayBlockEntity blockEntity) {
+        return AABB.INFINITE;
     }
 
     private static ModelResourceLocation modelFor(TicketMachineStyle style) {
