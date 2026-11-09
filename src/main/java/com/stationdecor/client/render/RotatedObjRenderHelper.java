@@ -4,11 +4,14 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.stationdecor.StationDecorMod;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -24,13 +27,18 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class RotatedObjRenderHelper {
 
     private static final float LAMP_OFF_U_SHIFT = -7f / 16f;
     private static final int LAMP_ON_LIGHT = LightTexture.pack(15, 15);
+    private static final ResourceLocation FLARE_SPRITE =
+            ResourceLocation.fromNamespaceAndPath(StationDecorMod.MOD_ID, "block/signal_flare");
+    private static final float FLARE_HALF_SIZE = 0.22f;
 
     private RotatedObjRenderHelper() {
     }
@@ -118,6 +126,9 @@ public final class RotatedObjRenderHelper {
         PoseStack.Pose pose = poseStack.last();
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
 
+        Map<LampColor, Vector3f> flareCenterSum = new EnumMap<>(LampColor.class);
+        Map<LampColor, Integer> flareVertexCount = new EnumMap<>(LampColor.class);
+
         for (BakedQuad quad : collectAllQuads(model)) {
             LampColor lampColor = lampColorOf(quad.getSprite());
             if (lampColor == null) {
@@ -126,9 +137,88 @@ public final class RotatedObjRenderHelper {
             }
             boolean on = litColors.contains(lampColor);
             putLampQuad(buffer, pose, quad, on ? LAMP_ON_LIGHT : packedLight, packedOverlay, on ? 0f : LAMP_OFF_U_SHIFT);
+            if (on) {
+                accumulateFlareCenter(flareCenterSum, flareVertexCount, lampColor, quad, pose);
+            }
         }
 
         poseStack.popPose();
+        drawFlares(flareCenterSum, flareVertexCount, poseStack, bufferSource, packedOverlay);
+    }
+
+    private static void accumulateFlareCenter(Map<LampColor, Vector3f> sumByColor, Map<LampColor, Integer> countByColor,
+                                                LampColor lampColor, BakedQuad quad, PoseStack.Pose pose) {
+        int[] data = quad.getVertices();
+        Matrix4f matrix = pose.pose();
+        int vertexCount = data.length / 8;
+
+        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+            ByteBuffer byteBuffer = memoryStack.malloc(DefaultVertexFormat.BLOCK.getVertexSize());
+            IntBuffer intBuffer = byteBuffer.asIntBuffer();
+
+            Vector3f sum = sumByColor.computeIfAbsent(lampColor, c -> new Vector3f());
+            for (int i = 0; i < vertexCount; i++) {
+                intBuffer.clear();
+                intBuffer.put(data, i * 8, 8);
+                float x = byteBuffer.getFloat(0);
+                float y = byteBuffer.getFloat(4);
+                float z = byteBuffer.getFloat(8);
+                Vector3f transformedPos = matrix.transformPosition(x, y, z, new Vector3f());
+                sum.add(transformedPos);
+            }
+            countByColor.merge(lampColor, vertexCount, Integer::sum);
+        }
+    }
+
+    private static void drawFlares(Map<LampColor, Vector3f> flareCenterSum, Map<LampColor, Integer> flareVertexCount,
+                                    PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
+        if (flareCenterSum.isEmpty()) {
+            return;
+        }
+
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        TextureAtlasSprite flareSprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(FLARE_SPRITE);
+        VertexConsumer flareBuffer = bufferSource.getBuffer(RenderType.translucent());
+
+        for (Map.Entry<LampColor, Vector3f> entry : flareCenterSum.entrySet()) {
+            LampColor lampColor = entry.getKey();
+            int count = flareVertexCount.get(lampColor);
+            Vector3f center = new Vector3f(entry.getValue()).div(count);
+
+            poseStack.pushPose();
+            poseStack.translate(center.x(), center.y(), center.z());
+            poseStack.mulPose(camera.rotation());
+            drawFlareQuad(flareBuffer, poseStack.last(), lampColor, flareSprite, packedOverlay);
+            poseStack.popPose();
+        }
+    }
+
+    private static void drawFlareQuad(VertexConsumer buffer, PoseStack.Pose pose, LampColor lampColor,
+                                        TextureAtlasSprite sprite, int packedOverlay) {
+        int color = FastColor.ARGB32.color(255, lampColor.flareRed(), lampColor.flareGreen(), lampColor.flareBlue());
+        float u0 = sprite.getU0();
+        float u1 = sprite.getU1();
+        float v0 = sprite.getV0();
+        float v1 = sprite.getV1();
+        float s = FLARE_HALF_SIZE;
+
+        float[][] corners = {
+                {-s, -s, u0, v1},
+                {s, -s, u1, v1},
+                {s, s, u1, v0},
+                {-s, s, u0, v0}
+        };
+        for (int winding = 0; winding < 2; winding++) {
+            for (int i = 0; i < 4; i++) {
+                float[] corner = corners[winding == 0 ? i : 3 - i];
+                buffer.addVertex(pose, corner[0], corner[1], 0f)
+                        .setColor(color)
+                        .setUv(corner[2], corner[3])
+                        .setOverlay(packedOverlay)
+                        .setLight(LAMP_ON_LIGHT)
+                        .setNormal(pose, 0f, 0f, 1f);
+            }
+        }
     }
 
     private static List<BakedQuad> collectAllQuads(BakedModel model) {
