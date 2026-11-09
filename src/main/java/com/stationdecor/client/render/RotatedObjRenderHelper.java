@@ -126,7 +126,7 @@ public final class RotatedObjRenderHelper {
         PoseStack.Pose pose = poseStack.last();
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
 
-        Map<LampColor, Vector3f> flareCenterSum = new EnumMap<>(LampColor.class);
+        Map<LampColor, Vector3f> flareLocalSum = new EnumMap<>(LampColor.class);
         Map<LampColor, Integer> flareVertexCount = new EnumMap<>(LampColor.class);
 
         for (BakedQuad quad : collectAllQuads(model)) {
@@ -138,41 +138,38 @@ public final class RotatedObjRenderHelper {
             boolean on = litColors.contains(lampColor);
             putLampQuad(buffer, pose, quad, on ? LAMP_ON_LIGHT : packedLight, packedOverlay, on ? 0f : LAMP_OFF_U_SHIFT);
             if (on) {
-                accumulateFlareCenter(flareCenterSum, flareVertexCount, lampColor, quad, pose);
+                accumulateLocalCenter(flareLocalSum, flareVertexCount, lampColor, quad);
             }
         }
 
+        drawFlares(flareLocalSum, flareVertexCount, rotationDegrees, poseStack, bufferSource, packedOverlay);
         poseStack.popPose();
-        drawFlares(flareCenterSum, flareVertexCount, poseStack, bufferSource, packedOverlay);
     }
 
-    private static void accumulateFlareCenter(Map<LampColor, Vector3f> sumByColor, Map<LampColor, Integer> countByColor,
-                                                LampColor lampColor, BakedQuad quad, PoseStack.Pose pose) {
+    private static void accumulateLocalCenter(Map<LampColor, Vector3f> sumByColor, Map<LampColor, Integer> countByColor,
+                                                LampColor lampColor, BakedQuad quad) {
         int[] data = quad.getVertices();
-        Matrix4f matrix = pose.pose();
         int vertexCount = data.length / 8;
-
-        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
-            ByteBuffer byteBuffer = memoryStack.malloc(DefaultVertexFormat.BLOCK.getVertexSize());
-            IntBuffer intBuffer = byteBuffer.asIntBuffer();
-
-            Vector3f sum = sumByColor.computeIfAbsent(lampColor, c -> new Vector3f());
-            for (int i = 0; i < vertexCount; i++) {
-                intBuffer.clear();
-                intBuffer.put(data, i * 8, 8);
-                float x = byteBuffer.getFloat(0);
-                float y = byteBuffer.getFloat(4);
-                float z = byteBuffer.getFloat(8);
-                Vector3f transformedPos = matrix.transformPosition(x, y, z, new Vector3f());
-                sum.add(transformedPos);
-            }
-            countByColor.merge(lampColor, vertexCount, Integer::sum);
+        Vector3f sum = sumByColor.computeIfAbsent(lampColor, c -> new Vector3f());
+        for (int i = 0; i < vertexCount; i++) {
+            float x = Float.intBitsToFloat(data[i * 8]);
+            float y = Float.intBitsToFloat(data[i * 8 + 1]);
+            float z = Float.intBitsToFloat(data[i * 8 + 2]);
+            sum.add(x, y, z);
         }
+        countByColor.merge(lampColor, vertexCount, Integer::sum);
     }
 
-    private static void drawFlares(Map<LampColor, Vector3f> flareCenterSum, Map<LampColor, Integer> flareVertexCount,
-                                    PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
-        if (flareCenterSum.isEmpty()) {
+    /**
+     * Zeichnet die Flares innerhalb derselben Pose, in der auch die Lampen-Quads liegen (vor dem
+     * äußeren popPose) - sonst würde die Block-Position doppelt verrechnet, weil sie dort schon in der
+     * Pose steckt. Die Rotation des Signals (-rotationDegrees) wird direkt danach durch +rotationDegrees
+     * wieder aufgehoben, damit nur noch die reine Position übrig bleibt, auf die die Kamera-Rotation
+     * für das Billboard angewendet wird.
+     */
+    private static void drawFlares(Map<LampColor, Vector3f> flareLocalSum, Map<LampColor, Integer> flareVertexCount,
+                                    float rotationDegrees, PoseStack poseStack, MultiBufferSource bufferSource, int packedOverlay) {
+        if (flareLocalSum.isEmpty()) {
             return;
         }
 
@@ -180,13 +177,14 @@ public final class RotatedObjRenderHelper {
         TextureAtlasSprite flareSprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(FLARE_SPRITE);
         VertexConsumer flareBuffer = bufferSource.getBuffer(RenderType.translucent());
 
-        for (Map.Entry<LampColor, Vector3f> entry : flareCenterSum.entrySet()) {
+        for (Map.Entry<LampColor, Vector3f> entry : flareLocalSum.entrySet()) {
             LampColor lampColor = entry.getKey();
             int count = flareVertexCount.get(lampColor);
-            Vector3f center = new Vector3f(entry.getValue()).div(count);
+            Vector3f localCenter = new Vector3f(entry.getValue()).div(count);
 
             poseStack.pushPose();
-            poseStack.translate(center.x(), center.y(), center.z());
+            poseStack.translate(localCenter.x(), localCenter.y(), localCenter.z());
+            poseStack.mulPose(Axis.YP.rotationDegrees(rotationDegrees));
             poseStack.mulPose(camera.rotation());
             drawFlareQuad(flareBuffer, poseStack.last(), lampColor, flareSprite, packedOverlay);
             poseStack.popPose();
